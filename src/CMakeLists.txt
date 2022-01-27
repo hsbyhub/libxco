@@ -12,7 +12,6 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/../lib)
 set(CMAKE_CXX_FLAGS "$ENV{CXXFLAAGS} -O2 -g -std=c++11 -Wall -Wno-deprecated -Werror -Wno-unused-function -Wno-builtin-macro-redefined")
 
 # Add static and shared library target.
-include_directories(../include)
 Set(libx_srcs)
 file(GLOB libx_srcs ${PROJECT_SOURCE_DIR}/*.cpp)
 add_library(x_shared SHARED ${libx_srcs})
