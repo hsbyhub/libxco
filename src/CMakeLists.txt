@@ -17,7 +17,7 @@ file(GLOB libx_srcs ${PROJECT_SOURCE_DIR}/*.cpp)
 add_library(x_static STATIC ${libx_srcs})
 #add_library(x_shared SHARED ${libx_srcs})
 set_target_properties(x_static PROPERTIES OUTPUT_NAME xlib)
-#set_target_properties(x_shared PROPERTIES OUTPUT_NAME xlib VERSION ${LIBNO_VERSION} SOVERSION ${LIBNO_VERSION})
+#set_target_properties(x_shared PROPERTIES OUTPUT_NAME xlib VERSION ${LIBX_VERSION} SOVERSION ${LIBX_VERSION})
 RedefineFileMacro(x_static)
 #RedefineFileMacro(x_shared)
 
