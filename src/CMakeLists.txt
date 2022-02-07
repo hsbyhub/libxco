@@ -27,6 +27,7 @@ install(TARGETS x_static LIBRARY DESTINATION "lib" ARCHIVE DESTINATION "lib")
 install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/ DESTINATION "include/libx" FILES_MATCHING PATTERN "*.h")
 
 # Add test target.
+include_directories(${PROJECT_SOURCE_DIR})
 set(libs dl x_static)
 file(GLOB src_files ${PROJECT_SOURCE_DIR}/../test/*.cpp)
 foreach(src_file ${src_files})
