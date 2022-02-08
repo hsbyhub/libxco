@@ -14,7 +14,7 @@ XCO_NAMESPAVE_START
 
 class Coroutine {
 public:
-    using CbType = void*(void* arg);
+    using CbType = void(void* arg);
 
     enum class State{
         kStInit     = 0,
@@ -33,7 +33,8 @@ public:
             kRiRetAddr = 9,
             kRiRsp = 13,
         };
-        SysContext(char* _ss_sp,
+        SysContext(){}
+        void Init(char* _ss_sp,
                    size_t _ss_size,
                    void* cb,
                    void* arg0 = nullptr,
@@ -41,7 +42,7 @@ public:
 
         void Swap(SysContext* new_sys_ctx);
 
-        void* regs[14];
+        char* regs[14];
         size_t ss_size; // 栈大小
         char* ss_sp;    // 栈内存块
     };
@@ -82,7 +83,7 @@ public:
     /**
      * @brief 协程处理
      */
-    void* OnCoroutine(void* arg);
+    static void* OnCoroutine(Coroutine* arg);
 
     /**
      * @brief 唤起协程
@@ -99,21 +100,15 @@ public:
      */
     static void Swap(Coroutine* cur_co, Coroutine* pending_co);
 
-private:
     void BackupStackMem();
-
-public:
-    State GetState();
-
-    void SetState(State st);
 
 public:
     StackMem*           stack_mem_          = nullptr;  // 栈内存
     bool                is_share_stack_mem_ = false;    // 是否共享栈
-    SysContext*         sys_context_        = nullptr;  // 协程上下文
     CbType*             cb_                 = nullptr;  // 回调
     void*               cb_arg_             = nullptr;  // 回调参数
     State               state_;                         // 协程状态
+    SysContext          sys_context_;                   // 协程系统上下文
     char*               stack_sp_           = nullptr;  // 栈指针(共享栈的备份)
     int                 stack_backup_size   = 0;        // 栈备份大小
     char*               stack_backup_buffer = nullptr;  // 栈备份

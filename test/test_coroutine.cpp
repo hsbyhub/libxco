@@ -9,32 +9,25 @@
 #include <iostream>
 #include <unistd.h>
 
-void* fun1(void* arg) {
-    while (true) {
-        sleep(1);
-        LOGDEBUG("I am fun1");
-        auto next_co = (xco::Coroutine*)arg;
-        next_co->Resume();
+void fun(void* arg) {
+    while(true) {
+        //LOGDEBUG("before Yield fun_co");
+        xco::Coroutine::Yield();
+        //LOGDEBUG("after Yield fun_co");
     }
-    return nullptr;
 }
 
-void* fun2(void* arg) {
-    while (true) {
-        sleep(1);
-        LOGDEBUG("I am fun1");
-        auto next_co = (xco::Coroutine*)arg;
-        next_co->Resume();
+void test_resume() {
+    xco::Coroutine fun_co(fun);
+    for (int i = 0; i < 1000 * 10000; ++i) {
+        //LOGDEBUG("before Resume fun_co");
+        fun_co.Resume();
+        //LOGDEBUG("after Resume fun_co");
+        //sleep(1);
     }
-    return nullptr;
 }
 
 int main() {
-    xco::Coroutine fun1_co(fun1);
-    xco::Coroutine fun2_co(fun2);
-    fun1_co.cb_arg_ = &fun2_co;
-    fun2_co.cb_arg_ = &fun1_co;
-    LOGDEBUG("Resume fun1_co");
-    fun1_co.Resume();
+    test_resume();
     return 0;
 }
