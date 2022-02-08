@@ -5,7 +5,7 @@ function(RedefineFileMacro targetname)
         get_property(defs SOURCE "${sourcefile}"
                 PROPERTY COMPILE_DEFINITIONS)
         get_filename_component(filepath "${sourcefile}" ABSOLUTE)
-        string(REPLACE ${PROJECT_SOURCE_DIR}/ "" relpath ${filepath})
+        string(REPLACE . "" relpath ${filepath})
         list(APPEND defs "__FILE__=\"${relpath}\"")
         set_property(
                 SOURCE "${sourcefile}"

@@ -7,5 +7,5 @@
 #pragma once
 
 
-#define X_NAMESPAVE_START namespace xlib{
+#define X_NAMESPAVE_START namespace xco{
 #define X_NAMESPAVE_END }

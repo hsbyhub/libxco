@@ -119,7 +119,7 @@ private:
 };
 
 extern "C" {
-void sys_context_swap(xlib::Coroutine::SysContext* cur_ctx, xlib::Coroutine::SysContext* new_ctx) asm("sys_context_swap");
+void sys_context_swap(xco::Coroutine::SysContext* cur_ctx, xco::Coroutine::SysContext* new_ctx) asm("sys_context_swap");
 }
 
 X_NAMESPAVE_END
