@@ -11,18 +11,21 @@ set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 set(CMAKE_CXX_FLAGS "$ENV{CXXFLAAGS} -O2 -g -std=c++11 -Wall -Wno-deprecated -Werror -Wno-unused-function -Wno-builtin-macro-redefined")
 
+# Use c and asm.
+enable_language(C ASM)
+
 # Add static and shared library target.
-file(GLOB libx_srcs ${PROJECT_SOURCE_DIR}/src/*.cpp)
-add_library(xco_static STATIC ${libx_srcs})
-add_library(xco_shared SHARED ${libx_srcs})
+file(GLOB libxco_srcs ${PROJECT_SOURCE_DIR}/src/*.cpp ${PROJECT_SOURCE_DIR}/src/*.S)
+add_library(xco_static STATIC ${libxco_srcs})
+#add_library(xco_shared SHARED ${libxco_srcs})
 set_target_properties(xco_static PROPERTIES OUTPUT_NAME xco)
-set_target_properties(xco_shared PROPERTIES OUTPUT_NAME xco VERSION ${LIBXCO_VERSION} SOVERSION ${LIBXCO_VERSION})
+#set_target_properties(xco_shared PROPERTIES OUTPUT_NAME xco VERSION ${LIBXCO_VERSION} SOVERSION ${LIBXCO_VERSION})
 RedefineFileMacro(xco_static)
-RedefineFileMacro(xco_shared)
+#RedefineFileMacro(xco_shared)
 
 # Set install.
 install(TARGETS xco_static LIBRARY DESTINATION "lib" ARCHIVE DESTINATION "lib")
-install(TARGETS xco_shared LIBRARY DESTINATION "lib" ARCHIVE DESTINATION "lib")
+#install(TARGETS xco_shared LIBRARY DESTINATION "lib" ARCHIVE DESTINATION "lib")
 install(DIRECTORY ${PROJECT_SOURCE_DIR}/src/ DESTINATION "include/libx" FILES_MATCHING PATTERN "*.h")
 
 # Add test target.

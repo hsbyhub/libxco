@@ -10,7 +10,7 @@
 #include <memory>
 #include "define.h"
 
-X_NAMESPAVE_START
+XCO_NAMESPAVE_START
 
 class Coroutine {
 public:
@@ -42,8 +42,8 @@ public:
         void Swap(SysContext* new_sys_ctx);
 
         void* regs[14];
-        char* ss_sp;    // 栈内存块
         size_t ss_size; // 栈大小
+        char* ss_sp;    // 栈内存块
     };
 
     /**
@@ -89,10 +89,6 @@ public:
      */
     void Resume();
 
-    State GetState();
-
-    void SetState(State st);
-    
     /**
      * @brief 挂起协程
      */
@@ -106,7 +102,12 @@ public:
 private:
     void BackupStackMem();
 
-private:
+public:
+    State GetState();
+
+    void SetState(State st);
+
+public:
     StackMem*           stack_mem_          = nullptr;  // 栈内存
     bool                is_share_stack_mem_ = false;    // 是否共享栈
     SysContext*         sys_context_        = nullptr;  // 协程上下文
@@ -118,8 +119,4 @@ private:
     char*               stack_backup_buffer = nullptr;  // 栈备份
 };
 
-extern "C" {
-void sys_context_swap(xco::Coroutine::SysContext* cur_ctx, xco::Coroutine::SysContext* new_ctx) asm("sys_context_swap");
-}
-
-X_NAMESPAVE_END
+XCO_NAMESPAVE_END

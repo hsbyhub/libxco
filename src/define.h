@@ -6,6 +6,9 @@
  *================================================================*/
 #pragma once
 
+#include <iostream>
 
-#define X_NAMESPAVE_START namespace xco{
-#define X_NAMESPAVE_END }
+#define XCO_NAMESPAVE_START namespace xco{
+#define XCO_NAMESPAVE_END }
+
+#define LOGDEBUG(msg) std::cout << __FILE__ << ":" << __LINE__ << "|" << msg << std::endl << std::flush
