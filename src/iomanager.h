@@ -15,6 +15,7 @@ XCO_NAMESPAVE_START
 class IoManager : public Scheduler{
 public:
     struct FdContext {
+        int fd = -1;
         Coroutine* read_co      = nullptr;
         Coroutine* write_co     = nullptr;
         uint32_t ev_flags       = 0;
@@ -31,6 +32,8 @@ public:
     uint32_t TrgEvent(int fd, uint32_t evs);
 
     uint32_t DelEvent(int fd, uint32_t evs);
+
+    static IoManager* GetCurIoManager();
 
 protected:
     void OnIdle() override;

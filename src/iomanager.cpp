@@ -9,6 +9,9 @@
 #include <unistd.h>
 #include <cstring>
 
+const static int MAX_EPOLL_TIMEOUT_MS = 2000;
+const static int MAX_EPOLL_RET_EPEV_CNT = 256;
+
 XCO_NAMESPAVE_START
 
 IoManager::IoManager() {
@@ -22,9 +25,16 @@ IoManager::~IoManager() {
 
 uint32_t IoManager::SetEvent(int fd, uint32_t ev, Coroutine *co) {
     assert(fd > 0 && co);
-    assert(ev && (!((ev & EPOLLIN) && (ev & EPOLLOUT))));
     if (fd >= (int)fd_ctxs_.size()) {
         fd_ctxs_.resize(fd * 2);
+    }
+
+    if (ev & EPOLLIN) {
+        ev = EPOLLIN;
+    }else if (ev & EPOLLOUT) {
+        ev = EPOLLOUT;
+    }else {
+        return 0;
     }
 
     // ÐÞ¸Äepoll
@@ -39,14 +49,13 @@ uint32_t IoManager::SetEvent(int fd, uint32_t ev, Coroutine *co) {
     }
 
     // ÐÞ¸Äfd_ctx
-    ctx.ev_flags |= ev;
     if (ev & EPOLLIN) {
         ctx.read_co = co;
     }else if (ev & EPOLLOUT){
         ctx.write_co = co;
-    }else {
-        return 0;
     }
+    ctx.ev_flags |= ev;
+    ctx.fd = fd;
     return ev;
 }
 
@@ -54,10 +63,10 @@ uint32_t IoManager::TrgEvent(int fd, uint32_t evs) {
     assert(fd < (int)fd_ctxs_.size());
     evs = DelEvent(fd, evs);
     auto& ctx = fd_ctxs_[fd];
-    if (evs & EPOLLIN) {
+    if (evs & EPOLLIN && ctx.ev_flags & EPOLLIN && ctx.read_co) {
         Schedule(ctx.read_co);
         ctx.read_co = nullptr;
-    }else if (evs & EPOLLOUT){
+    }else if (evs & EPOLLOUT && ctx.ev_flags & EPOLLOUT && ctx.write_co){
         Schedule(ctx.write_co);
         ctx.write_co = nullptr;
     }
@@ -67,7 +76,6 @@ uint32_t IoManager::TrgEvent(int fd, uint32_t evs) {
 uint32_t IoManager::DelEvent(int fd, uint32_t evs) {
     assert(fd < (int)fd_ctxs_.size());
     auto& ctx = fd_ctxs_[fd];
-    evs &= EPOLLIN | EPOLLOUT;
     uint32_t remain_evs = ctx.ev_flags & ~evs;
     int op = remain_evs ? EPOLL_CTL_MOD : EPOLL_CTL_DEL;
     epoll_event epev;
@@ -79,11 +87,27 @@ uint32_t IoManager::DelEvent(int fd, uint32_t evs) {
     }
 
     ctx.ev_flags = remain_evs;
-
     return evs;
 }
 
+IoManager *IoManager::GetCurIoManager() {
+    return dynamic_cast<IoManager*>(GetCurScheduler());
+}
+
 void IoManager::OnIdle() {
+    epoll_event ret_epevs[MAX_EPOLL_RET_EPEV_CNT];
+    while(true) {
+        int ret = epoll_wait(epoll_fd_, ret_epevs, MAX_EPOLL_RET_EPEV_CNT, MAX_EPOLL_TIMEOUT_MS);
+        for (int i = 0; i < ret; ++i) {
+            const auto& ret_epev = ret_epevs[i];
+            auto ctx = (FdContext*)ret_epev.data.ptr;
+            if (!ctx) {
+                continue;
+            }
+            TrgEvent(ctx->fd, ret_epev.events);
+        }
+        Coroutine::Yield();
+    }
 }
 
 XCO_NAMESPAVE_END
