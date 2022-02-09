@@ -15,6 +15,7 @@
 #include <arpa/inet.h>
 #include <sys/socket.h>
 #include <assert.h>
+#include <sys/wait.h>
 using namespace std;
 
 struct Task {
@@ -70,7 +71,43 @@ void OnHandleAccept(void* arg) {
     }
 }
 
-int CreateListenSocket(const char* addr, uint16_t port) {
+int CreateListenSocket(const char* addr_str, uint16_t port) {
+
+    int sock = socket(AF_INET, SOCK_STREAM, 0);
+    if (sock < 0) {
+        return -1;
+    }
+
+    int val = 1;
+    int ret = setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &val, sizeof(val));
+    if (ret) {
+        goto err;
+    }
+
+    sockaddr_in addr;
+    bzero(&addr, sizeof(addr));
+    addr.sin_family = AF_INET;
+    addr.sin_port = htons(port);
+    ret = inet_pton(AF_INET, addr_str, &addr.sin_addr.s_addr);
+    if (ret != 1) {
+        goto err;
+    }
+
+    ret = bind(sock, (sockaddr*)&addr, sizeof(addr));
+    if (ret) {
+        goto err;
+    }
+
+    ret = listen(sock, 1024);
+    if (ret) {
+        goto err;
+    }
+
+    return sock;
+
+err:
+    close(sock);
+    return -1;
 }
 
 int main(int argc, char** argv) {
@@ -88,31 +125,32 @@ int main(int argc, char** argv) {
         if (ret != 0) {
             continue;
         } else {
+            g_listen_fd = CreateListenSocket("0.0.0.0", 80);
+            assert(g_listen_fd > 0);
             xco::IoManager iom;
-            std::vector<xco::Coroutine*> accept_cos;
+            std::vector<xco::Coroutine*> cos;
             for (int j = 0; j < accept_co_cnt; ++j) {
                 // 获取监听套接字
-                g_listen_fd = socket(AF_INET, SOCK_STREAM, 0);
-                assert(g_listen_fd > 0);
-                // 设置地址
-                sockaddr_in addr;
-                bzero(&addr, sizeof(addr));
-                addr.sin_family = AF_INET;
-                inet_pton(AF_INET, "0.0.0.0", &addr.sin_addr.s_addr);
-                addr.sin_port = htons(80);
-                int rt = bind(g_listen_fd, (sockaddr*)&addr, sizeof(addr));
-                assert(rt == 0);
-                rt = listen(g_listen_fd, 1024);
-                assert(rt == 0);
                 auto co = new xco::Coroutine(OnHandleAccept);
                 iom.Schedule(co);
-                accept_cos.push_back(co);
+                cos.push_back(co);
             }
             for (int j = 0; j < client_handle_co_cnt; ++j) {
                 auto t = new Task;
                 t->co = new xco::Coroutine(OnHandleTask, (void*)t);
                 t->client = -1;
+                iom.Schedule(t->co);
+                cos.push_back(t->co);
             }
+            iom.Start();
+
+            for (auto co : cos) {
+                delete co;
+            }
+
+            close(g_listen_fd);
         }
     }
+
+    wait(nullptr);
 }

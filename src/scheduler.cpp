@@ -44,6 +44,7 @@ void Scheduler::OnLoop() {
             if (!co) {
                 continue;
             }
+            LOGDEBUG("resume co");
             co->Resume();
         }
         idle_co_->Resume();

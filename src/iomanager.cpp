@@ -98,6 +98,7 @@ void IoManager::OnIdle() {
     epoll_event ret_epevs[MAX_EPOLL_RET_EPEV_CNT];
     while(true) {
         int ret = epoll_wait(epoll_fd_, ret_epevs, MAX_EPOLL_RET_EPEV_CNT, MAX_EPOLL_TIMEOUT_MS);
+        LOGDEBUG("epoll_wait ret = " << ret);
         for (int i = 0; i < ret; ++i) {
             const auto& ret_epev = ret_epevs[i];
             auto ctx = (FdContext*)ret_epev.data.ptr;
