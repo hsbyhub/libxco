@@ -8,7 +8,7 @@
 
 #include <cstddef>
 #include <memory>
-#include "define.h"
+#include "common.h"
 
 XCO_NAMESPAVE_START
 
@@ -51,7 +51,7 @@ public:
      * @brief 运行时栈内存
      */
     struct StackMem{
-        StackMem(int _size) {
+        StackMem(int _size = 128 * 1000) {
             occupy_co = nullptr;
             size = _size;
             buffer = (char*)malloc(size);
@@ -73,7 +73,7 @@ public:
     /**
      * @brief 构造函数
      */
-    Coroutine(CbType* cb, void* arg = nullptr, int stack_size = 128 * 1024, StackMem* stack_mem = nullptr);
+    Coroutine(CbType* cb, void* arg = nullptr, StackMem* stack_mem = nullptr, int stack_size = 128 * 1024);
 
     /**
      * @brief 析构函数
@@ -83,7 +83,7 @@ public:
     /**
      * @brief 协程处理
      */
-    static void* OnCoroutine(Coroutine* arg);
+    static void OnCoroutine(Coroutine* co);
 
     /**
      * @brief 唤起协程
@@ -100,6 +100,9 @@ public:
      */
     static void Swap(Coroutine* cur_co, Coroutine* pending_co);
 
+    /**
+     * @brief 备份栈内存
+     */
     void BackupStackMem();
 
 public:

@@ -7,7 +7,7 @@
 #include <ucontext.h>
 #include <memory>
 #include <cstring>
-#include "define.h"
+#include "common.h"
 
 const int STACK_SIZE = 128 * 1000;
 using CbType = void(*)();

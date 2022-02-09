@@ -84,12 +84,12 @@ void Coroutine::SysContext::Swap(Coroutine::SysContext *new_sys_ctx) {
     sys_context_swap(this, new_sys_ctx);
 }
 
-Coroutine::Coroutine(CbType* cb, void* cb_arg, int stack_size, Coroutine::StackMem *stack_mem) {
+Coroutine::Coroutine(CbType* cb, void* cb_arg, Coroutine::StackMem *stack_mem, int stack_size) {
     if (stack_mem) {
         stack_mem_ = stack_mem;
         is_share_stack_mem_ = true;
     }else {
-        if(stack_size & 0xFFF )
+        if(stack_size & 0xFFF)
         {
             stack_size &= ~0xFFF;
             stack_size += 0x1000;
@@ -114,13 +114,12 @@ Coroutine::~Coroutine() {
     }
 }
 
-void* Coroutine::OnCoroutine(Coroutine* co) {
+void Coroutine::OnCoroutine(Coroutine* co) {
     co->state_ = State::kStExec;
     co->cb_(co->cb_arg_);
     co->state_ = State::kStEnd;
     Yield();
     assert(false); //不会到达这里
-    return nullptr;
 }
 
 void Coroutine::Resume() {
@@ -162,6 +161,7 @@ void Coroutine::Swap(Coroutine* cur_co, Coroutine* pending_co) {
 
 void Coroutine::BackupStackMem() {
     int stack_use_len = stack_mem_->bp - stack_sp_;
+    LOGDEBUG(stack_use_len);
     if (stack_backup_buffer) {
         free(stack_backup_buffer);
         stack_backup_buffer = nullptr;
