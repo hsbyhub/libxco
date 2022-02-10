@@ -13,54 +13,77 @@ void sys_context_swap(xco::Coroutine::SysContext* cur_ctx, xco::Coroutine::SysCo
 }
 
 XCO_NAMESPAVE_START
+
+const int   g_co_call_stack_max                     = 128;  // 协程调用栈大小
+
 /**
  * @brief 协程环境信息
  */
-const int   g_co_call_stack_max                     = 128;  // 协程调用栈大小
-Coroutine*  g_co_call_stack[g_co_call_stack_max]    = {0};  // 协程调用栈
-int         g_co_call_stack_top                     = -1;   // 协程调用栈栈顶
-Coroutine*  g_pending_co                            = nullptr;
-Coroutine*  g_occupy_co                             = nullptr;
+struct CoroutineEnv {
+    Coroutine*  co_call_stack[g_co_call_stack_max]    = {0};  // 协程调用栈
+    int         co_call_stack_top                     = -1;   // 协程调用栈栈顶
+    Coroutine*  pending_co                            = nullptr;
+    Coroutine*  occupy_co                             = nullptr;
 
-/**
- * @brief 协程入栈
- */
-Coroutine* PullCoroutine();
+    void Swap(Coroutine* cco, Coroutine* pco) {
+        cco->state_ = Coroutine::State::kStHold;
+        pco->state_ = Coroutine::State::kStExec;
 
-/**
- * @brief 协程出栈
- */
-void PushCoroutine(Coroutine* co);
+        // 获取栈顶指针
+        char c;
+        cco->stack_sp_ = &c;
+        if (pco->is_share_stack_mem_) {
+            // 新协程的共享栈的使用者
+            auto share_stack_occupy_co = pco->stack_mem_->occupy_co;
+            pco->stack_mem_->occupy_co = pco;
+            occupy_co = share_stack_occupy_co;
+            pending_co = pco;
+            if (share_stack_occupy_co && share_stack_occupy_co != pco) {
+                share_stack_occupy_co->BackupStackMem();
+            }
+        }else {
+            occupy_co = nullptr;
+            pending_co = nullptr;
+        }
 
-/**
- * @brief 获取当前协程
- */
-Coroutine* GetCurrentCoroutine();
+        // 切换系统上下文
+        cco->sys_context_.Swap(&pco->sys_context_);
 
-void PushCoroutine(Coroutine* co) {
-    assert(g_co_call_stack_top < g_co_call_stack_max - 1);
-    auto cur_co = GetCurrentCoroutine();
-    auto pending_co = g_co_call_stack[++g_co_call_stack_top] = co;
-    Coroutine::Swap(cur_co, pending_co);
-}
-
-Coroutine* PullCoroutine() {
-    assert(g_co_call_stack_top > 0);
-    auto cur_co = GetCurrentCoroutine();
-    auto pending_co = g_co_call_stack[--g_co_call_stack_top];
-    Coroutine::Swap(cur_co, pending_co);
-    return cur_co;
-}
-
-Coroutine* GetCurrentCoroutine() {
-    if (g_co_call_stack_top == -1) {
-        // 初始化当前为主协程
-        auto main_co = new Coroutine(nullptr);
-        main_co->state_ = Coroutine::State::kStExec;
-        g_co_call_stack[++g_co_call_stack_top] = main_co;
+        // 还原共享栈
+        if (occupy_co
+            && pending_co
+            && occupy_co != pending_co
+            && pending_co->stack_backup_buffer) {
+            memcpy(pending_co->stack_sp_, pending_co->stack_backup_buffer, pending_co->stack_backup_size);
+        }
     }
-    return g_co_call_stack[g_co_call_stack_top];
-}
+
+    void PushCoroutine(Coroutine* co) {
+        assert(co_call_stack_top < g_co_call_stack_max - 1);
+        auto cco = GetCurrentCoroutine();
+        auto pco = co_call_stack[++co_call_stack_top] = co;
+        Swap(cco , pco);
+    }
+
+    Coroutine* PullCoroutine() {
+        assert(co_call_stack_top > 0);
+        auto cco = GetCurrentCoroutine();
+        auto pco = co_call_stack[--co_call_stack_top];
+        Swap(cco, pco);
+        return cco;
+    }
+
+    Coroutine* GetCurrentCoroutine() {
+        if (co_call_stack_top == -1) {
+            // 初始化当前为主协程
+            auto main_co = new Coroutine(nullptr);
+            main_co->state_ = Coroutine::State::kStExec;
+            co_call_stack[++co_call_stack_top] = main_co;
+        }
+        return co_call_stack[co_call_stack_top];
+    }
+};
+static thread_local CoroutineEnv s_coroutine_env;
 
 void Coroutine::SysContext::Init(char *_ss_sp, size_t _ss_size, void *cb, void *arg0, void *arg1) {
     ss_sp = _ss_sp;
@@ -123,49 +146,19 @@ void Coroutine::OnCoroutine(Coroutine* co) {
 }
 
 void Coroutine::Resume() {
-    PushCoroutine(this);
+    s_coroutine_env.PushCoroutine(this);
 }
 
 void Coroutine::Yield() {
-    PullCoroutine();
-}
-
-void Coroutine::Swap(Coroutine* cur_co, Coroutine* pending_co) {
-    cur_co->state_ = State::kStHold;
-    pending_co->state_ = State::kStExec;
-    // 获取栈顶指针
-    char c;
-    cur_co->stack_sp_ = &c;
-    if (pending_co->is_share_stack_mem_) {
-        // 新协程的共享栈的使用者
-        auto share_stack_occupy_co = pending_co->stack_mem_->occupy_co;
-        pending_co->stack_mem_->occupy_co = pending_co;
-        g_occupy_co = share_stack_occupy_co;
-        g_pending_co = pending_co;
-        if (share_stack_occupy_co && share_stack_occupy_co != pending_co) {
-            share_stack_occupy_co->BackupStackMem();
-        }
-    }else {
-        g_pending_co = nullptr;
-        g_occupy_co = nullptr;
-    }
-
-    // 切换系统上下文
-    cur_co->sys_context_.Swap(&pending_co->sys_context_);
-
-    // 还原共享栈
-    if (g_occupy_co && g_pending_co && g_occupy_co != g_pending_co && g_pending_co->stack_backup_buffer) {
-        memcpy(g_pending_co->stack_sp_, g_pending_co->stack_backup_buffer, g_pending_co->stack_backup_size);
-    }
+    s_coroutine_env.PullCoroutine();
 }
 
 Coroutine *Coroutine::GetCurCoroutine() {
-    return GetCurrentCoroutine();
+    return s_coroutine_env.GetCurrentCoroutine();
 }
 
 void Coroutine::BackupStackMem() {
     int stack_use_len = stack_mem_->bp - stack_sp_;
-    LOGDEBUG(stack_use_len);
     if (stack_backup_buffer) {
         free(stack_backup_buffer);
         stack_backup_buffer = nullptr;

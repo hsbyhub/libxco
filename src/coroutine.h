@@ -8,7 +8,7 @@
 
 #include <cstddef>
 #include <memory>
-#include "common.h"
+#include "common/common.h"
 
 XCO_NAMESPAVE_START
 
@@ -94,11 +94,6 @@ public:
      * @brief 挂起协程
      */
     static void Yield();
-    
-    /**
-     * @brief 切换协程
-     */
-    static void Swap(Coroutine* cur_co, Coroutine* pending_co);
 
     static Coroutine* GetCurCoroutine();
 

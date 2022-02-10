@@ -24,7 +24,7 @@ struct Task {
     int client = -1;
 };
 
-const std::string rsp = "HTTP/1.1 200 OK\r\nContent-length:1\r\n\r\na\r\n";
+const std::string rsp = "HTTP/1.1 200 OK\r\nContent-length:8\r\n\r\nabcdefgh\r\n";
 queue<Task*> task_list;
 int g_listen_fd = -1;
 
@@ -35,7 +35,6 @@ void OnHandleTask(void* arg) {
     while(true) {
         while(task->client < 0) {
             task_list.push(task);
-            LOGDEBUG("OnHandleTask Yield");
             xco::Coroutine::Yield();
         }
         int client = task->client;
@@ -64,7 +63,6 @@ void OnHandleAccept(void* arg) {
         if (client < 0) {
             continue;
         }
-        LOGDEBUG("accept client = " << client);
         // 拿出请求
         auto task = task_list.front();
         task_list.pop();
@@ -122,18 +120,19 @@ int main(int argc, char** argv) {
     int accept_co_cnt = atoi(argv[2]);
     int client_handle_co_cnt= atoi(argv[3]);
 
+    // 获取监听套接字
+    g_listen_fd = CreateListenSocket("0.0.0.0", 80);
+    assert(g_listen_fd > 0);
 
     for (int i = 0; i < process_cnt; ++i) {
         int ret = fork();
         if (ret != 0) {
             continue;
         } else {
-            g_listen_fd = CreateListenSocket("0.0.0.0", 80);
-            assert(g_listen_fd > 0);
+
             xco::IoManager iom;
             std::vector<xco::Coroutine*> cos;
             for (int j = 0; j < accept_co_cnt; ++j) {
-                // 获取监听套接字
                 auto co = new xco::Coroutine(OnHandleAccept);
                 iom.Schedule(co);
                 cos.push_back(co);

@@ -30,11 +30,11 @@ void test_resume() {
 
 void fun1(void* arg) {
     //size_t co_id = (size_t)arg;
-    while(true) {
-        //char buff[128];
-        LOGDEBUG("co_id = " << co_id << ", buff ptr = " << (size_t)buff);
-        xco::Coroutine::Yield();
-    }
+    //while(true) {
+    //    char buff[128];
+    //    LOGDEBUG("co_id = " << co_id << ", buff ptr = " << (size_t)buff);
+    //    xco::Coroutine::Yield();
+    //}
 }
 
 void test_share_stack_mem() {
@@ -48,6 +48,6 @@ void test_share_stack_mem() {
 }
 
 int main() {
-    test_share_stack_mem();
+    test_resume();
     return 0;
 }

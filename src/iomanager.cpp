@@ -52,13 +52,16 @@ uint32_t IoManager::SetEvent(int fd, uint32_t ev, Coroutine *co) {
     }else if (ev & EPOLLOUT){
         ctx.write_co = co;
     }
-    ctx.ev_flags |= ev;
     ctx.fd = fd;
+    ctx.ev_flags |= ev;
     return ev;
 }
 
 uint32_t IoManager::TrgEvent(int fd, uint32_t evs) {
-    assert(fd < (int)fd_ctxs_.size());
+    LOGDEBUG(XCO_VARS_EXP(fd));
+    if (fd >= (int)fd_ctxs_.size()) {
+        return 0;
+    }
     evs = DelEvent(fd, evs);
     auto& ctx = fd_ctxs_[fd];
     if (evs & EPOLLIN && ctx.read_co) {
@@ -72,7 +75,9 @@ uint32_t IoManager::TrgEvent(int fd, uint32_t evs) {
 }
 
 uint32_t IoManager::DelEvent(int fd, uint32_t evs) {
-    assert(fd < (int)fd_ctxs_.size());
+    if (fd >= (int)fd_ctxs_.size()) {
+        return 0;
+    }
     auto& ctx = fd_ctxs_[fd];
     uint32_t change_evs = ctx.ev_flags & evs;
     uint32_t remain_evs = ctx.ev_flags & ~change_evs;

@@ -7,10 +7,8 @@
 #include "hook.h"
 
 #include <dlfcn.h>
-#include <time.h>
 #include <cstring>
 #include <stdarg.h>
-#include "hook.h"
 #include "iomanager.h"
 #include "fdmanager.h"
 
@@ -136,8 +134,6 @@ retry:
         int rt = iow->SetEvent(fd, event, xco::Coroutine::GetCurCoroutine());
 
         if (rt != 1) {
-            //HSBY_LOG_SYSTEM_ERROR << hook_fun_name << " SetEvent("
-            //                      << fd << ", " << event << ") error";
             if (timer) {
                 timer->Cancel();
             }
