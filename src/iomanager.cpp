@@ -9,8 +9,6 @@
 #include <unistd.h>
 #include <cstring>
 
-const static int MAX_EPOLL_TIMEOUT_MS = 2000;
-const static int MAX_EPOLL_RET_EPEV_CNT = 256;
 
 XCO_NAMESPAVE_START
 
@@ -63,12 +61,12 @@ uint32_t IoManager::TrgEvent(int fd, uint32_t evs) {
     assert(fd < (int)fd_ctxs_.size());
     evs = DelEvent(fd, evs);
     auto& ctx = fd_ctxs_[fd];
-    if (evs & EPOLLIN && ctx.ev_flags & EPOLLIN && ctx.read_co) {
+    if (evs & EPOLLIN && ctx.read_co) {
+        assert(ctx.read_co);
         Schedule(ctx.read_co);
-        ctx.read_co = nullptr;
-    }else if (evs & EPOLLOUT && ctx.ev_flags & EPOLLOUT && ctx.write_co){
+    }else if (evs & EPOLLOUT && ctx.write_co){
+        assert(ctx.write_co);
         Schedule(ctx.write_co);
-        ctx.write_co = nullptr;
     }
     return evs;
 }
@@ -76,7 +74,8 @@ uint32_t IoManager::TrgEvent(int fd, uint32_t evs) {
 uint32_t IoManager::DelEvent(int fd, uint32_t evs) {
     assert(fd < (int)fd_ctxs_.size());
     auto& ctx = fd_ctxs_[fd];
-    uint32_t remain_evs = ctx.ev_flags & ~evs;
+    uint32_t change_evs = ctx.ev_flags & evs;
+    uint32_t remain_evs = ctx.ev_flags & ~change_evs;
     int op = remain_evs ? EPOLL_CTL_MOD : EPOLL_CTL_DEL;
     epoll_event epev;
     memset(&epev, 0, sizeof(epev));
@@ -87,7 +86,11 @@ uint32_t IoManager::DelEvent(int fd, uint32_t evs) {
     }
 
     ctx.ev_flags = remain_evs;
-    return evs;
+    return change_evs;
+}
+
+uint32_t IoManager::CncAllEvent(int fd) {
+    return TrgEvent(fd, EPOLLIN | EPOLLOUT);
 }
 
 IoManager *IoManager::GetCurIoManager() {
@@ -95,10 +98,30 @@ IoManager *IoManager::GetCurIoManager() {
 }
 
 void IoManager::OnIdle() {
+
+    const static int64_t MAX_EPOLL_TIMEOUT_MS = 2000;
+    const static int MAX_EPOLL_RET_EPEV_CNT = 256;
+
     epoll_event ret_epevs[MAX_EPOLL_RET_EPEV_CNT];
     while(true) {
-        int ret = epoll_wait(epoll_fd_, ret_epevs, MAX_EPOLL_RET_EPEV_CNT, MAX_EPOLL_TIMEOUT_MS);
+        int64_t timeout = GetNextTimerDistNow();
+        timeout = timeout == -1 ? MAX_EPOLL_TIMEOUT_MS : std::min(MAX_EPOLL_TIMEOUT_MS, timeout);
+        int ret = 0;
+        do {
+            ret = epoll_wait(epoll_fd_, ret_epevs, MAX_EPOLL_RET_EPEV_CNT, timeout);
+            if (ret >= 0 || errno != EINTR){
+                break;
+            };
+        }while(true);
         LOGDEBUG("epoll_wait ret = " << ret);
+
+        // 处理定时器事件
+        std::vector<std::function<void()>> cbs;
+        ListExpriredCb(cbs);
+        for (auto cb : cbs) {
+            cb();
+        }
+
         for (int i = 0; i < ret; ++i) {
             const auto& ret_epev = ret_epevs[i];
             auto ctx = (FdContext*)ret_epev.data.ptr;

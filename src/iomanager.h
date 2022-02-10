@@ -7,12 +7,13 @@
 #pragma once
 
 #include "scheduler.h"
+#include "timer.h"
 #include <sys/epoll.h>
 #include <vector>
 
 XCO_NAMESPAVE_START
 
-class IoManager : public Scheduler{
+class IoManager : public Scheduler, public TimerManager{
 public:
     struct FdContext {
         int fd = -1;
@@ -32,6 +33,8 @@ public:
     uint32_t TrgEvent(int fd, uint32_t evs);
 
     uint32_t DelEvent(int fd, uint32_t evs);
+
+    uint32_t CncAllEvent(int fd);
 
     static IoManager* GetCurIoManager();
 

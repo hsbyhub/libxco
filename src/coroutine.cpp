@@ -159,6 +159,10 @@ void Coroutine::Swap(Coroutine* cur_co, Coroutine* pending_co) {
     }
 }
 
+Coroutine *Coroutine::GetCurCoroutine() {
+    return GetCurrentCoroutine();
+}
+
 void Coroutine::BackupStackMem() {
     int stack_use_len = stack_mem_->bp - stack_sp_;
     LOGDEBUG(stack_use_len);

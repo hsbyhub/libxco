@@ -100,6 +100,8 @@ public:
      */
     static void Swap(Coroutine* cur_co, Coroutine* pending_co);
 
+    static Coroutine* GetCurCoroutine();
+
     /**
      * @brief ±¸·ÝÕ»ÄÚ´æ
      */

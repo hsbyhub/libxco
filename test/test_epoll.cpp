@@ -6,6 +6,7 @@
  *================================================================*/
 
 #include "iomanager.h"
+#include "hook.h"
 #include <string>
 #include <queue>
 #include <semaphore.h>
@@ -34,6 +35,7 @@ void OnHandleTask(void* arg) {
     while(true) {
         while(task->client < 0) {
             task_list.push(task);
+            LOGDEBUG("OnHandleTask Yield");
             xco::Coroutine::Yield();
         }
         int client = task->client;
@@ -56,12 +58,13 @@ void OnHandleTask(void* arg) {
 void OnHandleAccept(void* arg) {
     while(true) {
         while(task_list.empty()) {
-            xco::Coroutine::Yield();
+            usleep(50);
         }
         int client = accept(g_listen_fd, nullptr, nullptr);
         if (client < 0) {
             continue;
         }
+        LOGDEBUG("accept client = " << client);
         // ÄÃ³öÇëÇó
         auto task = task_list.front();
         task_list.pop();

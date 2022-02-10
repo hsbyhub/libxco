@@ -29,9 +29,9 @@ void test_resume() {
 }
 
 void fun1(void* arg) {
-    size_t co_id = (size_t)arg;
+    //size_t co_id = (size_t)arg;
     while(true) {
-        char buff[128];
+        //char buff[128];
         LOGDEBUG("co_id = " << co_id << ", buff ptr = " << (size_t)buff);
         xco::Coroutine::Yield();
     }

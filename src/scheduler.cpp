@@ -5,6 +5,7 @@
       	创建日期：2022/2/9
  *================================================================*/
 #include "scheduler.h"
+#include "hook.h"
 
 XCO_NAMESPAVE_START
 
@@ -37,6 +38,7 @@ void Scheduler::Start() {
 }
 
 void Scheduler::OnLoop() {
+    SetHookEnable(true);
     while(true) {
         while(!co_list_.empty()) {
             Coroutine* co = co_list_.front();
