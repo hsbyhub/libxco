@@ -5,7 +5,7 @@
       	创建日期：2022/2/10
  *================================================================*/
 #include "hook.h"
-
+#include "common/common.h"
 #include <dlfcn.h>
 #include <cstring>
 #include <stdarg.h>
@@ -116,6 +116,7 @@ retry:
     }
 
     if (n == -1 && errno == EAGAIN) {
+        LOGDEBUG(XCO_VARS_EXP(fd, hook_fun_name));
         auto iow = xco::IoManager::GetCurIoManager();
         xco::Timer::Ptr timer;
         std::weak_ptr<time_info> wtinfo(tinfo);

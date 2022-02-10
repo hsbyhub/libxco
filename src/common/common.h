@@ -28,8 +28,12 @@
 #define XCO_NAMESPAVE_END }
 
 // 调试日志
-//#define LOGDEBUG(msg) std::cout << __FILE__ << ":" << __LINE__ << " | " << msg << std::endl << std::flush
+//#define XCO_NODEBUG
+#ifndef XCO_NODEBUG
+#define LOGDEBUG(msg) std::cout << __FILE__ << ":" << __LINE__ << " | " << msg << std::endl << std::flush
+#else
 #define LOGDEBUG(msg)
+#endif
 
 /**
  * @brief 单例模式

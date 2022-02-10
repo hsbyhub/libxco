@@ -58,7 +58,6 @@ bool Socket::InitSystemSocket(bool auto_create) {
         }
         sockfd_ = socket(family_, type_, protocol_);
         if (sockfd_ == -1) {
-            //HSBY_LOG_SYSTEM_DEBUG << XCO_FUNC_ERROR_EXP;
             return false;
         }
     }

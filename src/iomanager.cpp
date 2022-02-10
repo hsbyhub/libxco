@@ -43,6 +43,8 @@ uint32_t IoManager::SetEvent(int fd, uint32_t ev, Coroutine *co) {
     epev.events = ctx.ev_flags | ev | EPOLLET;
     epev.data.ptr = &ctx;
     if (epoll_ctl(epoll_fd_, op, fd, &epev)) {
+        LOGDEBUG(XCO_FUNC_ERROR_WITH_ARG_EXP(fd, op, ev));
+        assert(false);
         return 0;
     }
 
@@ -58,8 +60,7 @@ uint32_t IoManager::SetEvent(int fd, uint32_t ev, Coroutine *co) {
 }
 
 uint32_t IoManager::TrgEvent(int fd, uint32_t evs) {
-    LOGDEBUG(XCO_VARS_EXP(fd));
-    if (fd >= (int)fd_ctxs_.size()) {
+    if (fd < 0 || fd >= (int)fd_ctxs_.size()) {
         return 0;
     }
     evs = DelEvent(fd, evs);
@@ -75,11 +76,14 @@ uint32_t IoManager::TrgEvent(int fd, uint32_t evs) {
 }
 
 uint32_t IoManager::DelEvent(int fd, uint32_t evs) {
-    if (fd >= (int)fd_ctxs_.size()) {
+    if (fd < 0 || fd >= (int)fd_ctxs_.size()) {
         return 0;
     }
     auto& ctx = fd_ctxs_[fd];
     uint32_t change_evs = ctx.ev_flags & evs;
+    if (!change_evs) {
+        return 0;
+    }
     uint32_t remain_evs = ctx.ev_flags & ~change_evs;
     int op = remain_evs ? EPOLL_CTL_MOD : EPOLL_CTL_DEL;
     epoll_event epev;
@@ -87,6 +91,8 @@ uint32_t IoManager::DelEvent(int fd, uint32_t evs) {
     epev.events = remain_evs | EPOLLET;
     epev.data.ptr = &ctx;
     if (epoll_ctl(epoll_fd_, op, fd, &epev)) {
+        LOGDEBUG(XCO_FUNC_ERROR_WITH_ARG_EXP(fd, op, evs, change_evs));
+        assert(false);
         return 0;
     }
 
@@ -105,7 +111,7 @@ IoManager *IoManager::GetCurIoManager() {
 void IoManager::OnIdle() {
 
     const static int64_t MAX_EPOLL_TIMEOUT_MS = 2000;
-    const static int MAX_EPOLL_RET_EPEV_CNT = 256;
+    const static int MAX_EPOLL_RET_EPEV_CNT = 1024;
 
     epoll_event ret_epevs[MAX_EPOLL_RET_EPEV_CNT];
     while(true) {

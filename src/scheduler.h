@@ -7,7 +7,7 @@
 #pragma once
 
 #include "coroutine.h"
-#include <list>
+#include <queue>
 
 XCO_NAMESPAVE_START
 
@@ -56,17 +56,16 @@ public:
      */
     static Scheduler* GetCurScheduler();
 
-public:
     /**
      * @brief 调度
      * @param[in] coc 协程或回调
      */
-    void Schedule(Coroutine* co);
+    static void Schedule(Coroutine* co);
 
 private:
     Coroutine*                  loop_co_    = nullptr;  // 主循环协程
     Coroutine*                  idle_co_    = nullptr;  // 闲置协程
-    std::list<Coroutine*>       co_list_;
+    std::queue<Coroutine*>       co_list_;
 };
 
 XCO_NAMESPAVE_END

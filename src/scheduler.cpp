@@ -26,7 +26,9 @@ Scheduler::~Scheduler() {
         delete idle_co_;
         idle_co_ = nullptr;
     }
-    for (auto co : co_list_) {
+    while(!co_list_.empty()) {
+        auto co = co_list_.front();
+        co_list_.pop();
         if (co) {
             delete co;
         }
@@ -42,8 +44,8 @@ void Scheduler::OnLoop() {
     while(true) {
         while(!co_list_.empty()) {
             Coroutine* co = co_list_.front();
-            co_list_.pop_front();
-            if (!co) {
+            co_list_.pop();
+            if (!co || co->state_ == Coroutine::State::kStEnd) {
                 continue;
             }
             co->Resume();
@@ -74,7 +76,11 @@ Scheduler *Scheduler::GetCurScheduler() {
 }
 
 void Scheduler::Schedule(Coroutine* co) {
-    co_list_.push_back(co);
+    auto sche = GetCurScheduler();
+    if (!sche) {
+        return;
+    }
+    sche->co_list_.push(co);
 }
 
 XCO_NAMESPAVE_END

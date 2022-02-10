@@ -1,51 +1,58 @@
 /*================================================================*
         Copyright (C) 2021 All rights reserved, www.hsby.link.
-      	文件名称：test_epoll.cpp
+      	文件名称：test_socket.cpp
       	创 建 者：hsby
-      	创建日期：2022/2/9
+      	创建日期：2022/2/10
  *================================================================*/
 
 #include "iomanager.h"
 #include "hook.h"
-#include <string>
-#include <queue>
-#include <semaphore.h>
+#include "socket.h"
 #include <atomic>
-#include <cstring>
-#include <unistd.h>
-#include <arpa/inet.h>
-#include <sys/socket.h>
 #include <assert.h>
 #include <sys/wait.h>
 using namespace std;
 
 struct Task {
     xco::Coroutine* co = nullptr;
-    int client = -1;
+    xco::Socket::Ptr client = nullptr;
 };
 
 const std::string rsp = "HTTP/1.1 200 OK\r\nContent-length:8\r\n\r\nabcdefgh\r\n";
 queue<Task*> task_list;
-int g_listen_fd = -1;
+xco::Socket::Ptr g_listen_sock = nullptr;
+
+void OnChildInt(int) {
+    LOGDEBUG("child process recv SIGINT");
+    g_listen_sock->Close();
+    exit(-1);
+}
+
+void OnMainInt(int) {
+    LOGDEBUG("main process recv SIGINT");
+    kill(0, SIGINT);
+    wait(nullptr);
+    exit(-1);
+}
 
 void OnHandleTask(void* arg) {
     auto task = (Task*)arg;
     string req;
     req.resize(4096);
     while(true) {
-        while(task->client < 0) {
+        while(!task->client) {
             task_list.push(task);
             xco::Coroutine::Yield();
         }
-        int client = task->client;
         // 开始读写
-        int ret = read(client, &req[0], req.size());
+        auto client = task->client;
+        int ret = client->Recv(&req[0], req.size());
         if (ret > 0) {
-            ret = write(client, &rsp[0], rsp.size());
+            ret = client->Send(rsp);
             continue;
         }
-        close(client);
-        task->client = -1;
+        client->Close();
+        task->client = nullptr;
     }
 }
 
@@ -54,56 +61,16 @@ void OnHandleAccept(void* arg) {
         while(task_list.empty()) {
             usleep(50);
         }
-        int client = accept(g_listen_fd, nullptr, nullptr);
-        if (client < 0) {
+        auto client = g_listen_sock->Accept();
+        if (!client) {
             continue;
         }
         // 拿出请求
         auto task = task_list.front();
         task_list.pop();
         task->client = client;
-        auto iom = xco::IoManager::GetCurIoManager();
-        iom->Schedule(task->co);
+        xco::IoManager::Schedule(task->co);
     }
-}
-
-int CreateListenSocket(const char* addr_str, uint16_t port) {
-
-    int sock = socket(AF_INET, SOCK_STREAM, 0);
-    if (sock < 0) {
-        return -1;
-    }
-
-    int val = 1;
-    int ret = setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &val, sizeof(val));
-    if (ret) {
-        goto err;
-    }
-
-    sockaddr_in addr;
-    bzero(&addr, sizeof(addr));
-    addr.sin_family = AF_INET;
-    addr.sin_port = htons(port);
-    ret = inet_pton(AF_INET, addr_str, &addr.sin_addr.s_addr);
-    if (ret != 1) {
-        goto err;
-    }
-
-    ret = bind(sock, (sockaddr*)&addr, sizeof(addr));
-    if (ret) {
-        goto err;
-    }
-
-    ret = listen(sock, 1024);
-    if (ret) {
-        goto err;
-    }
-
-    return sock;
-
-err:
-    close(sock);
-    return -1;
 }
 
 int main(int argc, char** argv) {
@@ -115,16 +82,20 @@ int main(int argc, char** argv) {
     int accept_co_cnt = atoi(argv[2]);
     int client_handle_co_cnt= atoi(argv[3]);
 
-    // 获取监听套接字
-    g_listen_fd = CreateListenSocket("0.0.0.0", 80);
-    assert(g_listen_fd > 0);
+    g_listen_sock = xco::Socket::CreateTCP();
+    assert(g_listen_sock);
+    assert(g_listen_sock->Init());
+    assert(g_listen_sock->Bind(xco::Ipv4Address::Create("0.0.0.0", 80)));
+    assert(g_listen_sock->Listen(128));
+
+    signal(SIGINT, OnMainInt);
 
     for (int i = 0; i < process_cnt; ++i) {
         int ret = fork();
         if (ret != 0) {
             continue;
         } else {
-
+            signal(SIGINT, OnChildInt);
             xco::IoManager iom;
             std::vector<xco::Coroutine*> cos;
             for (int j = 0; j < accept_co_cnt; ++j) {
@@ -135,7 +106,6 @@ int main(int argc, char** argv) {
             for (int j = 0; j < client_handle_co_cnt; ++j) {
                 auto t = new Task;
                 t->co = new xco::Coroutine(OnHandleTask, (void*)t);
-                t->client = -1;
                 iom.Schedule(t->co);
                 cos.push_back(t->co);
             }
@@ -145,7 +115,7 @@ int main(int argc, char** argv) {
                 delete co;
             }
 
-            close(g_listen_fd);
+            g_listen_sock->Close();
         }
     }
 
