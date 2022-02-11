@@ -46,6 +46,6 @@ void test_share_stack_mem() {
 }
 
 int main() {
-    test_resume();
+    test_share_stack_mem();
     return 0;
 }

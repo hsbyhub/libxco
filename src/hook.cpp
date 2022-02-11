@@ -134,12 +134,13 @@ retry:
 
         int rt = iow->SetEvent(fd, event, xco::Coroutine::GetCurCoroutine());
 
-        if (rt != 1) {
+        if (!rt) {
             if (timer) {
                 timer->Cancel();
             }
             return -1;
         }else {
+            LOGDEBUG("Hook Yield, "<< XCO_VARS_EXP(fd, hook_fun_name));
             xco::Coroutine::Yield();
             if (timer) {
                 timer->Cancel();
@@ -261,7 +262,7 @@ int connect_with_timeout(int sockfd, const struct sockaddr *addr,
     }
 
     int rt = iom->SetEvent(sockfd, EPOLLOUT, xco::Coroutine::GetCurCoroutine());
-    if (rt == 1) {
+    if (rt) {
         xco::Coroutine::Yield();
         if (timer) {
             timer->Cancel();

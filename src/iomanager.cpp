@@ -48,6 +48,10 @@ uint32_t IoManager::SetEvent(int fd, uint32_t ev, Coroutine::Ptr co) {
         return 0;
     }
 
+    if (op == EPOLL_CTL_ADD) {
+        pending_fd_cnt++;
+    }
+
     // ÐÞ¸Äfd_ctx
     if (ev & EPOLLIN) {
         ctx.read_co = co;
@@ -78,6 +82,10 @@ uint32_t IoManager::TrgEvent(int fd, uint32_t evs) {
         LOGFATAL("TrgEvent" << XCO_FUNC_WITH_ARG_EXP(fd, op, evs, change_evs, remain_evs));
         assert(false);
         return 0;
+    }
+
+    if (op == EPOLL_CTL_DEL) {
+        pending_fd_cnt--;
     }
 
     if (change_evs & EPOLLIN) {
@@ -115,6 +123,10 @@ uint32_t IoManager::DelEvent(int fd, uint32_t evs) {
         return 0;
     }
 
+    if (op == EPOLL_CTL_DEL) {
+        pending_fd_cnt--;
+    }
+
     if (change_evs & EPOLLIN) {
         ctx.read_co.reset();
     }
@@ -126,7 +138,7 @@ uint32_t IoManager::DelEvent(int fd, uint32_t evs) {
 }
 
 uint32_t IoManager::CncAllEvent(int fd) {
-    return DelEvent(fd, EPOLLIN | EPOLLOUT);
+    return TrgEvent(fd, EPOLLIN | EPOLLOUT);
 }
 
 IoManager *IoManager::GetCurIoManager() {
@@ -144,7 +156,8 @@ void IoManager::OnIdle() {
         int ret = 0;
         epoll_event ret_epevs[MAX_EPOLL_RET_EPEV_CNT];
         do {
-            memset(ret_epevs, 0, sizeof(epoll_event) * MAX_EPOLL_RET_EPEV_CNT);
+            //memset(ret_epevs, 0, sizeof(epoll_event) * MAX_EPOLL_RET_EPEV_CNT);
+            LOGDEBUG(XCO_VARS_EXP(pending_fd_cnt));
             ret = epoll_wait(epoll_fd_, ret_epevs, MAX_EPOLL_RET_EPEV_CNT, timeout);
             if (ret >= 0 || errno != EINTR){
                 break;
@@ -161,11 +174,17 @@ void IoManager::OnIdle() {
         }
 
         for (int i = 0; i < ret; ++i) {
-            const auto& ret_epev = ret_epevs[i];
+            auto& ret_epev = ret_epevs[i];
             auto ctx = (FdContext*)ret_epev.data.ptr;
             if (!ctx) {
                 continue;
             }
+
+            if (ret_epev.events & (EPOLLERR | EPOLLHUP)) {
+                LOGDEBUG("epoll return err, " << XCO_VARS_EXP(ctx->fd, ret_epev.events));
+                ret_epev.events = (EPOLLIN | EPOLLOUT);
+            }
+
             TrgEvent(ctx->fd, ret_epev.events);
         }
         Coroutine::Yield();
