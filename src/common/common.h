@@ -27,13 +27,23 @@
 #define XCO_NAMESPAVE_START namespace xco{
 #define XCO_NAMESPAVE_END }
 
-// 调试日志
-//#define XCO_NODEBUG
-#ifndef XCO_NODEBUG
-#define LOGDEBUG(msg) std::cout << __FILE__ << ":" << __LINE__ << " | " << msg << std::endl << std::flush
-#else
-#define LOGDEBUG(msg)
-#endif
+// 日志
+int GetLogLevel();
+void SetLogLevel(int level);
+#define DEBUG 1
+#define WARN  2
+#define ERROR 3
+#define FATAL 4
+#define LOG_IF_LEVEL(level, msg)                                \
+        if (level >= GetLogLevel()){                            \
+             std::cout  << __FILE__ << ":" << __LINE__ << "|"   \
+                        << #level << "|"                        \
+                        << msg << std::endl << std::flush;      \
+        }
+#define LOGDEBUG(msg)   LOG_IF_LEVEL(DEBUG, msg)
+#define LOGWARN(msg)    LOG_IF_LEVEL(WARN, msg)
+#define LOGERROR(msg)   LOG_IF_LEVEL(ERROR, msg)
+#define LOGFATAL(msg)   LOG_IF_LEVEL(FATAL, msg)
 
 /**
  * @brief 单例模式

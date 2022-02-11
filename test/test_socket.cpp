@@ -82,6 +82,8 @@ int main(int argc, char** argv) {
     int accept_co_cnt = atoi(argv[2]);
     int client_handle_co_cnt= atoi(argv[3]);
 
+    SetLogLevel(1);
+
     g_listen_sock = xco::Socket::CreateTCP();
     assert(g_listen_sock);
     assert(g_listen_sock->Init());

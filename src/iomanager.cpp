@@ -43,7 +43,7 @@ uint32_t IoManager::SetEvent(int fd, uint32_t ev, Coroutine *co) {
     epev.events = ctx.ev_flags | ev | EPOLLET;
     epev.data.ptr = &ctx;
     if (epoll_ctl(epoll_fd_, op, fd, &epev)) {
-        LOGDEBUG(XCO_FUNC_ERROR_WITH_ARG_EXP(fd, op, ev));
+        LOGDEBUG(XCO_FUNC_WITH_ARG_EXP(fd, op, ev));
         assert(false);
         return 0;
     }
@@ -65,13 +65,17 @@ uint32_t IoManager::TrgEvent(int fd, uint32_t evs) {
     }
     evs = DelEvent(fd, evs);
     auto& ctx = fd_ctxs_[fd];
-    if (evs & EPOLLIN && ctx.read_co) {
+    if (evs & EPOLLIN) {
         assert(ctx.read_co);
         Schedule(ctx.read_co);
-    }else if (evs & EPOLLOUT && ctx.write_co){
+        ctx.read_co = nullptr;
+    }
+    if (evs & EPOLLOUT){
         assert(ctx.write_co);
         Schedule(ctx.write_co);
+        ctx.write_co = nullptr;
     }
+    LOGDEBUG("TrgEvent, " << XCO_FUNC_WITH_ARG_EXP(fd, evs));
     return evs;
 }
 
@@ -90,18 +94,18 @@ uint32_t IoManager::DelEvent(int fd, uint32_t evs) {
     memset(&epev, 0, sizeof(epev));
     epev.events = remain_evs | EPOLLET;
     epev.data.ptr = &ctx;
+    LOGDEBUG("DelEvent" << XCO_FUNC_WITH_ARG_EXP(fd, op, evs, change_evs, remain_evs));
     if (epoll_ctl(epoll_fd_, op, fd, &epev)) {
-        LOGDEBUG(XCO_FUNC_ERROR_WITH_ARG_EXP(fd, op, evs, change_evs));
+        LOGFATAL("DelEvent" << XCO_FUNC_WITH_ARG_EXP(fd, op, evs, change_evs, remain_evs));
         assert(false);
         return 0;
     }
-
     ctx.ev_flags = remain_evs;
     return change_evs;
 }
 
 uint32_t IoManager::CncAllEvent(int fd) {
-    return TrgEvent(fd, EPOLLIN | EPOLLOUT);
+    return DelEvent(fd, EPOLLIN | EPOLLOUT);
 }
 
 IoManager *IoManager::GetCurIoManager() {
@@ -113,12 +117,13 @@ void IoManager::OnIdle() {
     const static int64_t MAX_EPOLL_TIMEOUT_MS = 2000;
     const static int MAX_EPOLL_RET_EPEV_CNT = 1024;
 
-    epoll_event ret_epevs[MAX_EPOLL_RET_EPEV_CNT];
     while(true) {
         int64_t timeout = GetNextTimerDistNow();
         timeout = timeout == -1 ? MAX_EPOLL_TIMEOUT_MS : std::min(MAX_EPOLL_TIMEOUT_MS, timeout);
         int ret = 0;
+        epoll_event ret_epevs[MAX_EPOLL_RET_EPEV_CNT];
         do {
+            memset(ret_epevs, 0, sizeof(epoll_event) * MAX_EPOLL_RET_EPEV_CNT);
             ret = epoll_wait(epoll_fd_, ret_epevs, MAX_EPOLL_RET_EPEV_CNT, timeout);
             if (ret >= 0 || errno != EINTR){
                 break;

@@ -9,6 +9,15 @@
 #include <execinfo.h>
 #include <sys/syscall.h>
 
+static int g_xco_log_level = 1;
+int GetLogLevel() {
+    return g_xco_log_level;
+}
+
+void SetLogLevel(int level) {
+    g_xco_log_level = level;
+}
+
 /**
  * @brief 取得当前线程Id
  */

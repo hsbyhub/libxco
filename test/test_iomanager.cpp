@@ -62,8 +62,7 @@ void OnHandleAccept(void* arg) {
         auto task = task_list.front();
         task_list.pop();
         task->client = client;
-        auto iom = xco::IoManager::GetCurIoManager();
-        iom->Schedule(task->co);
+        xco::IoManager::Schedule(task->co);
     }
 }
 
