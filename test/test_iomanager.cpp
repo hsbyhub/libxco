@@ -7,14 +7,9 @@
 
 #include "iomanager.h"
 #include "hook.h"
-#include <string>
-#include <queue>
-#include <semaphore.h>
 #include <atomic>
 #include <cstring>
-#include <unistd.h>
 #include <arpa/inet.h>
-#include <sys/socket.h>
 #include <assert.h>
 #include <sys/wait.h>
 using namespace std;
@@ -49,7 +44,7 @@ void OnHandleTask(void* arg) {
     }
 }
 
-void OnHandleAccept(void* arg) {
+void OnHandleAccept() {
     while(true) {
         while(task_list.empty()) {
             usleep(50);
@@ -114,6 +109,8 @@ int main(int argc, char** argv) {
     int accept_co_cnt = atoi(argv[2]);
     int client_handle_co_cnt= atoi(argv[3]);
 
+    SetLogLevel(4);
+
     // »ñÈ¡¼àÌýÌ×½Ó×Ö
     g_listen_fd = CreateListenSocket("0.0.0.0", 80);
     assert(g_listen_fd > 0);
@@ -131,7 +128,7 @@ int main(int argc, char** argv) {
             }
             for (int j = 0; j < client_handle_co_cnt; ++j) {
                 auto t = new Task;
-                t->co = xco::Coroutine::Create(OnHandleTask, (void*)t);
+                t->co = xco::Coroutine::Create(std::bind(OnHandleTask, t));
                 t->client = -1;
                 iom.Schedule(t->co);
             }

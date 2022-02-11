@@ -12,14 +12,6 @@
 #include <sys/wait.h>
 using namespace std;
 
-struct Client {
-    Client(xco::Coroutine::CbType c, xco::Socket::Ptr s) : sock(s){
-        co = xco::Coroutine::Create(c, this);
-    }
-    xco::Socket::Ptr sock = nullptr;
-    xco::Coroutine::Ptr co = nullptr;
-};
-
 const std::string rsp = "HTTP/1.1 200 OK\r\nContent-length:8\r\n\r\nabcdefgh\r\n";
 xco::Socket::Ptr g_listen_sock = nullptr;
 
@@ -36,41 +28,27 @@ void OnChildInt(int) {
     exit(-1);
 }
 
-void OnHandleClient(void* arg) {
+void OnHandleClient(xco::Socket::Ptr client) {
     string req;
     req.resize(4096);
-    auto client = (Client*)arg;
     while(true) {
-        int ret = client->sock->Recv(&req[0], req.size());
-        LOGDEBUG(XCO_VARS_EXP(ret));
+        int ret = client->Recv(&req[0], req.size());
         if (ret <= 0) {
             break;
         }
-        client->sock->Send(rsp);
+        client->Send(rsp);
     }
     LOGDEBUG("close");
-    client->sock->Close();
+    client->Close();
 }
 
-void OnAccept(void* arg) {
-    std::set<Client*> clients;
+void OnAccept() {
     while(true) {
         LOGDEBUG("before accept");
         auto sock = g_listen_sock->Accept();
         LOGDEBUG("after accept");
         if (sock) {
-            auto client = new Client(OnHandleClient, sock);
-            if (client) {
-                xco::Scheduler::Schedule(client->co);
-                clients.insert(client);
-            }
-        }
-        for (auto client : clients) {
-            if (client->co->state_ == xco::Coroutine::State::kStEnd) {
-                LOGDEBUG(client->sock->ToString() << " end");
-                delete client;
-                clients.erase(client);
-            }
+            xco::Scheduler::Schedule(xco::Coroutine::Create(std::bind(OnHandleClient, sock)));
         }
     }
 }
@@ -83,6 +61,8 @@ int main(int argc, char** argv) {
     int process_cnt = atoi(argv[1]);
     //int accept_co_cnt = atoi(argv[2]);
     //int client_handle_co_cnt= atoi(argv[3]);
+
+    SetLogLevel(5);
 
     g_listen_sock = xco::Socket::CreateTCP();
     assert(g_listen_sock);

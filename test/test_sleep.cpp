@@ -7,7 +7,7 @@
 #include "iomanager.h"
 #include "hook.h"
 
-void func(void* arg) {
+void func() {
     while(true) {
         sleep(1);
     }

@@ -7,7 +7,7 @@
 
 #include "scheduler.h"
 
-void fun(void* arg) {
+void fun() {
     while(true) {
         LOGDEBUG("fun before Yield");
         xco::Coroutine::Yield();

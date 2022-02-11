@@ -35,8 +35,7 @@ void OnMainInt(int) {
     exit(-1);
 }
 
-void OnHandleTask(void* arg) {
-    auto task = (Task*)arg;
+void OnHandleTask(Task* task) {
     string req;
     req.resize(4096);
     while(true) {
@@ -56,7 +55,7 @@ void OnHandleTask(void* arg) {
     }
 }
 
-void OnHandleAccept(void* arg) {
+void OnHandleAccept() {
     while(true) {
         while(task_list.empty()) {
             usleep(50);
@@ -105,7 +104,7 @@ int main(int argc, char** argv) {
             }
             for (int j = 0; j < client_handle_co_cnt; ++j) {
                 auto t = new Task;
-                t->co = xco::Coroutine::Create(OnHandleTask, (void*)t);
+                t->co = xco::Coroutine::Create(std::bind(OnHandleTask, t));
                 iom.Schedule(t->co);
             }
             iom.Start();

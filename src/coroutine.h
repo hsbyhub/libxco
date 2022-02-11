@@ -15,7 +15,7 @@ XCO_NAMESPAVE_START
 class Coroutine : public std::enable_shared_from_this<Coroutine>{
 public:
     using Ptr = std::shared_ptr<Coroutine>;
-    using CbType = std::function<void(void*)>;
+    using CbType = std::function<void()>;
 
     enum class State{
         kStInit     = 0,
@@ -53,7 +53,6 @@ public:
      */
     struct StackMem{
         StackMem(int _size = 128 * 1000) {
-            occupy_co = nullptr;
             size = _size;
             buffer = (char*)malloc(size);
             bp = buffer + size;
@@ -64,22 +63,21 @@ public:
                 buffer = nullptr;
             }
         }
-        Coroutine::Ptr occupy_co    = nullptr;  // 当前使用内存块的协程
-        size_t size             = 0;        // 使用大小
-        char* buffer            = nullptr;  // 内存块起始地址
-        char* bp                = nullptr;  // 栈底地址, bp = buffer + size
+        Coroutine*      occupy_co   = nullptr;  // 当前使用内存块的协程
+        size_t          size        = 0;        // 使用大小
+        char*           buffer      = nullptr;  // 内存块起始地址
+        char*           bp          = nullptr;  // 栈底地址, bp = buffer + size
     };
 
 private:
     /**
      * @brief 构造函数
      */
-    Coroutine(CbType cb = nullptr, void* arg = nullptr, StackMem* stack_mem = nullptr, int stack_size = 128 * 1024);
+    Coroutine(CbType cb = nullptr, /*void* arg = nullptr, */StackMem* stack_mem = nullptr, int stack_size = 128 * 1024);
 
 public:
     template<typename ...ArgsType>
     static Ptr Create(ArgsType ...args) {
-        //return std::make_shared<Coroutine>(args...);
         return std::shared_ptr<Coroutine>(new Coroutine(args...));
     }
 
@@ -117,7 +115,6 @@ public:
     StackMem*           stack_mem_          = nullptr;  // 栈内存
     bool                is_share_stack_mem_ = false;    // 是否共享栈
     CbType              cb_                 = nullptr;  // 回调
-    void*               cb_arg_             = nullptr;  // 回调参数
     State               state_;                         // 协程状态
     SysContext          sys_context_;                   // 协程系统上下文
     char*               stack_sp_           = nullptr;  // 栈指针(共享栈的备份)

@@ -74,7 +74,6 @@ uint32_t IoManager::TrgEvent(int fd, uint32_t evs) {
     memset(&epev, 0, sizeof(epev));
     epev.events = remain_evs | EPOLLET;
     epev.data.ptr = &ctx;
-    LOGDEBUG("TrgEvent" << XCO_FUNC_WITH_ARG_EXP(fd, op, evs, change_evs, remain_evs));
     if (epoll_ctl(epoll_fd_, op, fd, &epev)) {
         LOGFATAL("TrgEvent" << XCO_FUNC_WITH_ARG_EXP(fd, op, evs, change_evs, remain_evs));
         assert(false);
@@ -110,7 +109,6 @@ uint32_t IoManager::DelEvent(int fd, uint32_t evs) {
     memset(&epev, 0, sizeof(epev));
     epev.events = remain_evs | EPOLLET;
     epev.data.ptr = &ctx;
-    LOGDEBUG("DelEvent" << XCO_FUNC_WITH_ARG_EXP(fd, op, evs, change_evs, remain_evs));
     if (epoll_ctl(epoll_fd_, op, fd, &epev)) {
         LOGFATAL("DelEvent" << XCO_FUNC_WITH_ARG_EXP(fd, op, evs, change_evs, remain_evs));
         assert(false);
@@ -158,7 +156,8 @@ void IoManager::OnIdle() {
         std::vector<std::function<void()>> cbs;
         ListExpriredCb(cbs);
         for (auto cb : cbs) {
-            cb();
+            //cb();
+            Schedule(xco::Coroutine::Create(cb));
         }
 
         for (int i = 0; i < ret; ++i) {

@@ -7,6 +7,7 @@
 #include "coroutine.h"
 #include <cstring>
 #include <assert.h>
+#include <stack>
 
 extern "C" {
 void sys_context_swap(xco::Coroutine::SysContext* cur_ctx, xco::Coroutine::SysContext* new_ctx) asm("sys_context_swap");
@@ -16,16 +17,17 @@ XCO_NAMESPAVE_START
 
 const int   g_co_call_stack_max                     = 128;  // 协程调用栈大小
 
+int co_cnt = 0;
+
 /**
  * @brief 协程环境信息
  */
 struct CoroutineEnv {
-    Coroutine::Ptr co_call_stack[g_co_call_stack_max]    = {0};  // 协程调用栈
-    int         co_call_stack_top                     = -1;   // 协程调用栈栈顶
-    Coroutine::Ptr pending_co                            = nullptr;
-    Coroutine::Ptr occupy_co                             = nullptr;
+    std::stack<Coroutine::Ptr> co_call_stack;
+    Coroutine* occupy_co;
+    Coroutine* pending_co;
 
-    void Swap(Coroutine::Ptr cco, Coroutine::Ptr pco) {
+    void Swap(Coroutine* cco, Coroutine* pco) {
         cco->state_ = Coroutine::State::kStHold;
         pco->state_ = Coroutine::State::kStExec;
 
@@ -34,12 +36,11 @@ struct CoroutineEnv {
         cco->stack_sp_ = &c;
         if (pco->is_share_stack_mem_) {
             // 新协程的共享栈的使用者
-            auto share_stack_occupy_co = pco->stack_mem_->occupy_co;
-            pco->stack_mem_->occupy_co = pco;
-            occupy_co = share_stack_occupy_co;
+            occupy_co = pco->stack_mem_->occupy_co;
             pending_co = pco;
-            if (share_stack_occupy_co && share_stack_occupy_co != pco) {
-                share_stack_occupy_co->BackupStackMem();
+            pco->stack_mem_->occupy_co = pco;
+            if (occupy_co && occupy_co != pco) {
+                occupy_co->BackupStackMem();
             }
         }else {
             occupy_co = nullptr;
@@ -59,28 +60,34 @@ struct CoroutineEnv {
     }
 
     void PushCoroutine(Coroutine::Ptr co) {
-        assert(co_call_stack_top < g_co_call_stack_max - 1);
+        if (co_call_stack.size() >= g_co_call_stack_max - 1) {
+            throw std::out_of_range("coroutine call stack out of size");
+        }
         auto cco = GetCurrentCoroutine();
-        auto pco = co_call_stack[++co_call_stack_top] = co;
-        Swap(cco , pco);
+        co_call_stack.push(co);
+        auto pco = co_call_stack.top();
+        Swap(cco.get(), pco.get());
     }
 
-    Coroutine::Ptr PullCoroutine() {
-        assert(co_call_stack_top > 0);
-        auto cco = GetCurrentCoroutine();
-        auto pco = co_call_stack[--co_call_stack_top];
-        Swap(cco, pco);
+    Coroutine* PullCoroutine() {
+        if (co_call_stack.size() <= 1) {
+            throw std::out_of_range("coroutine call stack out of size");
+        }
+        auto cco = GetCurrentCoroutine().get();
+        co_call_stack.pop();
+        auto pco = co_call_stack.top();
+        Swap(cco, pco.get());
         return cco;
     }
 
     Coroutine::Ptr GetCurrentCoroutine() {
-        if (co_call_stack_top == -1) {
+        if (co_call_stack.size() == 0) {
             // 初始化当前为主协程
             auto main_co = Coroutine::Create();
             main_co->state_ = Coroutine::State::kStExec;
-            co_call_stack[++co_call_stack_top] = main_co;
+            co_call_stack.push(main_co);
         }
-        return co_call_stack[co_call_stack_top];
+        return co_call_stack.top();
     }
 };
 static thread_local CoroutineEnv s_coroutine_env;
@@ -107,7 +114,7 @@ void Coroutine::SysContext::Swap(Coroutine::SysContext *new_sys_ctx) {
     sys_context_swap(this, new_sys_ctx);
 }
 
-Coroutine::Coroutine(CbType cb, void* cb_arg, Coroutine::StackMem *stack_mem, int stack_size) {
+Coroutine::Coroutine(CbType cb, /*void* cb_arg, */Coroutine::StackMem *stack_mem, int stack_size) {
     if (stack_mem) {
         stack_mem_ = stack_mem;
         is_share_stack_mem_ = true;
@@ -121,9 +128,10 @@ Coroutine::Coroutine(CbType cb, void* cb_arg, Coroutine::StackMem *stack_mem, in
         is_share_stack_mem_ = false;
     }
     cb_ = cb;
-    cb_arg_ = cb_arg;
-    sys_context_.Init(stack_mem_->buffer, stack_mem_->size, (void*)&OnCoroutine, this, cb_arg);
+    sys_context_.Init(stack_mem_->buffer, stack_mem_->size, (void*)&OnCoroutine, this, nullptr);
     state_ = State::kStInit;
+    co_cnt++;
+    LOGDEBUG("Coroutine constructor "<< XCO_VARS_EXP(co_cnt));
 }
 
 Coroutine::~Coroutine() {
@@ -135,21 +143,20 @@ Coroutine::~Coroutine() {
         free(stack_backup_buffer);
         stack_backup_buffer = nullptr;
     }
+    co_cnt--;
+    LOGDEBUG("Coroutine destructor "<< XCO_VARS_EXP(co_cnt));
 }
 
 void Coroutine::OnCoroutine(Coroutine* co) {
-    if (!co) {
-        return;
-    }
     co->state_ = State::kStExec;
-    co->cb_(co->cb_arg_);
+    co->cb_(/*co->cb_arg_*/);
     co->state_ = State::kStEnd;
     Yield();
     assert(false); //不会到达这里
 }
 
 void Coroutine::Resume() {
-    s_coroutine_env.PushCoroutine(std::dynamic_pointer_cast<Coroutine>(shared_from_this()));
+    s_coroutine_env.PushCoroutine(shared_from_this());
 }
 
 void Coroutine::Yield() {
