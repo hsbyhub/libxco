@@ -43,13 +43,14 @@ void OnHandleClient(xco::Socket::Ptr client) {
         }
         client->Send(rsp);
     }
+    real_client_handle_co_cnt--;
     LOGDEBUG(client->ToString() << " close");
     client->Close();
 }
 
 void OnAccept() {
     while(true) {
-        if (real_client_handle_co_cnt >= client_handle_co_cnt) {
+        while (real_client_handle_co_cnt >= client_handle_co_cnt) {
             usleep(5);
         }
         auto sock = g_listen_sock->Accept();
@@ -70,7 +71,7 @@ int main(int argc, char** argv) {
     client_handle_co_cnt= atoi(argv[3]);
     signal(SIGINT, OnMainInt);
 
-    SetLogLevel(5);
+    //SetLogLevel(5);
     g_listen_sock = xco::Socket::CreateTCP();
     assert(g_listen_sock);
     assert(g_listen_sock->Init());

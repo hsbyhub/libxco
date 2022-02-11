@@ -9,6 +9,14 @@
 #include <execinfo.h>
 #include <sys/syscall.h>
 
+void DumpFmtDate(std::ostream& os){
+    char buf[64];
+    time_t t = time(0);
+    struct tm *tm = localtime(&t);
+    strftime(buf, sizeof(buf), "%X", tm);
+    os << buf;
+}
+
 static int g_xco_log_level = 1;
 int GetLogLevel() {
     return g_xco_log_level;

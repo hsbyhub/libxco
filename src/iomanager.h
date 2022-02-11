@@ -44,7 +44,7 @@ protected:
 private:
     int epoll_fd_ = -1;
     std::vector<FdContext> fd_ctxs_;
-    int pending_fd_cnt = 0;
+    std::set<int> fds;
 };
 
 XCO_NAMESPAVE_END

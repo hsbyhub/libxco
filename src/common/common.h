@@ -28,6 +28,7 @@
 #define XCO_NAMESPAVE_END }
 
 // ÈÕÖ¾
+void DumpFmtDate(std::ostream& os);
 int GetLogLevel();
 void SetLogLevel(int level);
 #define DEBUG 1
@@ -36,8 +37,9 @@ void SetLogLevel(int level);
 #define FATAL 4
 #define LOG_IF_LEVEL(level, msg)                                \
         if (level >= GetLogLevel()){                            \
-             std::cout  << __FILE__ << ":" << __LINE__ << "|"   \
-                        << #level << "|"                        \
+             std::cout  << __FILE__ << ":" << __LINE__ << "|";  \
+             DumpFmtDate(std::cout); std::cout << "|";          \
+             std::cout  << #level << "|"                        \
                         << msg << std::endl << std::flush;      \
         }
 #define LOGDEBUG(msg)   LOG_IF_LEVEL(DEBUG, msg)

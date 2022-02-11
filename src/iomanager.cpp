@@ -22,7 +22,6 @@ IoManager::~IoManager() {
 }
 
 uint32_t IoManager::SetEvent(int fd, uint32_t ev, Coroutine::Ptr co) {
-    assert(fd > 0 && co);
     if (fd >= (int)fd_ctxs_.size()) {
         fd_ctxs_.resize(fd * 2);
     }
@@ -48,10 +47,6 @@ uint32_t IoManager::SetEvent(int fd, uint32_t ev, Coroutine::Ptr co) {
         return 0;
     }
 
-    if (op == EPOLL_CTL_ADD) {
-        pending_fd_cnt++;
-    }
-
     // 修改fd_ctx
     if (ev & EPOLLIN) {
         ctx.read_co = co;
@@ -60,6 +55,11 @@ uint32_t IoManager::SetEvent(int fd, uint32_t ev, Coroutine::Ptr co) {
     }
     ctx.fd = fd;
     ctx.ev_flags |= ev;
+
+    if (op == EPOLL_CTL_ADD) {
+        fds.insert(fd);
+    }
+
     return ev;
 }
 
@@ -84,10 +84,6 @@ uint32_t IoManager::TrgEvent(int fd, uint32_t evs) {
         return 0;
     }
 
-    if (op == EPOLL_CTL_DEL) {
-        pending_fd_cnt--;
-    }
-
     if (change_evs & EPOLLIN) {
         assert(ctx.read_co);
         Schedule(ctx.read_co);
@@ -99,6 +95,11 @@ uint32_t IoManager::TrgEvent(int fd, uint32_t evs) {
         ctx.write_co.reset();
     }
     ctx.ev_flags = remain_evs;
+
+    if (op == EPOLL_CTL_DEL) {
+        fds.erase(fd);
+    }
+
     return change_evs;
 }
 
@@ -123,10 +124,6 @@ uint32_t IoManager::DelEvent(int fd, uint32_t evs) {
         return 0;
     }
 
-    if (op == EPOLL_CTL_DEL) {
-        pending_fd_cnt--;
-    }
-
     if (change_evs & EPOLLIN) {
         ctx.read_co.reset();
     }
@@ -134,10 +131,16 @@ uint32_t IoManager::DelEvent(int fd, uint32_t evs) {
         ctx.write_co.reset();
     }
     ctx.ev_flags = remain_evs;
+
+    if (op == EPOLL_CTL_DEL) {
+        fds.erase(fd);
+    }
+
     return change_evs;
 }
 
 uint32_t IoManager::CncAllEvent(int fd) {
+    LOGDEBUG( "CncAllEvent, " << XCO_VARS_EXP(fd));
     return TrgEvent(fd, EPOLLIN | EPOLLOUT);
 }
 
@@ -148,7 +151,7 @@ IoManager *IoManager::GetCurIoManager() {
 void IoManager::OnIdle() {
 
     const static int64_t MAX_EPOLL_TIMEOUT_MS = 2000;
-    const static int MAX_EPOLL_RET_EPEV_CNT = 1024;
+    const static int MAX_EPOLL_RET_EPEV_CNT = 64;
 
     while(true) {
         int64_t timeout = GetNextTimerDistNow();
@@ -157,13 +160,15 @@ void IoManager::OnIdle() {
         epoll_event ret_epevs[MAX_EPOLL_RET_EPEV_CNT];
         do {
             //memset(ret_epevs, 0, sizeof(epoll_event) * MAX_EPOLL_RET_EPEV_CNT);
-            LOGDEBUG(XCO_VARS_EXP(pending_fd_cnt));
+            for (auto fd : fds) {
+                LOGDEBUG(XCO_VARS_EXP(fd));
+            }
             ret = epoll_wait(epoll_fd_, ret_epevs, MAX_EPOLL_RET_EPEV_CNT, timeout);
             if (ret >= 0 || errno != EINTR){
                 break;
             };
         }while(true);
-        LOGDEBUG("epoll_wait ret = " << ret);
+        LOGDEBUG("epoll_wait, " << XCO_VARS_EXP(ret))
 
         // 处理定时器事件
         std::vector<std::function<void()>> cbs;
