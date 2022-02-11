@@ -21,7 +21,7 @@ IoManager::~IoManager() {
     close(epoll_fd_);
 }
 
-uint32_t IoManager::SetEvent(int fd, uint32_t ev, Coroutine *co) {
+uint32_t IoManager::SetEvent(int fd, uint32_t ev, Coroutine::Ptr co) {
     assert(fd > 0 && co);
     if (fd >= (int)fd_ctxs_.size()) {
         fd_ctxs_.resize(fd * 2);
@@ -63,23 +63,36 @@ uint32_t IoManager::TrgEvent(int fd, uint32_t evs) {
     if (fd < 0 || fd >= (int)fd_ctxs_.size()) {
         return 0;
     }
-    evs = DelEvent(fd, evs);
-    if (!evs) {
+    auto& ctx = fd_ctxs_[fd];
+    uint32_t change_evs = ctx.ev_flags & evs;
+    if (!change_evs) {
         return 0;
     }
-    auto& ctx = fd_ctxs_[fd];
-    if (evs & EPOLLIN) {
+    uint32_t remain_evs = ctx.ev_flags & ~change_evs;
+    int op = remain_evs ? EPOLL_CTL_MOD : EPOLL_CTL_DEL;
+    epoll_event epev;
+    memset(&epev, 0, sizeof(epev));
+    epev.events = remain_evs | EPOLLET;
+    epev.data.ptr = &ctx;
+    LOGDEBUG("TrgEvent" << XCO_FUNC_WITH_ARG_EXP(fd, op, evs, change_evs, remain_evs));
+    if (epoll_ctl(epoll_fd_, op, fd, &epev)) {
+        LOGFATAL("TrgEvent" << XCO_FUNC_WITH_ARG_EXP(fd, op, evs, change_evs, remain_evs));
+        assert(false);
+        return 0;
+    }
+
+    if (change_evs & EPOLLIN) {
         assert(ctx.read_co);
         Schedule(ctx.read_co);
-        ctx.read_co = nullptr;
+        ctx.read_co.reset();
     }
-    if (evs & EPOLLOUT){
+    if (change_evs & EPOLLOUT){
         assert(ctx.write_co);
         Schedule(ctx.write_co);
-        ctx.write_co = nullptr;
+        ctx.write_co.reset();
     }
-    LOGDEBUG("TrgEvent, " << XCO_FUNC_WITH_ARG_EXP(fd, evs));
-    return evs;
+    ctx.ev_flags = remain_evs;
+    return change_evs;
 }
 
 uint32_t IoManager::DelEvent(int fd, uint32_t evs) {
@@ -102,6 +115,13 @@ uint32_t IoManager::DelEvent(int fd, uint32_t evs) {
         LOGFATAL("DelEvent" << XCO_FUNC_WITH_ARG_EXP(fd, op, evs, change_evs, remain_evs));
         assert(false);
         return 0;
+    }
+
+    if (change_evs & EPOLLIN) {
+        ctx.read_co.reset();
+    }
+    if (change_evs & EPOLLOUT){
+        ctx.write_co.reset();
     }
     ctx.ev_flags = remain_evs;
     return change_evs;

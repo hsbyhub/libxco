@@ -17,7 +17,7 @@ void fun(void* arg) {
 
 int main() {
     xco::Scheduler sche;
-    auto co = new xco::Coroutine(fun);
+    auto co = xco::Coroutine::Create(fun);
     sche.Schedule(co);
     sche.Start();
 }

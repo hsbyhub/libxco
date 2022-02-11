@@ -12,8 +12,9 @@
 
 XCO_NAMESPAVE_START
 
-class Coroutine {
+class Coroutine : public std::enable_shared_from_this<Coroutine>{
 public:
+    using Ptr = std::shared_ptr<Coroutine>;
     using CbType = std::function<void(void*)>;
 
     enum class State{
@@ -63,17 +64,24 @@ public:
                 buffer = nullptr;
             }
         }
-        Coroutine* occupy_co    = nullptr;  // 当前使用内存块的协程
+        Coroutine::Ptr occupy_co    = nullptr;  // 当前使用内存块的协程
         size_t size             = 0;        // 使用大小
         char* buffer            = nullptr;  // 内存块起始地址
         char* bp                = nullptr;  // 栈底地址, bp = buffer + size
     };
 
-public:
+private:
     /**
      * @brief 构造函数
      */
     Coroutine(CbType cb = nullptr, void* arg = nullptr, StackMem* stack_mem = nullptr, int stack_size = 128 * 1024);
+
+public:
+    template<typename ...ArgsType>
+    static Ptr Create(ArgsType ...args) {
+        //return std::make_shared<Coroutine>(args...);
+        return std::shared_ptr<Coroutine>(new Coroutine(args...));
+    }
 
     /**
      * @brief 析构函数
@@ -95,7 +103,10 @@ public:
      */
     static void Yield();
 
-    static Coroutine* GetCurCoroutine();
+    /**
+     * @brief 获取当前协程
+     */
+    static Coroutine::Ptr GetCurCoroutine();
 
     /**
      * @brief 备份栈内存

@@ -19,10 +19,10 @@ void fun(void* arg) {
 }
 
 void test_resume() {
-    xco::Coroutine fun_co(fun, (void*)100);
+    auto co = xco::Coroutine::Create(fun, (void*)100);
     for (int i = 0; i < 1000 * 10000; ++i) {
         //LOGDEBUG("before Resume fun_co");
-        fun_co.Resume();
+        co->Resume();
         //LOGDEBUG("after Resume fun_co");
         //sleep(1);
     }
@@ -39,11 +39,11 @@ void fun1(void* arg) {
 
 void test_share_stack_mem() {
     xco::Coroutine::StackMem share_mem;
-    xco::Coroutine co1(fun1, (void*)1, &share_mem);
-    xco::Coroutine co2(fun1, (void*)2, &share_mem);
+    auto co1 = xco::Coroutine::Create(fun1, (void*)1, &share_mem);
+    auto co2 = xco::Coroutine::Create(fun1, (void*)2, &share_mem);
     while(true) {
-        co1.Resume();
-        co2.Resume();
+        co1->Resume();
+        co2->Resume();
     }
 }
 

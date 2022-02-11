@@ -50,12 +50,12 @@ public:
      * @brief 调度
      * @param[in] coc 协程或回调
      */
-    static void Schedule(Coroutine* co);
+    static void Schedule(Coroutine::Ptr co);
 
 private:
-    Coroutine*                  loop_co_    = nullptr;  // 主循环协程
-    Coroutine*                  idle_co_    = nullptr;  // 闲置协程
-    std::queue<Coroutine*>       co_list_;
+    Coroutine::Ptr                 loop_co_    = nullptr;  // 主循环协程
+    Coroutine::Ptr                 idle_co_    = nullptr;  // 闲置协程
+    std::queue<Coroutine::Ptr>       co_list_;
 };
 
 XCO_NAMESPAVE_END

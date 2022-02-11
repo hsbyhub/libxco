@@ -17,8 +17,8 @@ class IoManager : public Scheduler, public TimerManager{
 public:
     struct FdContext {
         int fd = -1;
-        Coroutine* read_co      = nullptr;
-        Coroutine* write_co     = nullptr;
+        Coroutine::Ptr read_co      = nullptr;
+        Coroutine::Ptr write_co     = nullptr;
         uint32_t ev_flags       = 0;
     };
 
@@ -28,7 +28,7 @@ public:
     ~IoManager() override;
 
 public:
-    uint32_t SetEvent(int fd, uint32_t ev, Coroutine* co);
+    uint32_t SetEvent(int fd, uint32_t ev, Coroutine::Ptr co);
 
     uint32_t TrgEvent(int fd, uint32_t evs);
 

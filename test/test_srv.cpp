@@ -13,9 +13,11 @@
 using namespace std;
 
 struct Client {
-    Client(xco::Coroutine::CbType c, xco::Socket::Ptr s) : sock(s), co(c, this) {}
+    Client(xco::Coroutine::CbType c, xco::Socket::Ptr s) : sock(s){
+        co = xco::Coroutine::Create(c, this);
+    }
     xco::Socket::Ptr sock = nullptr;
-    xco::Coroutine co;
+    xco::Coroutine::Ptr co = nullptr;
 };
 
 const std::string rsp = "HTTP/1.1 200 OK\r\nContent-length:8\r\n\r\nabcdefgh\r\n";
@@ -59,12 +61,12 @@ void OnAccept(void* arg) {
         if (sock) {
             auto client = new Client(OnHandleClient, sock);
             if (client) {
-                xco::Scheduler::Schedule(&client->co);
+                xco::Scheduler::Schedule(client->co);
                 clients.insert(client);
             }
         }
         for (auto client : clients) {
-            if (client->co.state_ == xco::Coroutine::State::kStEnd) {
+            if (client->co->state_ == xco::Coroutine::State::kStEnd) {
                 LOGDEBUG(client->sock->ToString() << " end");
                 delete client;
                 clients.erase(client);
@@ -97,7 +99,7 @@ int main(int argc, char** argv) {
         } else {
             signal(SIGINT, OnChildInt);
             xco::IoManager iom;
-            iom.Schedule(new xco::Coroutine(OnAccept));
+            iom.Schedule(xco::Coroutine::Create(OnAccept));
             iom.Start();
             g_listen_sock->Close();
         }

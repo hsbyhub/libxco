@@ -14,7 +14,7 @@
 using namespace std;
 
 struct Task {
-    xco::Coroutine* co = nullptr;
+    xco::Coroutine::Ptr co = nullptr;
     xco::Socket::Ptr client = nullptr;
 };
 
@@ -99,24 +99,16 @@ int main(int argc, char** argv) {
         } else {
             signal(SIGINT, OnChildInt);
             xco::IoManager iom;
-            std::vector<xco::Coroutine*> cos;
             for (int j = 0; j < accept_co_cnt; ++j) {
-                auto co = new xco::Coroutine(OnHandleAccept);
+                auto co = xco::Coroutine::Create(OnHandleAccept);
                 iom.Schedule(co);
-                cos.push_back(co);
             }
             for (int j = 0; j < client_handle_co_cnt; ++j) {
                 auto t = new Task;
-                t->co = new xco::Coroutine(OnHandleTask, (void*)t);
+                t->co = xco::Coroutine::Create(OnHandleTask, (void*)t);
                 iom.Schedule(t->co);
-                cos.push_back(t->co);
             }
             iom.Start();
-
-            for (auto co : cos) {
-                delete co;
-            }
-
             g_listen_sock->Close();
         }
     }

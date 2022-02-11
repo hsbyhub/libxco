@@ -20,12 +20,12 @@ const int   g_co_call_stack_max                     = 128;  // 协程调用栈大小
  * @brief 协程环境信息
  */
 struct CoroutineEnv {
-    Coroutine*  co_call_stack[g_co_call_stack_max]    = {0};  // 协程调用栈
+    Coroutine::Ptr co_call_stack[g_co_call_stack_max]    = {0};  // 协程调用栈
     int         co_call_stack_top                     = -1;   // 协程调用栈栈顶
-    Coroutine*  pending_co                            = nullptr;
-    Coroutine*  occupy_co                             = nullptr;
+    Coroutine::Ptr pending_co                            = nullptr;
+    Coroutine::Ptr occupy_co                             = nullptr;
 
-    void Swap(Coroutine* cco, Coroutine* pco) {
+    void Swap(Coroutine::Ptr cco, Coroutine::Ptr pco) {
         cco->state_ = Coroutine::State::kStHold;
         pco->state_ = Coroutine::State::kStExec;
 
@@ -58,14 +58,14 @@ struct CoroutineEnv {
         }
     }
 
-    void PushCoroutine(Coroutine* co) {
+    void PushCoroutine(Coroutine::Ptr co) {
         assert(co_call_stack_top < g_co_call_stack_max - 1);
         auto cco = GetCurrentCoroutine();
         auto pco = co_call_stack[++co_call_stack_top] = co;
         Swap(cco , pco);
     }
 
-    Coroutine* PullCoroutine() {
+    Coroutine::Ptr PullCoroutine() {
         assert(co_call_stack_top > 0);
         auto cco = GetCurrentCoroutine();
         auto pco = co_call_stack[--co_call_stack_top];
@@ -73,10 +73,10 @@ struct CoroutineEnv {
         return cco;
     }
 
-    Coroutine* GetCurrentCoroutine() {
+    Coroutine::Ptr GetCurrentCoroutine() {
         if (co_call_stack_top == -1) {
             // 初始化当前为主协程
-            auto main_co = new Coroutine(nullptr);
+            auto main_co = Coroutine::Create();
             main_co->state_ = Coroutine::State::kStExec;
             co_call_stack[++co_call_stack_top] = main_co;
         }
@@ -138,6 +138,9 @@ Coroutine::~Coroutine() {
 }
 
 void Coroutine::OnCoroutine(Coroutine* co) {
+    if (!co) {
+        return;
+    }
     co->state_ = State::kStExec;
     co->cb_(co->cb_arg_);
     co->state_ = State::kStEnd;
@@ -146,14 +149,14 @@ void Coroutine::OnCoroutine(Coroutine* co) {
 }
 
 void Coroutine::Resume() {
-    s_coroutine_env.PushCoroutine(this);
+    s_coroutine_env.PushCoroutine(std::dynamic_pointer_cast<Coroutine>(shared_from_this()));
 }
 
 void Coroutine::Yield() {
     s_coroutine_env.PullCoroutine();
 }
 
-Coroutine *Coroutine::GetCurCoroutine() {
+Coroutine::Ptr Coroutine::GetCurCoroutine() {
     return s_coroutine_env.GetCurrentCoroutine();
 }
 

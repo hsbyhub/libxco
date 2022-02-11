@@ -14,8 +14,8 @@ void func(void* arg) {
 }
 
 int main() {
-    xco::Coroutine co(func);
+    auto co = xco::Coroutine::Create(func);
     xco::IoManager iom;
-    iom.Schedule(&co);
+    iom.Schedule(co);
     iom.Start();
 }
