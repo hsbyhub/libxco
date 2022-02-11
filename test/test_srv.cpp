@@ -38,10 +38,12 @@ void OnHandleClient(xco::Socket::Ptr client) {
     req.resize(4096);
     while(true) {
         int ret = client->Recv(&req[0], req.size());
+        LOGDEBUG("recv, " << XCO_VARS_EXP(ret));
         if (ret <= 0) {
             break;
         }
-        client->Send(rsp);
+        ret = client->Send(rsp);
+        LOGDEBUG("send, " << XCO_VARS_EXP(ret));
     }
     real_client_handle_co_cnt--;
     LOGDEBUG(client->ToString() << " close");

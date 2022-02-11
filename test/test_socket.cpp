@@ -46,8 +46,10 @@ void OnHandleTask(Task* task) {
         // ¿ªÊ¼¶ÁÐ´
         auto client = task->client;
         int ret = client->Recv(&req[0], req.size());
+        LOGDEBUG("recv, " << XCO_VARS_EXP(ret));
         if (ret > 0) {
             ret = client->Send(rsp);
+            LOGDEBUG("send, " << XCO_VARS_EXP(ret));
             continue;
         }
         client->Close();

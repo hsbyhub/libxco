@@ -26,39 +26,22 @@ uint32_t IoManager::SetEvent(int fd, uint32_t ev, Coroutine::Ptr co) {
         fd_ctxs_.resize(fd * 2);
     }
 
-    if (ev & EPOLLIN) {
-        ev = EPOLLIN;
-    }else if (ev & EPOLLOUT) {
-        ev = EPOLLOUT;
-    }else {
-        return 0;
-    }
+    auto& ctx = fd_ctxs_[fd];
+    assert(ev && (!(ev & EPOLLIN && ev & EPOLLOUT)));
 
     // ÐÞ¸Äepoll
-    auto& ctx = fd_ctxs_[fd];
-    int op = ctx.ev_flags ? EPOLL_CTL_MOD : EPOLL_CTL_ADD;
+    int op = ctx.evs ? EPOLL_CTL_MOD : EPOLL_CTL_ADD;
     epoll_event epev;
     memset(&epev, 0, sizeof(epev));
-    epev.events = ctx.ev_flags | ev | EPOLLET;
+    epev.events = ctx.evs | ev | EPOLLET;
     epev.data.ptr = &ctx;
     if (epoll_ctl(epoll_fd_, op, fd, &epev)) {
-        LOGDEBUG(XCO_FUNC_WITH_ARG_EXP(fd, op, ev));
+        LOGFATAL(XCO_FUNC_WITH_ARG_EXP(fd, op, ev));
         assert(false);
         return 0;
     }
 
-    // ÐÞ¸Äfd_ctx
-    if (ev & EPOLLIN) {
-        ctx.read_co = co;
-    }else if (ev & EPOLLOUT){
-        ctx.write_co = co;
-    }
-    ctx.fd = fd;
-    ctx.ev_flags |= ev;
-
-    if (op == EPOLL_CTL_ADD) {
-        fds.insert(fd);
-    }
+    ctx.SetEv(fd, ev, co);
 
     return ev;
 }
@@ -67,38 +50,25 @@ uint32_t IoManager::TrgEvent(int fd, uint32_t evs) {
     if (fd < 0 || fd >= (int)fd_ctxs_.size()) {
         return 0;
     }
+
     auto& ctx = fd_ctxs_[fd];
-    uint32_t change_evs = ctx.ev_flags & evs;
+    uint32_t change_evs = ctx.evs & evs;
     if (!change_evs) {
         return 0;
     }
-    uint32_t remain_evs = ctx.ev_flags & ~change_evs;
+    uint32_t remain_evs = ctx.evs & ~change_evs;
     int op = remain_evs ? EPOLL_CTL_MOD : EPOLL_CTL_DEL;
     epoll_event epev;
     memset(&epev, 0, sizeof(epev));
     epev.events = remain_evs | EPOLLET;
     epev.data.ptr = &ctx;
     if (epoll_ctl(epoll_fd_, op, fd, &epev)) {
-        LOGFATAL("TrgEvent" << XCO_FUNC_WITH_ARG_EXP(fd, op, evs, change_evs, remain_evs));
+        LOGFATAL(XCO_FUNC_WITH_ARG_EXP(fd, op, evs, change_evs, remain_evs));
         assert(false);
         return 0;
     }
 
-    if (change_evs & EPOLLIN) {
-        assert(ctx.read_co);
-        Schedule(ctx.read_co);
-        ctx.read_co.reset();
-    }
-    if (change_evs & EPOLLOUT){
-        assert(ctx.write_co);
-        Schedule(ctx.write_co);
-        ctx.write_co.reset();
-    }
-    ctx.ev_flags = remain_evs;
-
-    if (op == EPOLL_CTL_DEL) {
-        fds.erase(fd);
-    }
+    ctx.TrgEv(change_evs);
 
     return change_evs;
 }
@@ -108,11 +78,11 @@ uint32_t IoManager::DelEvent(int fd, uint32_t evs) {
         return 0;
     }
     auto& ctx = fd_ctxs_[fd];
-    uint32_t change_evs = ctx.ev_flags & evs;
+    uint32_t change_evs = ctx.evs & evs;
     if (!change_evs) {
         return 0;
     }
-    uint32_t remain_evs = ctx.ev_flags & ~change_evs;
+    uint32_t remain_evs = ctx.evs & ~change_evs;
     int op = remain_evs ? EPOLL_CTL_MOD : EPOLL_CTL_DEL;
     epoll_event epev;
     memset(&epev, 0, sizeof(epev));
@@ -124,17 +94,7 @@ uint32_t IoManager::DelEvent(int fd, uint32_t evs) {
         return 0;
     }
 
-    if (change_evs & EPOLLIN) {
-        ctx.read_co.reset();
-    }
-    if (change_evs & EPOLLOUT){
-        ctx.write_co.reset();
-    }
-    ctx.ev_flags = remain_evs;
-
-    if (op == EPOLL_CTL_DEL) {
-        fds.erase(fd);
-    }
+    ctx.DelEv(change_evs);
 
     return change_evs;
 }
@@ -159,10 +119,6 @@ void IoManager::OnIdle() {
         int ret = 0;
         epoll_event ret_epevs[MAX_EPOLL_RET_EPEV_CNT];
         do {
-            //memset(ret_epevs, 0, sizeof(epoll_event) * MAX_EPOLL_RET_EPEV_CNT);
-            for (auto fd : fds) {
-                LOGDEBUG(XCO_VARS_EXP(fd));
-            }
             ret = epoll_wait(epoll_fd_, ret_epevs, MAX_EPOLL_RET_EPEV_CNT, timeout);
             if (ret >= 0 || errno != EINTR){
                 break;
@@ -188,6 +144,10 @@ void IoManager::OnIdle() {
             if (ret_epev.events & (EPOLLERR | EPOLLHUP)) {
                 LOGDEBUG("epoll return err, " << XCO_VARS_EXP(ctx->fd, ret_epev.events));
                 ret_epev.events = (EPOLLIN | EPOLLOUT);
+            }
+
+            if (ctx->fd == 3) {
+                LOGDEBUG(ctx->ToString() << "epoll return " << XCO_VARS_EXP(ret_epev.events));
             }
 
             TrgEvent(ctx->fd, ret_epev.events);

@@ -16,10 +16,74 @@ XCO_NAMESPAVE_START
 class IoManager : public Scheduler, public TimerManager{
 public:
     struct FdContext {
-        int fd = -1;
+        int fd                      = -1;
         Coroutine::Ptr read_co      = nullptr;
         Coroutine::Ptr write_co     = nullptr;
-        uint32_t ev_flags       = 0;
+        uint32_t evs                = 0;
+
+        std::string ToString() {
+            return XCO_FUNC_WITH_ARG_EXP(fd, evs);
+        }
+
+        void SetEv(int f, uint32_t ev, Coroutine::Ptr co) {
+            if (ev & EPOLLIN) {
+                assert(!(evs & EPOLLIN));
+                read_co = co;
+            }
+            if (ev & EPOLLOUT) {
+                assert(!(evs & EPOLLOUT));
+                write_co = co;
+            }
+            evs |= ev;
+            fd = f;
+            LOGDEBUG(XCO_FUNC_WITH_ARG_EXP(fd, evs));
+            Check();
+        }
+
+        void TrgEv(uint32_t ev) {
+            if (ev & EPOLLIN) {
+                assert(evs & EPOLLIN);
+                IoManager::Schedule(read_co);
+                read_co.reset();
+            }
+            if (ev & EPOLLOUT) {
+                assert(evs & EPOLLOUT);
+                IoManager::Schedule(write_co);
+                write_co.reset();
+            }
+            evs &= ~ev;
+            LOGDEBUG(XCO_FUNC_WITH_ARG_EXP(fd, ev, evs));
+            Check();
+        }
+
+        void DelEv(uint32_t ev) {
+            if (ev & EPOLLIN) {
+                assert(evs & EPOLLIN);
+                read_co.reset();
+            }
+            if (ev & EPOLLOUT) {
+                assert(evs & EPOLLOUT);
+                write_co.reset();
+            }
+            evs &= ~ev;
+            LOGDEBUG(XCO_FUNC_WITH_ARG_EXP(fd, ev, evs));
+            Check();
+        }
+
+        void Check() {
+            if (evs & EPOLLIN) {
+                assert(read_co);
+            }
+            if (evs & EPOLLOUT) {
+                assert(write_co);
+            }
+            if (read_co) {
+                assert(evs & EPOLLIN);
+            }
+            if (write_co) {
+                assert(evs & EPOLLOUT);
+            }
+        }
     };
 
 public:
@@ -44,7 +108,6 @@ protected:
 private:
     int epoll_fd_ = -1;
     std::vector<FdContext> fd_ctxs_;
-    std::set<int> fds;
 };
 
 XCO_NAMESPAVE_END

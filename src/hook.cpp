@@ -142,6 +142,7 @@ retry:
         }else {
             LOGDEBUG("Hook Yield, "<< XCO_VARS_EXP(fd, hook_fun_name));
             xco::Coroutine::Yield();
+            LOGDEBUG("Hook Yield return, "<< XCO_VARS_EXP(fd, hook_fun_name));
             if (timer) {
                 timer->Cancel();
             }
