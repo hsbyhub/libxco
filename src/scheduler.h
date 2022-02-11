@@ -33,22 +33,12 @@ protected:
     /**
      * @brief 主循环
      */
-    virtual void OnLoop();
+    void OnLoop();
 
     /**
      * @brief 闲置处理
      */
     virtual void OnIdle();
-
-    /**
-     * @brief 主循环回调
-     */
-    static void LoopCb(void* arg);
-
-    /**
-     * @brief 闲置处理回调
-     */
-    static void IdleCb(void* arg);
 
 public:
     /**

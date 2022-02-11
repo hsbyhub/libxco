@@ -64,6 +64,9 @@ uint32_t IoManager::TrgEvent(int fd, uint32_t evs) {
         return 0;
     }
     evs = DelEvent(fd, evs);
+    if (!evs) {
+        return 0;
+    }
     auto& ctx = fd_ctxs_[fd];
     if (evs & EPOLLIN) {
         assert(ctx.read_co);

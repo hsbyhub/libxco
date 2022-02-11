@@ -14,7 +14,7 @@ XCO_NAMESPAVE_START
 
 class Coroutine {
 public:
-    using CbType = void(void* arg);
+    using CbType = std::function<void(void*)>;
 
     enum class State{
         kStInit     = 0,
@@ -73,7 +73,7 @@ public:
     /**
      * @brief 构造函数
      */
-    Coroutine(CbType* cb, void* arg = nullptr, StackMem* stack_mem = nullptr, int stack_size = 128 * 1024);
+    Coroutine(CbType cb = nullptr, void* arg = nullptr, StackMem* stack_mem = nullptr, int stack_size = 128 * 1024);
 
     /**
      * @brief 析构函数
@@ -105,7 +105,7 @@ public:
 public:
     StackMem*           stack_mem_          = nullptr;  // 栈内存
     bool                is_share_stack_mem_ = false;    // 是否共享栈
-    CbType*             cb_                 = nullptr;  // 回调
+    CbType              cb_                 = nullptr;  // 回调
     void*               cb_arg_             = nullptr;  // 回调参数
     State               state_;                         // 协程状态
     SysContext          sys_context_;                   // 协程系统上下文

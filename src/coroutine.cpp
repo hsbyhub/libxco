@@ -107,7 +107,7 @@ void Coroutine::SysContext::Swap(Coroutine::SysContext *new_sys_ctx) {
     sys_context_swap(this, new_sys_ctx);
 }
 
-Coroutine::Coroutine(CbType* cb, void* cb_arg, Coroutine::StackMem *stack_mem, int stack_size) {
+Coroutine::Coroutine(CbType cb, void* cb_arg, Coroutine::StackMem *stack_mem, int stack_size) {
     if (stack_mem) {
         stack_mem_ = stack_mem;
         is_share_stack_mem_ = true;

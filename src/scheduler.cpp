@@ -13,8 +13,8 @@ static thread_local Scheduler* t_scheduler = nullptr;
 
 Scheduler::Scheduler() {
     t_scheduler = this;
-    loop_co_ = new Coroutine(LoopCb, this);
-    idle_co_ = new Coroutine(IdleCb, this);
+    loop_co_ = new Coroutine(std::bind(&Scheduler::OnLoop, this));
+    idle_co_ = new Coroutine(std::bind(&Scheduler::OnIdle, this));
 }
 
 Scheduler::~Scheduler() {
@@ -61,14 +61,6 @@ void Scheduler::OnIdle() {
     while(true) {
         Coroutine::Yield();
     }
-}
-
-void Scheduler::LoopCb(void* arg) {
-    ((Scheduler*)arg)->OnLoop();
-}
-
-void Scheduler::IdleCb(void* arg) {
-    ((Scheduler*)arg)->OnIdle();
 }
 
 Scheduler *Scheduler::GetCurScheduler() {

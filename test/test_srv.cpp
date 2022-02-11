@@ -13,9 +13,9 @@
 using namespace std;
 
 struct Client {
-    Client(xco::Coroutine::CbType* c, xco::Socket::Ptr s) : sock(s), co(c, this) {}
+    Client(xco::Coroutine::CbType c, xco::Socket::Ptr s) : sock(s), co(c, this) {}
     xco::Socket::Ptr sock = nullptr;
-    xco::Coroutine co = nullptr;
+    xco::Coroutine co;
 };
 
 const std::string rsp = "HTTP/1.1 200 OK\r\nContent-length:8\r\n\r\nabcdefgh\r\n";
