@@ -474,6 +474,7 @@ int setsockopt(int sockfd, int level, int optname, const void *optval, socklen_t
         if (optname == SO_RCVTIMEO || optname == SO_SNDTIMEO) {
             auto ctx = xco::FdManagerSgt::Instance().Get(sockfd);
             if (ctx) {
+                LOGDEBUG(XCO_FUNC_WITH_ARG_EXP(TimevalToMs(*(const timeval *) optval)));
                 ctx->SetTimeout(optname, TimevalToMs(*(const timeval *) optval));
             }
         }

@@ -27,11 +27,9 @@ public:
 
         void SetEv(int f, uint32_t ev, Coroutine::Ptr co) {
             if (ev & EPOLLIN) {
-                assert(!(evs & EPOLLIN));
                 read_co = co;
             }
             if (ev & EPOLLOUT) {
-                assert(!(evs & EPOLLOUT));
                 write_co = co;
             }
             evs |= ev;

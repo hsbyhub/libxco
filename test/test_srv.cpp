@@ -36,6 +36,7 @@ void OnChildInt(int) {
 void OnHandleClient(xco::Socket::Ptr client) {
     string req;
     req.resize(4096);
+    // client->SetRecvTimeOut(1000);
     while(true) {
         int ret = client->Recv(&req[0], req.size());
         LOGDEBUG("recv, " << XCO_VARS_EXP(ret));
@@ -51,6 +52,7 @@ void OnHandleClient(xco::Socket::Ptr client) {
 }
 
 void OnAccept() {
+    g_listen_sock->SetRecvTimeOut(100);
     while(true) {
         while (real_client_handle_co_cnt >= client_handle_co_cnt) {
             usleep(5);
@@ -73,7 +75,7 @@ int main(int argc, char** argv) {
     client_handle_co_cnt= atoi(argv[3]);
     signal(SIGINT, OnMainInt);
 
-    //SetLogLevel(5);
+    SetLogLevel(5);
     g_listen_sock = xco::Socket::CreateTCP();
     assert(g_listen_sock);
     assert(g_listen_sock->Init());

@@ -89,9 +89,9 @@ uint64_t TimeStampUs() {
 uint64_t GetRealTimeUs() {
     struct timespec tp;
     clock_gettime(CLOCK_REALTIME, &tp);
-    return tp.tv_sec*1000*1000 + tp.tv_nsec/1000;
+    return tp.tv_sec*1000*1000 + tp.tv_nsec / 1000;
 }
 
 int64_t TimevalToMs(const timeval &tv) {
-    return tv.tv_sec * 1000 + tv.tv_usec / 1000;
+    return tv.tv_sec * 1000 + tv.tv_usec;
 }

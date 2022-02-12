@@ -348,8 +348,8 @@ int64_t Socket::GetSendTimeOut() const {
 }
 
 void Socket::SetSendTimeOut(int64_t time_out) {
-    timeval tv{time_out / 1000, (time_out % 1000) * 1000};
-    SetOption(SOL_SOCKET, SO_SNDTIMEO, &tv);
+    timeval tv{time_out / 1000, time_out % 1000};
+    SetOption(SOL_SOCKET, SO_SNDTIMEO, tv);
 }
 
 int64_t Socket::GetRecvTimeOut() const {
@@ -361,8 +361,8 @@ int64_t Socket::GetRecvTimeOut() const {
 }
 
 void Socket::SetRecvTimeOut(int64_t time_out) {
-    timeval tv{time_out / 1000, (time_out % 1000) * 1000};
-    SetOption(SOL_SOCKET, SO_RCVTIMEO, &tv);
+    timeval tv{time_out / 1000, time_out % 1000};
+    SetOption(SOL_SOCKET, SO_RCVTIMEO, tv);
 }
 
 std::ostream& operator<<(std::ostream& os, const Socket& socket) {
