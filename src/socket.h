@@ -7,7 +7,7 @@
 #pragma once
 #include <memory>
 #include "address.h"
-#include "common/common.h"
+#include "common.h"
 
 XCO_NAMESPAVE_START
 

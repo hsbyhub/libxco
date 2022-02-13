@@ -15,7 +15,7 @@
 #include <sys/un.h>
 #include <vector>
 #include <map>
-#include "common/common.h"
+#include "common.h"
 
 XCO_NAMESPAVE_START
 /**

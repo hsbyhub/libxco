@@ -8,7 +8,7 @@
 
 #include <cstddef>
 #include <memory>
-#include "common/common.h"
+#include "common.h"
 
 XCO_NAMESPAVE_START
 

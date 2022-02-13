@@ -5,7 +5,7 @@
       	创建日期：2022/2/10
  *================================================================*/
 #include "hook.h"
-#include "common/common.h"
+#include "common.h"
 #include <dlfcn.h>
 #include <cstring>
 #include <stdarg.h>
