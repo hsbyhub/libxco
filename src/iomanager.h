@@ -34,7 +34,6 @@ public:
             }
             evs |= ev;
             fd = f;
-            LOGDEBUG(XCO_FUNC_WITH_ARG_EXP(fd, evs));
             Check();
         }
 
@@ -50,7 +49,6 @@ public:
                 write_co.reset();
             }
             evs &= ~ev;
-            LOGDEBUG(XCO_FUNC_WITH_ARG_EXP(fd, ev, evs));
             Check();
         }
 
@@ -64,7 +62,6 @@ public:
                 write_co.reset();
             }
             evs &= ~ev;
-            LOGDEBUG(XCO_FUNC_WITH_ARG_EXP(fd, ev, evs));
             Check();
         }
 

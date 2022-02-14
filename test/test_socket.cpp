@@ -58,6 +58,7 @@ void OnHandleTask(Task* task) {
 }
 
 void OnHandleAccept() {
+    g_listen_sock->SetRecvTimeOut(100);
     while(true) {
         while(task_list.empty()) {
             usleep(50);

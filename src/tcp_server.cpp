@@ -45,41 +45,38 @@ void TcpServer::Dump(std::ostream &os) const {
     os << "]}";
 }
 
-bool TcpServer::Bind(BaseAddress::Ptr address) {
+bool TcpServer::Init(BaseAddress::Ptr address) {
     std::vector<BaseAddress::Ptr> addrs;
     std::vector<BaseAddress::Ptr> fails;
     addrs.push_back(address);
-    return Bind(addrs, fails);
-}
-
-bool TcpServer::Bind(const std::vector<BaseAddress::Ptr>& addrs, std::vector<BaseAddress::Ptr>& fails/*, bool ssl*/) {
-    if (!GetIsInit()) {
+    if (!Bind(addrs)) {
         return false;
     }
+    SetIsInit(true);
+    return true;
+}
+
+bool TcpServer::Bind(const std::vector<BaseAddress::Ptr>& addrs/*, bool ssl*/) {
     for (const auto& addr : addrs) {
         auto sock = Socket::CreateTCP(addr);
         if (!sock) {
-            fails.push_back(addr);
-            continue;
+            goto fail;
+        }
+        if (!sock->Init()) {
+            goto fail;
         }
         if (!sock->Bind(addr)) {
-            fails.push_back(addr);
-            continue;
+            goto fail;
         }
-        if (!sock->Listen()) {
-            fails.push_back(addr);
-            continue;
+        if (!sock->Listen(128)) {
+            goto fail;
         }
-        sock->SetRecvTimeOut(g_tcp_server_accept_timeout);
         sockets_.push_back(sock);
     }
-
-    if (!fails.empty()) {
-        sockets_.clear();
-        return false;
-    }
-
     return true;
+fail:
+    sockets_.clear();
+    return false;
 }
 
 bool TcpServer::Start() {
@@ -124,10 +121,10 @@ void TcpServer::ClientHandle(Socket::Ptr client) {
     }
 }
 
-void TcpServer::OnAccept(Socket::Ptr socket) {
-    //XCO_LOG_SYSTEM_DEBUG << "begin OnAccept";
+void TcpServer::OnAccept(Socket::Ptr listen_socket) {
+    listen_socket->SetRecvTimeOut(g_tcp_server_accept_timeout);
     while(!GetIsStop()) {
-        auto client = socket->Accept();
+        auto client = listen_socket->Accept();
         if (!client) {
             continue;
         }
