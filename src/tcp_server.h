@@ -44,7 +44,8 @@ public:
     void Dump(std::ostream &os) const override;
 
 public:
-    virtual bool Init(BaseAddress::Ptr address/*, bool ssl = false*/);
+    virtual bool Init(BaseAddress::Ptr address, IoManager* io_manager = IoManager::GetCurIoManager()/*, bool ssl = false*/);
+    virtual bool Init(Socket::Ptr socket, IoManager* io_manager = IoManager::GetCurIoManager()/*, bool ssl = false*/);
     virtual bool Bind(const std::vector<BaseAddress::Ptr>& addrs/*, BOOL SSL = FALSE*/);
     virtual bool Start();
     virtual void Stop();
@@ -56,23 +57,16 @@ public:
     size_t GetSocketNum(){ return sockets_.size(); }
 
 private:
-    std::string name_;
-    std::vector<Socket::Ptr> sockets_;
-    IoManager io_manager_;
-    int64_t read_timeout_;
-    std::string type_ = "tcp";
-    bool is_stop_;
-    bool ssl_;
-    bool is_init_ = false;
+    std::string                 name_           = "none";
+    IoManager*                  io_manager_     = nullptr;
+    int64_t                     accept_timeout  = -1;
+    std::string                 type_           = "tcp";
+    bool                        is_stop_        = true;
+    bool                        ssl_            = false;
+    bool                        is_init_        = false;
+    std::vector<Socket::Ptr>    sockets_;
 
 public:
-    FUNCTION_BUILDER_VAR(ReadTimeout, read_timeout_);
-    FUNCTION_BUILDER_VAR(Name, name_);
-    FUNCTION_BUILDER_VAR(IsInit, is_init_);
-    FUNCTION_BUILDER_VAR_GETTER(IsStop, is_stop_);
-
-protected:
-    FUNCTION_BUILDER_VAR_SETTER(IsStop, is_stop_);
-
+    FUNCTION_BUILDER_VAR(IsStop, is_stop_);
 };
 XCO_NAMESPAVE_END
