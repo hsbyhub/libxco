@@ -1,8 +1,8 @@
 /*================================================================*
         Copyright (C) 2021 All rights reserved, www.hsby.link.
-      	ÎÄ¼þÃû³Æ£ºtest_http_server.cpp
-      	´´ ½¨ Õß£ºhsby
-      	´´½¨ÈÕÆÚ£º2022/2/16
+      	æ–‡ä»¶åç§°ï¼štest_http_server.cpp
+      	åˆ› å»º è€…ï¼šhsby
+      	åˆ›å»ºæ—¥æœŸï¼š2022/2/16
  *================================================================*/
 
 #include "http/http_server.h"
@@ -31,11 +31,14 @@ int main(int argc, char** argv) {
     process_cnt = atoi(argv[1]);
     client_handle_co_cnt= atoi(argv[2]);
 
+    //SetLogLevel(5);
+
     g_listen_sock = Socket::CreateTCP();
     assert(g_listen_sock);
     assert(g_listen_sock->Init());
     assert(g_listen_sock->Bind(Ipv4Address::Create("0.0.0.0", 80)));
     assert(g_listen_sock->Listen(128));
+
     MultiProcess(process_cnt, [](){
             IoManager iom;
             auto http_server = HttpServer::Create("none", true);

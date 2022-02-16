@@ -8,6 +8,8 @@
 #include "http/http_server.h"
 #include "http/http_session.h"
 
+const std::string rsp = "HTTP/1.1 200 OK\r\nContent-length:8\r\n\r\nabcdefgh\r\n";
+
 XCO_NAMESPAVE_START
 namespace http {
 
@@ -25,8 +27,10 @@ void HttpServer::ClientHandle(Socket::Ptr client) {
     while(session->IsConnected()) {
         auto req = session->RecvRequest();
         if (!req) {
+            LOGDEBUG("Recv req fail");
             break;
         }
+        LOGDEBUG(XCO_VARS_EXP(client->ToString(), *req));
         bool close = !is_keep_alive/* || req->GetIsClose()*/;
         auto rsp = HttpResponse::Create(req->GetVersion(), close);
         rsp->SetBody("some text");
@@ -34,9 +38,17 @@ void HttpServer::ClientHandle(Socket::Ptr client) {
         if (close) {
             break;
         }
-        usleep(50);
+        sleep(0);
+
+        //std::string req;
+        //req.resize(4096);
+        //int ret = session->Read(&req[0], req.size());
+        //if (ret <= 0) {
+        //    break;
+        //}
+        //LOGDEBUG(XCO_VARS_EXP(req));
+        //session->Write(&rsp[0], rsp.size());
     }
-    session->Close();
 }
 
 }//namespace http

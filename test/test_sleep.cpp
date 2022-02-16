@@ -1,15 +1,16 @@
 /*================================================================*
         Copyright (C) 2021 All rights reserved, www.hsby.link.
-      	ÎÄ¼þÃû³Æ£ºtest_sleep.cpp
-      	´´ ½¨ Õß£ºhsby
-      	´´½¨ÈÕÆÚ£º2022/2/10
+      	ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½Æ£ï¿½test_sleep.cpp
+      	ï¿½ï¿½ ï¿½ï¿½ ï¿½ß£ï¿½hsby
+      	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú£ï¿½2022/2/10
  *================================================================*/
 #include "iomanager.h"
 #include "hook.h"
 
 void func() {
     while(true) {
-        sleep(1);
+        LOGDEBUG("sleep");
+        usleep(100);
     }
 }
 

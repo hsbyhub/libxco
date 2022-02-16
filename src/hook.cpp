@@ -80,8 +80,8 @@ struct time_info{
  * @brief todo
  */
 template<typename SysFunType, typename ... Args>
-static ssize_t do_io(int fd, SysFunType sys_fun, const char* hook_fun_name,
-                     uint32_t event, int timeout_so, Args&&... args) {
+static ssize_t AsyncIo(int fd, SysFunType sys_fun, const char* sys_fun_name,
+                       uint32_t event, int timeout_so, Args&&... args) {
     // 如果没有Hook
     if (!xco::IsHookEnable()) {
         return sys_fun(fd, std::forward<Args>(args)...);
@@ -110,13 +110,15 @@ static ssize_t do_io(int fd, SysFunType sys_fun, const char* hook_fun_name,
     std::shared_ptr<time_info> tinfo(new time_info);
 
 retry:
+    auto t0 = TimeStampUs();
     ssize_t n = sys_fun(fd, std::forward<Args>(args)...);
+    auto t1 = TimeStampUs();
+    LOGDEBUG(XCO_FUNC_WITH_ARG_EXP(fd, sys_fun_name, n, t1-t0));
     while(n == -1 && errno == EINTR) {
         n = sys_fun(fd, std::forward<Args>(args)...);
     }
 
     if (n == -1 && errno == EAGAIN) {
-        //LOGDEBUG("sync deal, " << XCO_VARS_EXP(fd, hook_fun_name));
         auto iom = xco::IoManager::GetCurIoManager();
         xco::Timer::Ptr timer;
         std::weak_ptr<time_info> wtinfo(tinfo);
@@ -140,6 +142,7 @@ retry:
             }
             return -1;
         }else {
+            LOGDEBUG(XCO_FUNC_WITH_ARG_EXP(fd, sys_fun_name) << ", Yield");
             xco::Coroutine::Yield();
             if (timer) {
                 timer->Cancel();
@@ -181,7 +184,8 @@ int usleep(useconds_t usec) {
     timespec req, rem;
     memset(&req, 0, sizeof(req));
     memset(&rem, 0, sizeof(rem));
-    req.tv_sec = usec / 1000;
+    //req.tv_sec = usec / 1000;
+    req.tv_nsec = usec * 1000 * 1000;
     return nanosleep(&req, &rem);
 }
 
@@ -194,7 +198,7 @@ int nanosleep(const struct timespec *req, struct timespec *rem){
     auto co = xco::Coroutine::GetCurCoroutine();
     auto iom = xco::IoManager::GetCurIoManager();
 
-    iom->AddTimer(req->tv_sec * 1000 + req->tv_nsec / 1000000, [iom, co]() {
+    iom->AddTimer(req->tv_sec * 1000 + req->tv_nsec / (1000 * 1000), [iom, co]() {
         iom->Schedule(co);
     });
     xco::Coroutine::Yield();
@@ -290,52 +294,53 @@ int connect(int sockfd, const struct sockaddr *addr,
 }
 
 int accept(int sockfd, struct sockaddr *addr, socklen_t *addrlen) {
-    int accept_fd = do_io(sockfd, accept_f, "accept", EPOLLIN, SO_RCVTIMEO, addr, addrlen);
+    int accept_fd = AsyncIo(sockfd, accept_f, "accept", EPOLLIN, SO_RCVTIMEO, addr, addrlen);
     if (accept_fd >= 0) {
         // 加入套接字管理器
         xco::FdManagerSgt::Instance().Get(accept_fd, true);
     }
+    LOGDEBUG(XCO_FUNC_WITH_ARG_EXP(TimeStampUs()));
     return accept_fd;
 }
 
 ssize_t read(int fd, void *buf, size_t count) {
-    return do_io(fd, read_f, "read", EPOLLIN, SO_RCVTIMEO, buf, count);
+    return AsyncIo(fd, read_f, "read", EPOLLIN, SO_RCVTIMEO, buf, count);
 }
 
 ssize_t readv(int fd, const struct iovec *iov, int iovcnt) {
-    return do_io(fd, readv_f, "readv", EPOLLIN, SO_RCVTIMEO, iov, iovcnt);
+    return AsyncIo(fd, readv_f, "readv", EPOLLIN, SO_RCVTIMEO, iov, iovcnt);
 }
 
 ssize_t recv(int sockfd, void *buf, size_t len, int flags) {
-    return do_io(sockfd, recv_f, "recv", EPOLLIN, SO_RCVTIMEO, buf, len, flags);
+    return AsyncIo(sockfd, recv_f, "recv", EPOLLIN, SO_RCVTIMEO, buf, len, flags);
 }
 
 ssize_t recvfrom(int sockfd, void *buf, size_t len, int flags, struct sockaddr *src_addr, socklen_t *addrlen) {
-    return do_io(sockfd, recvfrom_f, "recvfrom", EPOLLIN, SO_RCVTIMEO, buf, len, flags, src_addr, addrlen);
+    return AsyncIo(sockfd, recvfrom_f, "recvfrom", EPOLLIN, SO_RCVTIMEO, buf, len, flags, src_addr, addrlen);
 }
 
 ssize_t recvmsg(int sockfd, struct msghdr *msg, int flags) {
-    return do_io(sockfd, recvmsg_f, "recvmsg", EPOLLIN, SO_RCVTIMEO, msg, flags);
+    return AsyncIo(sockfd, recvmsg_f, "recvmsg", EPOLLIN, SO_RCVTIMEO, msg, flags);
 }
 
 ssize_t write(int fd, const void *buf, size_t count) {
-    return do_io(fd, write_f, "write", EPOLLOUT, SO_SNDTIMEO, buf, count);
+    return AsyncIo(fd, write_f, "write", EPOLLOUT, SO_SNDTIMEO, buf, count);
 }
 
 ssize_t writev(int fd, const struct iovec *iov, int iovcnt) {
-    return do_io(fd, writev_f, "writev", EPOLLOUT, SO_SNDTIMEO, iov, iovcnt);
+    return AsyncIo(fd, writev_f, "writev", EPOLLOUT, SO_SNDTIMEO, iov, iovcnt);
 }
 
 ssize_t send(int s, const void *msg, size_t len, int flags) {
-    return do_io(s, send_f, "send", EPOLLOUT, SO_SNDTIMEO, msg, len, flags);
+    return AsyncIo(s, send_f, "send", EPOLLOUT, SO_SNDTIMEO, msg, len, flags);
 }
 
 ssize_t sendto(int s, const void *msg, size_t len, int flags, const struct sockaddr *to, socklen_t tolen) {
-    return do_io(s, sendto_f, "sendto", EPOLLOUT, SO_SNDTIMEO, msg, len, flags, to, tolen);
+    return AsyncIo(s, sendto_f, "sendto", EPOLLOUT, SO_SNDTIMEO, msg, len, flags, to, tolen);
 }
 
 ssize_t sendmsg(int s, const struct msghdr *msg, int flags) {
-    return do_io(s, sendmsg_f, "sendmsg", EPOLLOUT, SO_SNDTIMEO, msg, flags);
+    return AsyncIo(s, sendmsg_f, "sendmsg", EPOLLOUT, SO_SNDTIMEO, msg, flags);
 }
 
 int close(int fd) {

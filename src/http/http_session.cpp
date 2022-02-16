@@ -31,7 +31,6 @@ HttpRequest::Ptr HttpSession::RecvRequest() {
     int read_off = 0;
 
     while(read_off < buff_size ) {
-        // ��ȡ����
         int read_len = Read(data + parse_off, buff_size - parse_off);
         if (read_len <= 0) {
             Close();
@@ -39,7 +38,6 @@ HttpRequest::Ptr HttpSession::RecvRequest() {
         }
         read_off += read_len;
 
-        // ����
         while (parse_off < read_off) {
             int parse_len = http_req_parser->Parse(data, read_off, parse_off);
             if (parse_len <= 0 || http_req_parser->HasError()) {
@@ -47,13 +45,11 @@ HttpRequest::Ptr HttpSession::RecvRequest() {
                 return nullptr;
             }
             parse_off += parse_len;
-            // �Ƿ����
             if (http_req_parser->IsFinished()) {
                 is_finish = true;
                 break;
             }
         }
-        // �Ƿ����
         if (is_finish) {
             break;
         }
@@ -62,9 +58,7 @@ HttpRequest::Ptr HttpSession::RecvRequest() {
         return nullptr;
     }
 
-    // ���body
     int body_length = http_req_parser->GetContentLength();
-    //HSBY_LOG_SYSTEM_DEBUG << HSBY_VARS_EXP(body_length, read_off, parse_off);
     if (body_length > 0) {
         std::string body;
         body.resize(body_length);
@@ -82,7 +76,6 @@ HttpRequest::Ptr HttpSession::RecvRequest() {
         http_req_parser->GetRequest()->SetBody(body);
     }
 
-    // ��ʼ��
     http_req_parser->GetRequest()->Init();
 
     return http_req_parser->GetRequest();
