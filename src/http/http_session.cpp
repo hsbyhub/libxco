@@ -21,15 +21,12 @@ HttpSession::Ptr HttpSession::Create(Socket::Ptr socket, bool auto_close) {
 }
 
 HttpRequest::Ptr HttpSession::RecvRequest() {
-    TimeInterval ti;
     auto http_req_parser = HttpRequestParser::Create();
-    LOGWARN("HttpRequestParser::Create()" << ti);
     if (!http_req_parser) {
         return nullptr;
     }
     int buff_size = HttpRequestParser::GetHttpRequestMaxBodySize();
     auto data = g_recv_buffer;
-    LOGWARN("bzero" << ti);
     bool is_finish = false;
     int parse_off = 0;
     int read_off = 0;
@@ -58,10 +55,11 @@ HttpRequest::Ptr HttpSession::RecvRequest() {
             break;
         }
     }
+
     if (!is_finish) {
         return nullptr;
     }
-    LOGWARN("std::vector<char>()" << ti);
+
     int body_length = http_req_parser->GetContentLength();
     if (body_length > 0) {
         std::string body;
@@ -70,7 +68,6 @@ HttpRequest::Ptr HttpSession::RecvRequest() {
         memcpy(&body[0], data + parse_off, len);
         body_length -= len;
 
-        // ׷��body
         if (body_length > 0) {
             if (ReadFixSize(&body[len], body_length) <= 0) {
                 Close();
@@ -81,7 +78,6 @@ HttpRequest::Ptr HttpSession::RecvRequest() {
     }
 
     http_req_parser->GetRequest()->Init();
-    LOGWARN("http_req_parser->GetRequest()->Init()" << ti);
 
     return http_req_parser->GetRequest();
 }

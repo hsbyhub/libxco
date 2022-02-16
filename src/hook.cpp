@@ -296,7 +296,6 @@ int accept(int sockfd, struct sockaddr *addr, socklen_t *addrlen) {
         // 加入套接字管理器
         xco::FdManagerSgt::Instance().Get(accept_fd, true);
     }
-    LOGDEBUG(XCO_FUNC_WITH_ARG_EXP(TimeStampUs()));
     return accept_fd;
 }
 
