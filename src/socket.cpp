@@ -1,8 +1,8 @@
-/*================================================================*
+ï»¿/*================================================================*
         Copyright (C) 2021 All rights reserved, www.hsby.link.
-      	ÎÄ¼şÃû³Æ£ºsocket.cpp
-      	´´ ½¨ Õß£ºhsby
-      	´´½¨ÈÕÆÚ£º2022/2/10
+      	æ–‡ä»¶åç§°ï¼šsocket.cpp
+      	åˆ› å»º è€…ï¼šhsby
+      	åˆ›å»ºæ—¥æœŸï¼š2022/2/10
  *================================================================*/
 #include "socket.h"
 #include "iomanager.h"
@@ -63,7 +63,7 @@ bool Socket::InitSystemSocket(bool auto_create) {
     }
     SetOption(SOL_SOCKET, SO_REUSEADDR, 1);
     if (type_ == kTTcp) {
-        SetOption(IPPROTO_TCP,  TCP_NODELAY, 1);// ½ûÓÃNagleËã·¨
+        SetOption(IPPROTO_TCP,  TCP_NODELAY, 1);// ç¦ç”¨Nagleç®—æ³•
     }
     return true;
 }

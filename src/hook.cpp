@@ -1,8 +1,8 @@
-/*================================================================*
+ï»¿/*================================================================*
         Copyright (C) 2021 All rights reserved, www.hsby.link.
-      	ÎÄ¼şÃû³Æ£ºhook.cpp
-      	´´ ½¨ Õß£ºhsby
-      	´´½¨ÈÕÆÚ£º2022/2/10
+      	æ–‡ä»¶åç§°ï¼šhook.cpp
+      	åˆ› å»º è€…ï¼šhsby
+      	åˆ›å»ºæ—¥æœŸï¼š2022/2/10
  *================================================================*/
 #include "hook.h"
 #include "common.h"
@@ -14,7 +14,7 @@
 
 XCO_NAMESPAVE_START
 /**
- * @brief µ±Ç°Ïß³ÌÊÇ·ñhook
+ * @brief å½“å‰çº¿ç¨‹æ˜¯å¦hook
  */
 static thread_local bool t_hook_enable = false;
 
@@ -47,8 +47,8 @@ void hook_init() {
         return ;
 
 /**
- * @brief ½«±»hookµÄº¯ÊıÖ¸Õë¶¼Ö¸ÏòÔ­±¾µÄ°æ±¾
- * @details dlsym´ÓRTLD_NEXT»ñÈ¡nameº¯ÊıÖ¸Õë
+ * @brief å°†è¢«hookçš„å‡½æ•°æŒ‡é’ˆéƒ½æŒ‡å‘åŸæœ¬çš„ç‰ˆæœ¬
+ * @details dlsymä»RTLD_NEXTè·å–nameå‡½æ•°æŒ‡é’ˆ
  */
 #define XX(name) name##_f = (name##_fun)dlsym(RTLD_NEXT, #name);
     HOOK_FUN(XX);
@@ -82,31 +82,31 @@ struct time_info{
 template<typename SysFunType, typename ... Args>
 static ssize_t do_io(int fd, SysFunType sys_fun, const char* hook_fun_name,
                      uint32_t event, int timeout_so, Args&&... args) {
-    // Èç¹ûÃ»ÓĞHook
+    // å¦‚æœæ²¡æœ‰Hook
     if (!xco::IsHookEnable()) {
         return sys_fun(fd, std::forward<Args>(args)...);
     }
 
-    // È¡µÃÌ×½Ó×Ö£¬Èç¹ûÈ¡²»µ½ËµÃ÷·ÇÍøÂçÌ×½Ó×Ö
+    // å–å¾—å¥—æ¥å­—ï¼Œå¦‚æœå–ä¸åˆ°è¯´æ˜éç½‘ç»œå¥—æ¥å­—
     xco::FdCtx::Ptr ctx = xco::FdManagerSgt::Instance().Get(fd);
     if (!ctx) {
         return sys_fun(fd, std::forward<Args>(args)...);
     }
 
-    // Èç¹ûÌ×½Ó×ÖÒÑ¹Ø±Õ
+    // å¦‚æœå¥—æ¥å­—å·²å…³é—­
     if (ctx->IsClosed()) {
         errno = EBADF;
         return -1;
     }
 
-    // Èç¹û·Çsoket»òÕßÓÃ»§Ö¸¶¨·Ç×èÈû
+    // å¦‚æœésoketæˆ–è€…ç”¨æˆ·æŒ‡å®šéé˜»å¡
     if (!ctx->IsSocket() || ctx->IsUserNonblock()) {
         return sys_fun(fd, std::forward<Args>(args)...);
     }
 
     uint64_t time_out = ctx->GetTimeout(timeout_so);
 
-    // Î¬»¤Ò»¸ö¶ÔÏó±ê¼Ç±¾´ÎÈÎÎñÊÇ·ñÒÑ¾­½áÊø
+    // ç»´æŠ¤ä¸€ä¸ªå¯¹è±¡æ ‡è®°æœ¬æ¬¡ä»»åŠ¡æ˜¯å¦å·²ç»ç»“æŸ
     std::shared_ptr<time_info> tinfo(new time_info);
 
 retry:
@@ -164,7 +164,7 @@ HOOK_FUN(XX);
 
 
 unsigned int sleep(unsigned int seconds) {
-    // Èç¹ûÃ»ÓĞhook
+    // å¦‚æœæ²¡æœ‰hook
     if (!xco::IsHookEnable()) {
         return sleep_f(seconds);
     }
@@ -173,7 +173,7 @@ unsigned int sleep(unsigned int seconds) {
 }
 
 int usleep(useconds_t usec) {
-    // Èç¹ûÃ»ÓĞhook
+    // å¦‚æœæ²¡æœ‰hook
     if (!xco::IsHookEnable()) {
         return usleep_f(usec);
     }
@@ -186,7 +186,7 @@ int usleep(useconds_t usec) {
 }
 
 int nanosleep(const struct timespec *req, struct timespec *rem){
-    // Èç¹ûÃ»ÓĞhook
+    // å¦‚æœæ²¡æœ‰hook
     if (!xco::IsHookEnable()) {
         return nanosleep_f(req, rem);
     }
@@ -202,7 +202,7 @@ int nanosleep(const struct timespec *req, struct timespec *rem){
 }
 
 int socket(int domain, int type, int protocol) {
-    // Èç¹ûÃ»ÓĞhook
+    // å¦‚æœæ²¡æœ‰hook
     if (!xco::IsHookEnable()) {
         return socket_f(domain, type, protocol);
     }
@@ -212,7 +212,7 @@ int socket(int domain, int type, int protocol) {
         return fd;
     }
 
-    // ¼ÓÈëÌ×½Ó×Ö¹ÜÀíÆ÷
+    // åŠ å…¥å¥—æ¥å­—ç®¡ç†å™¨
     xco::FdManagerSgt::Instance().Get(fd, true);
 
     return fd;
@@ -231,11 +231,11 @@ int connect_with_timeout(int sockfd, const struct sockaddr *addr,
     if (!ctx->IsSocket()) {
         return connect_f(sockfd, addr, addrlen);
     }
-    // Èç¹ûÓÃ»§Ö¸¶¨·Ç×èÈû
+    // å¦‚æœç”¨æˆ·æŒ‡å®šéé˜»å¡
     if (ctx->IsUserNonblock()) {
         return connect_f(sockfd, addr, addrlen);
     }
-    // ÏÈ³¢ÊÔÁ¬½Ó
+    // å…ˆå°è¯•è¿æ¥
     int n = connect_f(sockfd, addr, addrlen);
     if (n == 0) {
         return 0;
@@ -248,7 +248,7 @@ int connect_with_timeout(int sockfd, const struct sockaddr *addr,
     auto tinfo = std::make_shared<time_info>();
     std::weak_ptr<time_info> winfo(tinfo);
 
-    // ÉèÖÃ³¬Ê±ÊÂ¼ş£¬Ä¬ÈÏ
+    // è®¾ç½®è¶…æ—¶äº‹ä»¶ï¼Œé»˜è®¤
     if (timeout_ms != -1) {
         timer = iom->AddConditionTimer(timeout_ms, [winfo, sockfd, iom]() {
             auto t = winfo.lock();
@@ -292,7 +292,7 @@ int connect(int sockfd, const struct sockaddr *addr,
 int accept(int sockfd, struct sockaddr *addr, socklen_t *addrlen) {
     int accept_fd = do_io(sockfd, accept_f, "accept", EPOLLIN, SO_RCVTIMEO, addr, addrlen);
     if (accept_fd >= 0) {
-        // ¼ÓÈëÌ×½Ó×Ö¹ÜÀíÆ÷
+        // åŠ å…¥å¥—æ¥å­—ç®¡ç†å™¨
         xco::FdManagerSgt::Instance().Get(accept_fd, true);
     }
     return accept_fd;
@@ -343,7 +343,7 @@ int close(int fd) {
         return close_f(fd);
     }
     auto ctx = xco::FdManagerSgt::Instance().Get(fd);
-    // È¡Ïû¹ØÓÚ¾ä±úµÄÊÂ¼ş
+    // å–æ¶ˆå…³äºå¥æŸ„çš„äº‹ä»¶
     if (ctx) {
         auto iom = xco::IoManager::GetCurIoManager();
         if (iom) {
@@ -442,13 +442,13 @@ int fcntl(int fd, int cmd, ...) {
 }
 
 int ioctl(int fd, unsigned long request, ...) {
-    // È¡³ö¿É±ä²ÎÊı
+    // å–å‡ºå¯å˜å‚æ•°
     va_list va;
     va_start(va, request);
     auto arg = va_arg(va, void*);
     va_end(va);
 
-    // ÇëÇóÊÇ·ñÎª·Ç×èÈû
+    // è¯·æ±‚æ˜¯å¦ä¸ºéé˜»å¡
     if (FIONBIO == request) {
         bool user_nonblock = !!*(int*)arg;
         auto ctx = xco::FdManagerSgt::Instance().Get(fd);

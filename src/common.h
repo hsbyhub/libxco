@@ -1,8 +1,8 @@
-/*================================================================*
+ï»¿/*================================================================*
         Copyright (C) 2021 All rights reserved, www.XCO.link.
-      	ÎÄ¼şÃû³Æ£ºcommon.cpp
-      	´´ ½¨ Õß£ºXCO
-      	´´½¨ÈÕÆÚ£º2022/2/9
+      	æ–‡ä»¶åç§°ï¼šcommon.cpp
+      	åˆ› å»º è€…ï¼šXCO
+      	åˆ›å»ºæ—¥æœŸï¼š2022/2/9
  *================================================================*/
 #pragma once
 
@@ -25,11 +25,11 @@
 #include <sys/wait.h>
 #include "cxxabi.h"
 
-// ÃüÃû¿Õ¼ä
+// å‘½åç©ºé—´
 #define XCO_NAMESPAVE_START namespace xco{
 #define XCO_NAMESPAVE_END }
 
-// ÈÕÖ¾
+// æ—¥å¿—
 void DumpFmtDate(std::ostream& os);
 int GetLogLevel();
 void SetLogLevel(int level);
@@ -50,7 +50,7 @@ void SetLogLevel(int level);
 #define LOGFATAL(msg)   LOG_IF_LEVEL(FATAL, msg)
 
 /**
- * @brief µ¥ÀıÄ£Ê½
+ * @brief å•ä¾‹æ¨¡å¼
  */
 template<typename T, typename X = void, int N = 0>
 class Singleton{
@@ -62,7 +62,7 @@ public:
 };
 
 /**
- * @brief ²»¿É¿½±´»ùÀà
+ * @brief ä¸å¯æ‹·è´åŸºç±»
  */
 class Noncopyable {
 public:
@@ -92,7 +92,7 @@ inline std::ostream &operator<<(std::ostream &os, const BaseDump& base_dump) {
 }
 
 /**
- * @brief Ìá¹©GCCÔ¤²âĞÅÏ¢(CPUÁ÷Ë®Ïß¼¼ÊõÏÂÌá¸ßĞÔÄÜ)
+ * @brief æä¾›GCCé¢„æµ‹ä¿¡æ¯(CPUæµæ°´çº¿æŠ€æœ¯ä¸‹æé«˜æ€§èƒ½)
  */
 #if defined(__GNUC__) || defined(__llvm__)
 #   define XCO_LICKLY(x)     __builtin_expect(!!(x), 1)
@@ -103,14 +103,14 @@ inline std::ostream &operator<<(std::ostream &os, const BaseDump& base_dump) {
 #endif
 
 /**
- * @brief ×Ö½ÚĞòÀàĞÍ
+ * @brief å­—èŠ‚åºç±»å‹
  */
 #define XCO_ENDIAN_LITTLE 1
 #define XCO_ENDIAN_BIG 2
 
-//================================= ¶ÏÑÔ start =================================//
+//================================= æ–­è¨€ start =================================//
 /**
- * @brief ¶ÏÑÔ£¬×Ô¶¯Êä³ö×î¶à100²ã¶ÑÕ»ĞÅÏ¢
+ * @brief æ–­è¨€ï¼Œè‡ªåŠ¨è¾“å‡ºæœ€å¤š100å±‚å †æ ˆä¿¡æ¯
  */
 #define XCO_ASSERT(arg)           \
     if (XCO_UNLICKLY(!(arg))){                   \
@@ -121,7 +121,7 @@ inline std::ostream &operator<<(std::ostream &os, const BaseDump& base_dump) {
     }
 
 /**
- * @brief ¶ÏÑÔ£¬×Ô¶¯Êä³ö×î¶à100²ã¶ÑÕ»ĞÅÏ¢
+ * @brief æ–­è¨€ï¼Œè‡ªåŠ¨è¾“å‡ºæœ€å¤š100å±‚å †æ ˆä¿¡æ¯
  */
 #define XCO_ASSERT_MSG(arg, msg)                   \
     if (XCO_UNLICKLY(!(arg))){                                    \
@@ -131,9 +131,9 @@ inline std::ostream &operator<<(std::ostream &os, const BaseDump& base_dump) {
                 << XCO::BackTraceString(100, 1, "\n        ");  \
         assert(0);                                             \
     }
-//================================= ¶ÏÑÔ end =================================//
+//================================= æ–­è¨€ end =================================//
 
-//================================= ±ã½İ±í´ï start =================================//
+//================================= ä¾¿æ·è¡¨è¾¾ start =================================//
 #define XCO_ERROR_EXP (std::string("errno=") + std::to_string(errno) + ", strerr=" + strerror(errno))
 #define XCO_VARS_EXP(...) (ParseArgList(#__VA_ARGS__, 0, "", __VA_ARGS__))
 #define XCO_FUNC_WITH_ARG_EXP(...) (ParseFuncExp(__PRETTY_FUNCTION__, XCO_VARS_EXP(__VA_ARGS__)))
@@ -163,12 +163,12 @@ inline bool IsArgListSplit(char ch) {
     return ch == ',';
 }
 
-// ÖÕÖ¹±éÀú¿É±ä²ÎÊı
+// ç»ˆæ­¢éå†å¯å˜å‚æ•°
 inline void ParseArgList(std::stringstream& ss,
                          const std::string& format, int format_idx,
                          const std::string& prefix) {
 }
-// ±éÀú¿É±ä²ÎÊı
+// éå†å¯å˜å‚æ•°
 template<typename VarType, typename ...VarTypes>
 void ParseArgList(std::stringstream& ss,
                   const std::string& format, int format_idx,
@@ -200,18 +200,18 @@ std::string ParseArgList(const std::string& format, int format_begin,
     ParseArgList(ss, format, format_begin, prefix, var, vars...);
     return ss.str();
 }
-//================================= ±ã½İ±í´ï end =================================//
+//================================= ä¾¿æ·è¡¨è¾¾ end =================================//
 
-//=================================²Ù×÷Ä£°å <start>=================================//
+//=================================æ“ä½œæ¨¡æ¿ <start>=================================//
 /**
- * @brief »ñÈ¡MapÖĞµÄkeyÖµ,²¢×ª³É¶ÔÓ¦ÀàĞÍ,·µ»ØÊÇ·ñ³É¹¦
- * @param[in] m MapÊı¾İ½á¹¹
- * @param[in] key ¹Ø¼ü×Ö
- * @param[out] val ±£´æ×ª»»ºóµÄÖµ
- * @param[in] def Ä¬ÈÏÖµ
+ * @brief è·å–Mapä¸­çš„keyå€¼,å¹¶è½¬æˆå¯¹åº”ç±»å‹,è¿”å›æ˜¯å¦æˆåŠŸ
+ * @param[in] m Mapæ•°æ®ç»“æ„
+ * @param[in] key å…³é”®å­—
+ * @param[out] val ä¿å­˜è½¬æ¢åçš„å€¼
+ * @param[in] def é»˜è®¤å€¼
  * @return
- *      @retval true ×ª»»³É¹¦, val Îª¶ÔÓ¦µÄÖµ
- *      @retval false ²»´æÔÚ»òÕß×ª»»Ê§°Ü val = def
+ *      @retval true è½¬æ¢æˆåŠŸ, val ä¸ºå¯¹åº”çš„å€¼
+ *      @retval false ä¸å­˜åœ¨æˆ–è€…è½¬æ¢å¤±è´¥ val = def
  */
 template<class MapType, class T>
 bool GetAsFromMapWithCheck(const MapType& m, const std::string& key, T& val, const T& def = T()) {
@@ -230,11 +230,11 @@ bool GetAsFromMapWithCheck(const MapType& m, const std::string& key, T& val, con
 }
 
 /**
- * @brief »ñÈ¡MapÖĞµÄkeyÖµ,²¢×ª³É¶ÔÓ¦ÀàĞÍ
- * @param[in] mp MapÊı¾İ½á¹¹
- * @param[in] key ¹Ø¼ü×Ö
- * @param[in] def Ä¬ÈÏÖµ
- * @return Èç¹û´æÔÚÇÒ×ª»»³É¹¦·µ»Ø¶ÔÓ¦µÄÖµ,·ñÔò·µ»ØÄ¬ÈÏÖµ
+ * @brief è·å–Mapä¸­çš„keyå€¼,å¹¶è½¬æˆå¯¹åº”ç±»å‹
+ * @param[in] mp Mapæ•°æ®ç»“æ„
+ * @param[in] key å…³é”®å­—
+ * @param[in] def é»˜è®¤å€¼
+ * @return å¦‚æœå­˜åœ¨ä¸”è½¬æ¢æˆåŠŸè¿”å›å¯¹åº”çš„å€¼,å¦åˆ™è¿”å›é»˜è®¤å€¼
  */
 template<class MapType, class T>
 T GetAsFromMap(const MapType& mp, const std::string& key, const T& def = T()) {
@@ -250,7 +250,7 @@ T GetAsFromMap(const MapType& mp, const std::string& key, const T& def = T()) {
 }
 
 /**
- * @brief ´ÓmapÖĞ»ñÈ¡Öµ
+ * @brief ä»mapä¸­è·å–å€¼
  * @param[in]
  * @return
  */
@@ -261,7 +261,7 @@ typename MapType::value_type::second_type GetFromMap(MapType& mp, const typename
 }
 
 /**
- * @brief ¸´ÖÆmap
+ * @brief å¤åˆ¶map
  */
 template<typename MapType>
 void CopyMap(const MapType& mp_src, MapType& mp_dst) {
@@ -269,11 +269,11 @@ void CopyMap(const MapType& mp_src, MapType& mp_dst) {
         mp_dst[it.first] = it.second;
     }
 }
-//=================================²Ù×÷Ä£°å <end>=================================//
+//=================================æ“ä½œæ¨¡æ¿ <end>=================================//
 
-//================================= ×Ô¶¯Éú³É´úÂë start =================================//
+//================================= è‡ªåŠ¨ç”Ÿæˆä»£ç  start =================================//
 /**
- * @brief Éú³É±äÁ¿µÄsetter
+ * @brief ç”Ÿæˆå˜é‡çš„setter
  */
 #define FUNCTION_BUILDER_VAR_SETTER(name, var)  \
 void Set##name(const decltype(var)& value) {    \
@@ -281,7 +281,7 @@ void Set##name(const decltype(var)& value) {    \
 }
 
 /**
- * @brief Éú³É±äÁ¿µÄgetter
+ * @brief ç”Ÿæˆå˜é‡çš„getter
  */
 #define FUNCTION_BUILDER_VAR_GETTER(name, var)  \
 decltype(var) Get##name() const {               \
@@ -289,14 +289,14 @@ decltype(var) Get##name() const {               \
 }
 
 /**
- * @brief Éú³É±äÁ¿µÄsetterºÍgetter
+ * @brief ç”Ÿæˆå˜é‡çš„setterå’Œgetter
  */
 #define FUNCTION_BUILDER_VAR(name, var)         \
         FUNCTION_BUILDER_VAR_SETTER(name, var)  \
         FUNCTION_BUILDER_VAR_GETTER(name, var)
 
 /**
- * @brief Éú³ÉmapµÄsetter
+ * @brief ç”Ÿæˆmapçš„setter
  */
 #define FUNCTION_BUILDER_MAP_SETTER(name, mp)                                   \
 void Set##name(const typename decltype(mp)::key_type& key,                      \
@@ -305,7 +305,7 @@ void Set##name(const typename decltype(mp)::key_type& key,                      
 }
 
 /**
- * @brief Éú³ÉmapµÄgetter
+ * @brief ç”Ÿæˆmapçš„getter
  */
 #define FUNCTION_BUILDER_MAP_GETTER(name, mp)                                   \
 typename decltype(mp)::value_type::second_type                                  \
@@ -315,7 +315,7 @@ Get##name(const typename decltype(mp)::key_type& key) const {                   
 }
 
 /**
- * @brief Éú³ÉmapµÄgetter with default
+ * @brief ç”Ÿæˆmapçš„getter with default
  */
 #define FUNCTION_BUILDER_MAP_GETTER_DEFAULT(name, mp)                           \
 typename decltype(mp)::value_type::second_type                                  \
@@ -326,7 +326,7 @@ Get##name(const typename decltype(mp)::key_type& key,                           
 }
 
 /**
- * @brief Éú³ÉmapµÄdel
+ * @brief ç”Ÿæˆmapçš„del
  */
 #define FUNCTION_BUILDER_MAP_DEL(name, mp)                                      \
 void Del##name(const decltype(mp)::key_type& key) {                             \
@@ -334,7 +334,7 @@ void Del##name(const decltype(mp)::key_type& key) {                             
 }
 
 /**
- * @brief Éú³ÉmapµÄhas
+ * @brief ç”Ÿæˆmapçš„has
  */
 #define FUNCTION_BUILDER_MAP_HAS(name, mp)                                      \
 bool Has##name(const decltype(mp)::key_type& key) const {                       \
@@ -342,7 +342,7 @@ bool Has##name(const decltype(mp)::key_type& key) const {                       
 }
 
 /**
- * @brief Éú³ÉmapµÄËùÓĞ²Ù×÷º¯Êı
+ * @brief ç”Ÿæˆmapçš„æ‰€æœ‰æ“ä½œå‡½æ•°
  */
 #define FUNCTION_BUILDER_MAP(name, mp)                  \
         FUNCTION_BUILDER_MAP_SETTER(name, mp)           \
@@ -352,11 +352,11 @@ bool Has##name(const decltype(mp)::key_type& key) const {                       
         FUNCTION_BUILDER_MAP_HAS(name, mp)              \
 
 /**
- * @brief Éú³É¿ÉÒÔÇ¿ÖÆ×ª»»ÎªÄ³ÖÖÀàĞÍµÄGetter
- * @param[in] key:¼üÖµ
- * @param[in] def:Ä¬ÈÏÖµ
- * @param[out] val:·µ»ØÖµ
- * @return TÀàĞÍµÄ·µ»ØÖµ
+ * @brief ç”Ÿæˆå¯ä»¥å¼ºåˆ¶è½¬æ¢ä¸ºæŸç§ç±»å‹çš„Getter
+ * @param[in] key:é”®å€¼
+ * @param[in] def:é»˜è®¤å€¼
+ * @param[out] val:è¿”å›å€¼
+ * @return Tç±»å‹çš„è¿”å›å€¼
  */
 #define FUNCTION_BUILDER_MAP_AS(name, mp)                                       \
 template<class T>                                                               \
@@ -372,11 +372,11 @@ bool Get##name##AsWithCheck(const typename decltype(mp)::key_type& key, T& val, 
 }
 
 /**
- * @brief Éú³É¿ÉÒÔÇ¿ÖÆ×ª»»ÎªÄ³ÖÖÀàĞÍµÄGetter
- * @param[in] key:¼üÖµ
- * @param[in] def:Ä¬ÈÏÖµ
- * @param[out] val:·µ»ØÖµ
- * @return TÀàĞÍµÄ·µ»ØÖµ
+ * @brief ç”Ÿæˆå¯ä»¥å¼ºåˆ¶è½¬æ¢ä¸ºæŸç§ç±»å‹çš„Getter
+ * @param[in] key:é”®å€¼
+ * @param[in] def:é»˜è®¤å€¼
+ * @param[out] val:è¿”å›å€¼
+ * @return Tç±»å‹çš„è¿”å›å€¼
  */
 #define FUNCTION_BUILDER_MAP_AS_WITH_PREDEAL(name, mp, predel)                  \
 template<class T>                                                               \
@@ -392,11 +392,11 @@ bool Get##name##AsWithCheck(const typename decltype(mp)::key_type& key, T& val, 
     predel;                                                                     \
     return GetAsFromMapWithCheck(mp, key, val, def);                            \
 }
-//=================================×Ô¶¯Éú³É´úÂë end=================================//
+//=================================è‡ªåŠ¨ç”Ÿæˆä»£ç  end=================================//
 
-//=================================×Ö½ÚĞò start=================================//
+//=================================å­—èŠ‚åº start=================================//
 /**
- * @brief ×Ö½ÚĞò×ª»»
+ * @brief å­—èŠ‚åºè½¬æ¢
  * @param[in]
  * @return
  */
@@ -436,48 +436,48 @@ template<typename T> T ByteSwapOnBigEndian(T t) {
     return ByteSwap(t);
 }
 #endif
-//=================================×Ö½ÚĞò end=================================//
+//=================================å­—èŠ‚åº end=================================//
 
-//=================================Ïß³ÌÏà¹Ø <start>=================================//
+//=================================çº¿ç¨‹ç›¸å…³ <start>=================================//
 /**
- * @brief »ñÈ¡µ±Ç°Ïß³ÌId
+ * @brief è·å–å½“å‰çº¿ç¨‹Id
  */
 int GetThisThreadId();
 
 /**
- * @brief ÌáÈ¡µ±Ç°¶ÑÕ»ĞÅÏ¢
+ * @brief æå–å½“å‰å †æ ˆä¿¡æ¯
  */
 void BackTrace(std::vector<std::string>& , int size = 64, int skip = 1);
 
 /**
- * @brief ÌáÈ¡µ±Ç°¶ÑÕ»ĞÅÏ¢
+ * @brief æå–å½“å‰å †æ ˆä¿¡æ¯
  */
 std::string BackTraceString( int size = 100, int skip = 1, std::string post = "");
-//=================================Ïß³ÌÏà¹Ø <end>=================================//
+//=================================çº¿ç¨‹ç›¸å…³ <end>=================================//
 
-//=================================Ê±¼äÏà¹Ø <start>=================================//
+//=================================æ—¶é—´ç›¸å…³ <start>=================================//
 /**
- * @brief »ñÈ¡µ±Ç°Ê±¼ä£¬ºÁÃë
+ * @brief è·å–å½“å‰æ—¶é—´ï¼Œæ¯«ç§’
  */
 uint64_t TimeStampMs();
 
 /**
- * @brief »ñÈ¡µ±Ç°Ê±¼ä£¬Î¢Ãë
+ * @brief è·å–å½“å‰æ—¶é—´ï¼Œå¾®ç§’
  */
 uint64_t TimeStampUs();
 
 /**
- * @brief »ñÈ¡Ïß³ÌÔËĞĞµ½µ±Ç°Ê±¿ÌµÄÊ±¼ä
+ * @brief è·å–çº¿ç¨‹è¿è¡Œåˆ°å½“å‰æ—¶åˆ»çš„æ—¶é—´
  */
 uint64_t GetRealTimeUs();
 
 /**
- * @brief ½«timeval×ª»¯ÎªºÁÃë
+ * @brief å°†timevalè½¬åŒ–ä¸ºæ¯«ç§’
  */
 int64_t TimevalToMs(const timeval& tv);
 
 /**
- * @brief »ñÈ¡Ê±¼ä¼ä¸ô
+ * @brief è·å–æ—¶é—´é—´éš”
  */
 struct TimeInterval {
     TimeInterval() {
@@ -494,21 +494,21 @@ struct TimeInterval {
 inline std::ostream& operator<<(std::ostream& os, TimeInterval& ti) {
     return os << " Interval=" << ti.Get() << "us";
 }
-//=================================Ê±¼äÏà¹Ø <end>=================================//
+//=================================æ—¶é—´ç›¸å…³ <end>=================================//
 
-//=================================ÄÚ´æÏà¹Ø <start>=================================//
+//=================================å†…å­˜ç›¸å…³ <start>=================================//
 /**
- * @brief ½«¶ÔÏóÖÃÁã
+ * @brief å°†å¯¹è±¡ç½®é›¶
  */
 template<typename T>
 void MemSetZero(T& t) {
     memset(&t, 0, sizeof(t));
 }
-//=================================ÄÚ´æÏà¹Ø <end>=================================//
+//=================================å†…å­˜ç›¸å…³ <end>=================================//
 
-//=================================¶ş½øÖÆÏà¹Ø <start>=================================//
+//=================================äºŒè¿›åˆ¶ç›¸å…³ <start>=================================//
 /**
- * @brief ¼ÆËãÀàĞÍÎªT, Ç°×ºÎªprefix_lenµÄºó×ºÑÚÂë(ÀıÈç T=uint32_t, prefix_len=24, return 0.0.0.255)
+ * @brief è®¡ç®—ç±»å‹ä¸ºT, å‰ç¼€ä¸ºprefix_lençš„åç¼€æ©ç (ä¾‹å¦‚ T=uint32_t, prefix_len=24, return 0.0.0.255)
  * @return
  */
 template<typename T>
@@ -517,7 +517,7 @@ T CreateSufMask(int prefix_len) {
 }
 
 /**
- * @brief ¼ÆËãÀàĞÍÎªT, Ç°×ºÎªprefix_lenµÄÇ°×ºÑÚÂë(ÀıÈç T=uint32_t, prefix_len=24, return 255.255.255.0)
+ * @brief è®¡ç®—ç±»å‹ä¸ºT, å‰ç¼€ä¸ºprefix_lençš„å‰ç¼€æ©ç (ä¾‹å¦‚ T=uint32_t, prefix_len=24, return 255.255.255.0)
  * @return
  */
 template<typename T>
@@ -526,7 +526,7 @@ T CreatePreMask(int prefix_len) {
 }
 
 /**
- * @brief ¼ÆËãÎ»1µÄÊıÁ¿
+ * @brief è®¡ç®—ä½1çš„æ•°é‡
  * @return
  */
 template<typename T>
@@ -540,7 +540,7 @@ uint32_t GetOneBitCount(T mask) {
 }
 
 /**
- * @brief Êä³öÕûĞÍÖµµÄ¶ş½øÖÆ×Ö·û´®
+ * @brief è¾“å‡ºæ•´å‹å€¼çš„äºŒè¿›åˆ¶å­—ç¬¦ä¸²
  */
 template<typename Type>
 std::string IntToBitString(Type v) {
@@ -550,7 +550,7 @@ std::string IntToBitString(Type v) {
     }
     return ss.str();
 }
-//=================================¶ş½øÖÆÏà¹Ø <end>=================================//
+//=================================äºŒè¿›åˆ¶ç›¸å…³ <end>=================================//
 
 template<typename Type>
 const char* GetTypeName() {
@@ -559,7 +559,7 @@ const char* GetTypeName() {
 }
 
 /**
- * @brief ´´½¨¶à½ø³Ì³ÌĞò
+ * @brief åˆ›å»ºå¤šè¿›ç¨‹ç¨‹åº
  */
 inline void MultiProcess(int process_cnt, std::function<void()> fun, void(*on_main_int)(int) = nullptr, void(*on_child_int)(int) = nullptr) {
     if (on_main_int) {

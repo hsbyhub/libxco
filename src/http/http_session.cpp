@@ -1,8 +1,8 @@
 /*================================================================*
-        Copyright (C) 2021 All rights reserved, www.hsby.link.
-      	�ļ����ƣ�http_session.cc
-      	�� �� �ߣ���ɭ����
-      	�������ڣ�2021/12/30
+        Copyright (C) 2021 All rights reserved, www.hsby.link..
+      	文件名称 http_session.cc
+      	创 建 者：汉森伯逸
+      	创建日期：2021/12/24
  *================================================================*/
 #include "http/http_session.h"
 #include "http/http_paser.h"

@@ -1,8 +1,8 @@
-/*================================================================*
+ï»¿/*================================================================*
         Copyright (C) 2021 All rights reserved, www.hsby.link.
-      	ÎÄ¼şÃû³Æ£ºscheduler.h
-      	´´ ½¨ Õß£ºhsby
-      	´´½¨ÈÕÆÚ£º2022/2/9
+      	æ–‡ä»¶åç§°ï¼šscheduler.h
+      	åˆ› å»º è€…ï¼šhsby
+      	åˆ›å»ºæ—¥æœŸï¼š2022/2/9
  *================================================================*/
 #pragma once
 
@@ -14,47 +14,47 @@ XCO_NAMESPAVE_START
 class Scheduler {
 public:
     /**
-     * @brief ¹¹Ôìº¯Êı
+     * @brief æ„é€ å‡½æ•°
      */
     Scheduler();
 
     /**
-     * @brief Îö¹¹º¯Êı
+     * @brief ææ„å‡½æ•°
      */
     virtual ~Scheduler();
 
 public:
     /**
-     * @brief ¿ªÊ¼
+     * @brief å¼€å§‹
      */
     virtual void Start();
 
 protected:
     /**
-     * @brief Ö÷Ñ­»·
+     * @brief ä¸»å¾ªç¯
      */
     void OnLoop();
 
     /**
-     * @brief ÏĞÖÃ´¦Àí
+     * @brief é—²ç½®å¤„ç†
      */
     virtual void OnIdle();
 
 public:
     /**
-     * @brief »ñÈ¡µ±Ç°µ÷¶ÈÆ÷
+     * @brief è·å–å½“å‰è°ƒåº¦å™¨
      */
     static Scheduler* GetCurScheduler();
 
     /**
-     * @brief µ÷¶È
-     * @param[in] coc Ğ­³Ì»ò»Øµ÷
+     * @brief è°ƒåº¦
+     * @param[in] coc åç¨‹æˆ–å›è°ƒ
      */
     static void Schedule(Coroutine::Ptr co);
 
 private:
-    Coroutine::Ptr                 loop_co_    = nullptr;  // Ö÷Ñ­»·Ğ­³Ì
-    Coroutine::Ptr                 idle_co_    = nullptr;  // ÏĞÖÃĞ­³Ì
+    Coroutine::Ptr                 loop_co_    = nullptr;  // ä¸»å¾ªç¯åç¨‹
+    Coroutine::Ptr                 idle_co_    = nullptr;  // é—²ç½®åç¨‹
     std::queue<Coroutine::Ptr>       co_list_;
 };
 

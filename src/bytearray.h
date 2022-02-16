@@ -1,8 +1,8 @@
-/*================================================================*
+ï»¿/*================================================================*
         Copyright (C) 2021 All rights reserved, www.hsby.link.
-      	ÎÄ¼şÃû³Æ£ºecho_server.cc
-      	´´ ½¨ Õß£ºººÉ­²®Òİ
-      	´´½¨ÈÕÆÚ£º2022/2/13
+      	æ–‡ä»¶åç§°ï¼šecho_server.cc
+      	åˆ› å»º è€…ï¼šæ±‰æ£®ä¼¯é€¸
+      	åˆ›å»ºæ—¥æœŸï¼š2022/2/13
  *================================================================*/
 #pragma once
 
@@ -43,23 +43,23 @@ public:
 private:
 
     /**
-     * @brief ·µ»ØÄÚ´æ¿éµÄ´óĞ¡
+     * @brief è¿”å›å†…å­˜å—çš„å¤§å°
      */
     size_t GetNodeSize() const { return node_size_;}
 
     /**
-     * @brief »ñÈ¡µÄ¿ÉĞ´ÈİÁ¿
+     * @brief è·å–çš„å¯å†™å®¹é‡
      */
     size_t GetCapSize() const;
 
     /**
-     * @brief »ñÈ¡¿É¶ÁµÄÊı¾İÊıÁ¿
+     * @brief è·å–å¯è¯»çš„æ•°æ®æ•°é‡
      */
     size_t GetDataSize() const;
 
     /**
-     * @brief ÊÊÅäÈİÁ¿, Èç¹ûÊ£ÓàÈİÁ¿´óÓÚĞèÒªµÄÈİÁ¿£¬ÎŞ¶¯×÷
-     * @param[in] need_cap:ĞèÒªµÄÈİÁ¿
+     * @brief é€‚é…å®¹é‡, å¦‚æœå‰©ä½™å®¹é‡å¤§äºéœ€è¦çš„å®¹é‡ï¼Œæ— åŠ¨ä½œ
+     * @param[in] need_cap:éœ€è¦çš„å®¹é‡
      */
     void FitCapacity(size_t need_cap);
 
@@ -68,7 +68,7 @@ private:
     size_t GetNodePos(size_t pos) const;
 
     /**
-     * @brief ±éÀú
+     * @brief éå†
      * @param[in]
      * @return
      */
@@ -76,415 +76,415 @@ private:
 public:
 
     /**
-     * @brief Çå¿ÕByteArray
+     * @brief æ¸…ç©ºByteArray
      * @post m_position = 0, m_size = 0
      */
     void Clear();
 
     /**
-     * @brief ÊÇ·ñÊÇĞ¡¶Ë
+     * @brief æ˜¯å¦æ˜¯å°ç«¯
      */
     bool IsLittleEndian() const;
 
     /**
-     * @brief ÉèÖÃÊÇ·ñÎªĞ¡¶Ë
+     * @brief è®¾ç½®æ˜¯å¦ä¸ºå°ç«¯
      */
     void SetIsLittleEndian(bool val);
 
     /**
-     * @brief »ñÈ¡µ±Ç°Ğ´Î»ÖÃ
+     * @brief è·å–å½“å‰å†™ä½ç½®
      */
     size_t GetWritePos() const { return write_pos_;}
 
     /**
-     * @brief ÉèÖÃµ±Ç°Ğ´Î»ÖÃ
+     * @brief è®¾ç½®å½“å‰å†™ä½ç½®
      */
     void SetWritePos(size_t pos);
 
     void AddWritePos(size_t count);
 
     /**
-     * @brief »ñÈ¡µ±Ç°¶ÁÎ»ÖÃ
+     * @brief è·å–å½“å‰è¯»ä½ç½®
      */
     size_t GetReadPos() const { return read_pos_;}
 
     /**
-     * @brief ÉèÖÃµ±Ç°¶ÁÎ»ÖÃ
+     * @brief è®¾ç½®å½“å‰è¯»ä½ç½®
      */
     void SetReadPos(size_t pos);
 
     /**
-     * @brief Ôö¼Óµ±Ç°¶ÁÎ»ÖÃ
+     * @brief å¢åŠ å½“å‰è¯»ä½ç½®
      */
     void AddReadPos(size_t count);
 
 public:
     /**
-     * @brief Êä³öËùÓĞÊı¾İ
+     * @brief è¾“å‡ºæ‰€æœ‰æ•°æ®
      */
     std::string DataToTextString() const;
 
     /**
-     * @brief ½«ByteArrayÀïÃæµÄÊı¾İ[m_position, m_size)×ª³É16½øÖÆµÄstd::string(¸ñÊ½:FF FF FF)
+     * @brief å°†ByteArrayé‡Œé¢çš„æ•°æ®[m_position, m_size)è½¬æˆ16è¿›åˆ¶çš„std::string(æ ¼å¼:FF FF FF)
      */
     std::string DataToHexString() const;
 
     /**
-     * @brief °ÑByteArrayµÄÊı¾İĞ´Èëµ½ÎÄ¼şÖĞ
-     * @param[in] name ÎÄ¼şÃû
+     * @brief æŠŠByteArrayçš„æ•°æ®å†™å…¥åˆ°æ–‡ä»¶ä¸­
+     * @param[in] name æ–‡ä»¶å
      */
     bool WriteToFile(const std::string& name) const;
 
     /**
-     * @brief ´ÓÎÄ¼şÖĞ¶ÁÈ¡Êı¾İ
-     * @param[in] name ÎÄ¼şÃû
+     * @brief ä»æ–‡ä»¶ä¸­è¯»å–æ•°æ®
+     * @param[in] name æ–‡ä»¶å
      */
     bool ReadFromFile(const std::string& name);
 
     /**
-     * @brief »ñÈ¡¿É¶ÁÈ¡µÄ»º´æ,±£´æ³ÉiovecÊı×é
-     * @param[out] iovs ±£´æ¿É¶ÁÈ¡Êı¾İµÄiovecÊı×é
-     * @param[in] len ¶ÁÈ¡Êı¾İµÄ³¤¶È,Èç¹ûlen > getReadSize() Ôò len = getReadSize()
-     * @return ·µ»ØÊµ¼ÊÊı¾İµÄ³¤¶È
+     * @brief è·å–å¯è¯»å–çš„ç¼“å­˜,ä¿å­˜æˆiovecæ•°ç»„
+     * @param[out] iovs ä¿å­˜å¯è¯»å–æ•°æ®çš„iovecæ•°ç»„
+     * @param[in] len è¯»å–æ•°æ®çš„é•¿åº¦,å¦‚æœlen > getReadSize() åˆ™ len = getReadSize()
+     * @return è¿”å›å®é™…æ•°æ®çš„é•¿åº¦
      */
     uint64_t GetReadIovecs(std::vector<iovec>& iovs, uint64_t len = ~0ull) const;
 
     /**
-     * @brief »ñÈ¡¿É¶ÁÈ¡µÄ»º´æ,±£´æ³ÉiovecÊı×é,´ÓpositionÎ»ÖÃ¿ªÊ¼
-     * @param[out] buffers ±£´æ¿É¶ÁÈ¡Êı¾İµÄiovecÊı×é
-     * @param[in] len ¶ÁÈ¡Êı¾İµÄ³¤¶È,Èç¹ûlen > getReadSize() Ôò len = getReadSize()
-     * @param[in] read_pos ¶ÁÈ¡Êı¾İµÄÎ»ÖÃ
-     * @return ·µ»ØÊµ¼ÊÊı¾İµÄ³¤¶È
+     * @brief è·å–å¯è¯»å–çš„ç¼“å­˜,ä¿å­˜æˆiovecæ•°ç»„,ä»positionä½ç½®å¼€å§‹
+     * @param[out] buffers ä¿å­˜å¯è¯»å–æ•°æ®çš„iovecæ•°ç»„
+     * @param[in] len è¯»å–æ•°æ®çš„é•¿åº¦,å¦‚æœlen > getReadSize() åˆ™ len = getReadSize()
+     * @param[in] read_pos è¯»å–æ•°æ®çš„ä½ç½®
+     * @return è¿”å›å®é™…æ•°æ®çš„é•¿åº¦
      */
     uint64_t GetReadIovecs(std::vector<iovec>& buffers, uint64_t len, uint64_t read_pos) const;
 
     /**
-     * @brief »ñÈ¡¿ÉĞ´ÈëµÄ»º´æ,±£´æ³ÉiovecÊı×é
-     * @param[out] buffers ±£´æ¿ÉĞ´ÈëµÄÄÚ´æµÄiovecÊı×é
-     * @param[in] len Ğ´ÈëµÄ³¤¶È
-     * @return ·µ»ØÊµ¼ÊµÄ³¤¶È
-     * @post Èç¹û(m_position + len) > m_capacity Ôò m_capacityÀ©ÈİN¸ö½ÚµãÒÔÈİÄÉlen³¤¶È
+     * @brief è·å–å¯å†™å…¥çš„ç¼“å­˜,ä¿å­˜æˆiovecæ•°ç»„
+     * @param[out] buffers ä¿å­˜å¯å†™å…¥çš„å†…å­˜çš„iovecæ•°ç»„
+     * @param[in] len å†™å…¥çš„é•¿åº¦
+     * @return è¿”å›å®é™…çš„é•¿åº¦
+     * @post å¦‚æœ(m_position + len) > m_capacity åˆ™ m_capacityæ‰©å®¹Nä¸ªèŠ‚ç‚¹ä»¥å®¹çº³lené•¿åº¦
      */
     uint64_t GetWriteIovecs(std::vector<iovec>& buffers, uint64_t len);
 
     /**
-     * @brief Ğ´
-     * @param[in] buf:Ğ´ÈëµÄÊı¾İ
-     * @param[in] len:Ğ´ÈëµÄÊı¾İ´óĞ¡
-     * @return Êµ¼ÊĞ´ÈëµÄ³¤¶È
+     * @brief å†™
+     * @param[in] buf:å†™å…¥çš„æ•°æ®
+     * @param[in] len:å†™å…¥çš„æ•°æ®å¤§å°
+     * @return å®é™…å†™å…¥çš„é•¿åº¦
      */
     void Write(const void* buf, size_t len);
 
     /**
-     * @brief ¶Á
-     * @param[in] buf:¶Á³öµÄÊı¾İ
-     * @param[in] len:¶Á³öµÄÊı¾İ´óĞ¡
-     * @return Êµ¼Ê¶Á³öµÄ´óĞ¡
+     * @brief è¯»
+     * @param[in] buf:è¯»å‡ºçš„æ•°æ®
+     * @param[in] len:è¯»å‡ºçš„æ•°æ®å¤§å°
+     * @return å®é™…è¯»å‡ºçš„å¤§å°
      */
     size_t Read(void* buf, size_t len);
 
     /**
-     * @brief ´Ópos¿ªÊ¼¶Á(²»¸Ä±ä¶ÁÎ»ÖÃ)
-     * @param[in] buf:¶Á³öµÄÊı¾İ
-     * @param[in] len:¶Á³öµÄÊı¾İ´óĞ¡
-     * @return Êµ¼Ê¶Á³öµÄ´óĞ¡
+     * @brief ä»poså¼€å§‹è¯»(ä¸æ”¹å˜è¯»ä½ç½®)
+     * @param[in] buf:è¯»å‡ºçš„æ•°æ®
+     * @param[in] len:è¯»å‡ºçš„æ•°æ®å¤§å°
+     * @return å®é™…è¯»å‡ºçš„å¤§å°
      */
     size_t Read(void* buf, size_t len, size_t pos) const;
 
     /**
-     * @brief Ğ´Èë¹Ì¶¨³¤¶Èint8_tÀàĞÍµÄÊı¾İ
+     * @brief å†™å…¥å›ºå®šé•¿åº¦int8_tç±»å‹çš„æ•°æ®
      * @post m_position += sizeof(value)
-     *       Èç¹ûm_position > m_size Ôò m_size = m_position
+     *       å¦‚æœm_position > m_size åˆ™ m_size = m_position
      */
     void WriteFint8  (int8_t value);
     /**
-     * @brief Ğ´Èë¹Ì¶¨³¤¶Èuint8_tÀàĞÍµÄÊı¾İ
+     * @brief å†™å…¥å›ºå®šé•¿åº¦uint8_tç±»å‹çš„æ•°æ®
      * @post m_position += sizeof(value)
-     *       Èç¹ûm_position > m_size Ôò m_size = m_position
+     *       å¦‚æœm_position > m_size åˆ™ m_size = m_position
      */
     void WriteFuint8 (uint8_t value);
     /**
-     * @brief Ğ´Èë¹Ì¶¨³¤¶Èint16_tÀàĞÍµÄÊı¾İ(´ó¶Ë/Ğ¡¶Ë)
+     * @brief å†™å…¥å›ºå®šé•¿åº¦int16_tç±»å‹çš„æ•°æ®(å¤§ç«¯/å°ç«¯)
      * @post m_position += sizeof(value)
-     *       Èç¹ûm_position > m_size Ôò m_size = m_position
+     *       å¦‚æœm_position > m_size åˆ™ m_size = m_position
      */
     void WriteFint16 (int16_t value);
     /**
-     * @brief Ğ´Èë¹Ì¶¨³¤¶Èuint16_tÀàĞÍµÄÊı¾İ(´ó¶Ë/Ğ¡¶Ë)
+     * @brief å†™å…¥å›ºå®šé•¿åº¦uint16_tç±»å‹çš„æ•°æ®(å¤§ç«¯/å°ç«¯)
      * @post m_position += sizeof(value)
-     *       Èç¹ûm_position > m_size Ôò m_size = m_position
+     *       å¦‚æœm_position > m_size åˆ™ m_size = m_position
      */
     void WriteFuint16(uint16_t value);
 
     /**
-     * @brief Ğ´Èë¹Ì¶¨³¤¶Èint32_tÀàĞÍµÄÊı¾İ(´ó¶Ë/Ğ¡¶Ë)
+     * @brief å†™å…¥å›ºå®šé•¿åº¦int32_tç±»å‹çš„æ•°æ®(å¤§ç«¯/å°ç«¯)
      * @post m_position += sizeof(value)
-     *       Èç¹ûm_position > m_size Ôò m_size = m_position
+     *       å¦‚æœm_position > m_size åˆ™ m_size = m_position
      */
     void WriteFint32 (int32_t value);
 
     /**
-     * @brief Ğ´Èë¹Ì¶¨³¤¶Èuint32_tÀàĞÍµÄÊı¾İ(´ó¶Ë/Ğ¡¶Ë)
+     * @brief å†™å…¥å›ºå®šé•¿åº¦uint32_tç±»å‹çš„æ•°æ®(å¤§ç«¯/å°ç«¯)
      * @post m_position += sizeof(value)
-     *       Èç¹ûm_position > m_size Ôò m_size = m_position
+     *       å¦‚æœm_position > m_size åˆ™ m_size = m_position
      */
     void WriteFuint32(uint32_t value);
 
     /**
-     * @brief Ğ´Èë¹Ì¶¨³¤¶Èint64_tÀàĞÍµÄÊı¾İ(´ó¶Ë/Ğ¡¶Ë)
+     * @brief å†™å…¥å›ºå®šé•¿åº¦int64_tç±»å‹çš„æ•°æ®(å¤§ç«¯/å°ç«¯)
      * @post m_position += sizeof(value)
-     *       Èç¹ûm_position > m_size Ôò m_size = m_position
+     *       å¦‚æœm_position > m_size åˆ™ m_size = m_position
      */
     void WriteFint64 (int64_t value);
 
     /**
-     * @brief Ğ´Èë¹Ì¶¨³¤¶Èuint64_tÀàĞÍµÄÊı¾İ(´ó¶Ë/Ğ¡¶Ë)
+     * @brief å†™å…¥å›ºå®šé•¿åº¦uint64_tç±»å‹çš„æ•°æ®(å¤§ç«¯/å°ç«¯)
      * @post m_position += sizeof(value)
-     *       Èç¹ûm_position > m_size Ôò m_size = m_position
+     *       å¦‚æœm_position > m_size åˆ™ m_size = m_position
      */
     void WriteFuint64(uint64_t value);
 
     /**
-     * @brief Ğ´ÈëÓĞ·ûºÅVarint32ÀàĞÍµÄÊı¾İ
-     * @post m_position += Êµ¼ÊÕ¼ÓÃÄÚ´æ(1 ~ 5)
-     *       Èç¹ûm_position > m_size Ôò m_size = m_position
+     * @brief å†™å…¥æœ‰ç¬¦å·Varint32ç±»å‹çš„æ•°æ®
+     * @post m_position += å®é™…å ç”¨å†…å­˜(1 ~ 5)
+     *       å¦‚æœm_position > m_size åˆ™ m_size = m_position
      */
     void WriteInt32  (int32_t value);
     /**
-     * @brief Ğ´ÈëÎŞ·ûºÅVarint32ÀàĞÍµÄÊı¾İ
-     * @post m_position += Êµ¼ÊÕ¼ÓÃÄÚ´æ(1 ~ 5)
-     *       Èç¹ûm_position > m_size Ôò m_size = m_position
+     * @brief å†™å…¥æ— ç¬¦å·Varint32ç±»å‹çš„æ•°æ®
+     * @post m_position += å®é™…å ç”¨å†…å­˜(1 ~ 5)
+     *       å¦‚æœm_position > m_size åˆ™ m_size = m_position
      */
     void WriteUint32 (uint32_t value);
 
     /**
-     * @brief Ğ´ÈëÓĞ·ûºÅVarint64ÀàĞÍµÄÊı¾İ
-     * @post m_position += Êµ¼ÊÕ¼ÓÃÄÚ´æ(1 ~ 10)
-     *       Èç¹ûm_position > m_size Ôò m_size = m_position
+     * @brief å†™å…¥æœ‰ç¬¦å·Varint64ç±»å‹çš„æ•°æ®
+     * @post m_position += å®é™…å ç”¨å†…å­˜(1 ~ 10)
+     *       å¦‚æœm_position > m_size åˆ™ m_size = m_position
      */
     void WriteInt64  (int64_t value);
 
     /**
-     * @brief Ğ´ÈëÎŞ·ûºÅVarint64ÀàĞÍµÄÊı¾İ
-     * @post m_position += Êµ¼ÊÕ¼ÓÃÄÚ´æ(1 ~ 10)
-     *       Èç¹ûm_position > m_size Ôò m_size = m_position
+     * @brief å†™å…¥æ— ç¬¦å·Varint64ç±»å‹çš„æ•°æ®
+     * @post m_position += å®é™…å ç”¨å†…å­˜(1 ~ 10)
+     *       å¦‚æœm_position > m_size åˆ™ m_size = m_position
      */
     void WriteUint64 (uint64_t value);
 
     /**
-     * @brief Ğ´ÈëfloatÀàĞÍµÄÊı¾İ
+     * @brief å†™å…¥floatç±»å‹çš„æ•°æ®
      * @post m_position += sizeof(value)
-     *       Èç¹ûm_position > m_size Ôò m_size = m_position
+     *       å¦‚æœm_position > m_size åˆ™ m_size = m_position
      */
     void WriteFloat  (float value);
 
     /**
-     * @brief Ğ´ÈëdoubleÀàĞÍµÄÊı¾İ
+     * @brief å†™å…¥doubleç±»å‹çš„æ•°æ®
      * @post m_position += sizeof(value)
-     *       Èç¹ûm_position > m_size Ôò m_size = m_position
+     *       å¦‚æœm_position > m_size åˆ™ m_size = m_position
      */
     void WriteDouble (double value);
 
     /**
-     * @brief Ğ´Èëstd::stringÀàĞÍµÄÊı¾İ,ÓÃuint16_t×÷Îª³¤¶ÈÀàĞÍ
+     * @brief å†™å…¥std::stringç±»å‹çš„æ•°æ®,ç”¨uint16_tä½œä¸ºé•¿åº¦ç±»å‹
      * @post m_position += 2 + value.size()
-     *       Èç¹ûm_position > m_size Ôò m_size = m_position
+     *       å¦‚æœm_position > m_size åˆ™ m_size = m_position
      */
     void WriteStringF16(const std::string& value);
 
     /**
-     * @brief Ğ´Èëstd::stringÀàĞÍµÄÊı¾İ,ÓÃuint32_t×÷Îª³¤¶ÈÀàĞÍ
+     * @brief å†™å…¥std::stringç±»å‹çš„æ•°æ®,ç”¨uint32_tä½œä¸ºé•¿åº¦ç±»å‹
      * @post m_position += 4 + value.size()
-     *       Èç¹ûm_position > m_size Ôò m_size = m_position
+     *       å¦‚æœm_position > m_size åˆ™ m_size = m_position
      */
     void WriteStringF32(const std::string& value);
 
     /**
-     * @brief Ğ´Èëstd::stringÀàĞÍµÄÊı¾İ,ÓÃuint64_t×÷Îª³¤¶ÈÀàĞÍ
+     * @brief å†™å…¥std::stringç±»å‹çš„æ•°æ®,ç”¨uint64_tä½œä¸ºé•¿åº¦ç±»å‹
      * @post m_position += 8 + value.size()
-     *       Èç¹ûm_position > m_size Ôò m_size = m_position
+     *       å¦‚æœm_position > m_size åˆ™ m_size = m_position
      */
     void WriteStringF64(const std::string& value);
 
     /**
-     * @brief Ğ´Èëstd::stringÀàĞÍµÄÊı¾İ,ÓÃÎŞ·ûºÅVarint64×÷Îª³¤¶ÈÀàĞÍ
-     * @post m_position += Varint64³¤¶È + value.size()
-     *       Èç¹ûm_position > m_size Ôò m_size = m_position
+     * @brief å†™å…¥std::stringç±»å‹çš„æ•°æ®,ç”¨æ— ç¬¦å·Varint64ä½œä¸ºé•¿åº¦ç±»å‹
+     * @post m_position += Varint64é•¿åº¦ + value.size()
+     *       å¦‚æœm_position > m_size åˆ™ m_size = m_position
      */
     void WriteStringVint(const std::string& value);
 
     /**
-     * @brief Ğ´Èëstd::stringÀàĞÍµÄÊı¾İ,ÎŞ³¤¶È
+     * @brief å†™å…¥std::stringç±»å‹çš„æ•°æ®,æ— é•¿åº¦
      * @post m_position += value.size()
-     *       Èç¹ûm_position > m_size Ôò m_size = m_position
+     *       å¦‚æœm_position > m_size åˆ™ m_size = m_position
      */
     void WriteStringWithoutLength(const std::string& value);
 
     /**
-     * @brief ¶ÁÈ¡int8_tÀàĞÍµÄÊı¾İ
+     * @brief è¯»å–int8_tç±»å‹çš„æ•°æ®
      * @pre getReadSize() >= sizeof(int8_t)
      * @post m_position += sizeof(int8_t);
-     * @exception Èç¹ûgetReadSize() < sizeof(int8_t) Å×³ö std::out_of_range
+     * @exception å¦‚æœgetReadSize() < sizeof(int8_t) æŠ›å‡º std::out_of_range
      */
     int8_t   ReadFint8();
 
     /**
-     * @brief ¶ÁÈ¡uint8_tÀàĞÍµÄÊı¾İ
+     * @brief è¯»å–uint8_tç±»å‹çš„æ•°æ®
      * @pre getReadSize() >= sizeof(uint8_t)
      * @post m_position += sizeof(uint8_t);
-     * @exception Èç¹ûgetReadSize() < sizeof(uint8_t) Å×³ö std::out_of_range
+     * @exception å¦‚æœgetReadSize() < sizeof(uint8_t) æŠ›å‡º std::out_of_range
      */
     uint8_t  ReadFuint8();
 
     /**
-     * @brief ¶ÁÈ¡int16_tÀàĞÍµÄÊı¾İ
+     * @brief è¯»å–int16_tç±»å‹çš„æ•°æ®
      * @pre getReadSize() >= sizeof(int16_t)
      * @post m_position += sizeof(int16_t);
-     * @exception Èç¹ûgetReadSize() < sizeof(int16_t) Å×³ö std::out_of_range
+     * @exception å¦‚æœgetReadSize() < sizeof(int16_t) æŠ›å‡º std::out_of_range
      */
     int16_t  ReadFint16();
 
     /**
-     * @brief ¶ÁÈ¡uint16_tÀàĞÍµÄÊı¾İ
+     * @brief è¯»å–uint16_tç±»å‹çš„æ•°æ®
      * @pre getReadSize() >= sizeof(uint16_t)
      * @post m_position += sizeof(uint16_t);
-     * @exception Èç¹ûgetReadSize() < sizeof(uint16_t) Å×³ö std::out_of_range
+     * @exception å¦‚æœgetReadSize() < sizeof(uint16_t) æŠ›å‡º std::out_of_range
      */
     uint16_t ReadFuint16();
 
     /**
-     * @brief ¶ÁÈ¡int32_tÀàĞÍµÄÊı¾İ
+     * @brief è¯»å–int32_tç±»å‹çš„æ•°æ®
      * @pre getReadSize() >= sizeof(int32_t)
      * @post m_position += sizeof(int32_t);
-     * @exception Èç¹ûgetReadSize() < sizeof(int32_t) Å×³ö std::out_of_range
+     * @exception å¦‚æœgetReadSize() < sizeof(int32_t) æŠ›å‡º std::out_of_range
      */
     int32_t  ReadFint32();
 
     /**
-     * @brief ¶ÁÈ¡uint32_tÀàĞÍµÄÊı¾İ
+     * @brief è¯»å–uint32_tç±»å‹çš„æ•°æ®
      * @pre getReadSize() >= sizeof(uint32_t)
      * @post m_position += sizeof(uint32_t);
-     * @exception Èç¹ûgetReadSize() < sizeof(uint32_t) Å×³ö std::out_of_range
+     * @exception å¦‚æœgetReadSize() < sizeof(uint32_t) æŠ›å‡º std::out_of_range
      */
     uint32_t ReadFuint32();
 
     /**
-     * @brief ¶ÁÈ¡int64_tÀàĞÍµÄÊı¾İ
+     * @brief è¯»å–int64_tç±»å‹çš„æ•°æ®
      * @pre getReadSize() >= sizeof(int64_t)
      * @post m_position += sizeof(int64_t);
-     * @exception Èç¹ûgetReadSize() < sizeof(int64_t) Å×³ö std::out_of_range
+     * @exception å¦‚æœgetReadSize() < sizeof(int64_t) æŠ›å‡º std::out_of_range
      */
     int64_t  ReadFint64();
 
     /**
-     * @brief ¶ÁÈ¡uint64_tÀàĞÍµÄÊı¾İ
+     * @brief è¯»å–uint64_tç±»å‹çš„æ•°æ®
      * @pre getReadSize() >= sizeof(uint64_t)
      * @post m_position += sizeof(uint64_t);
-     * @exception Èç¹ûgetReadSize() < sizeof(uint64_t) Å×³ö std::out_of_range
+     * @exception å¦‚æœgetReadSize() < sizeof(uint64_t) æŠ›å‡º std::out_of_range
      */
     uint64_t ReadFuint64();
 
     /**
-     * @brief ¶ÁÈ¡ÓĞ·ûºÅVarint32ÀàĞÍµÄÊı¾İ
-     * @pre getReadSize() >= ÓĞ·ûºÅVarint32Êµ¼ÊÕ¼ÓÃÄÚ´æ
-     * @post m_position += ÓĞ·ûºÅVarint32Êµ¼ÊÕ¼ÓÃÄÚ´æ
-     * @exception Èç¹ûgetReadSize() < ÓĞ·ûºÅVarint32Êµ¼ÊÕ¼ÓÃÄÚ´æ Å×³ö std::out_of_range
+     * @brief è¯»å–æœ‰ç¬¦å·Varint32ç±»å‹çš„æ•°æ®
+     * @pre getReadSize() >= æœ‰ç¬¦å·Varint32å®é™…å ç”¨å†…å­˜
+     * @post m_position += æœ‰ç¬¦å·Varint32å®é™…å ç”¨å†…å­˜
+     * @exception å¦‚æœgetReadSize() < æœ‰ç¬¦å·Varint32å®é™…å ç”¨å†…å­˜ æŠ›å‡º std::out_of_range
      */
     int32_t  ReadInt32();
 
     /**
-     * @brief ¶ÁÈ¡ÎŞ·ûºÅVarint32ÀàĞÍµÄÊı¾İ
-     * @pre getReadSize() >= ÎŞ·ûºÅVarint32Êµ¼ÊÕ¼ÓÃÄÚ´æ
-     * @post m_position += ÎŞ·ûºÅVarint32Êµ¼ÊÕ¼ÓÃÄÚ´æ
-     * @exception Èç¹ûgetReadSize() < ÎŞ·ûºÅVarint32Êµ¼ÊÕ¼ÓÃÄÚ´æ Å×³ö std::out_of_range
+     * @brief è¯»å–æ— ç¬¦å·Varint32ç±»å‹çš„æ•°æ®
+     * @pre getReadSize() >= æ— ç¬¦å·Varint32å®é™…å ç”¨å†…å­˜
+     * @post m_position += æ— ç¬¦å·Varint32å®é™…å ç”¨å†…å­˜
+     * @exception å¦‚æœgetReadSize() < æ— ç¬¦å·Varint32å®é™…å ç”¨å†…å­˜ æŠ›å‡º std::out_of_range
      */
     uint32_t ReadUint32();
 
     /**
-     * @brief ¶ÁÈ¡ÓĞ·ûºÅVarint64ÀàĞÍµÄÊı¾İ
-     * @pre getReadSize() >= ÓĞ·ûºÅVarint64Êµ¼ÊÕ¼ÓÃÄÚ´æ
-     * @post m_position += ÓĞ·ûºÅVarint64Êµ¼ÊÕ¼ÓÃÄÚ´æ
-     * @exception Èç¹ûgetReadSize() < ÓĞ·ûºÅVarint64Êµ¼ÊÕ¼ÓÃÄÚ´æ Å×³ö std::out_of_range
+     * @brief è¯»å–æœ‰ç¬¦å·Varint64ç±»å‹çš„æ•°æ®
+     * @pre getReadSize() >= æœ‰ç¬¦å·Varint64å®é™…å ç”¨å†…å­˜
+     * @post m_position += æœ‰ç¬¦å·Varint64å®é™…å ç”¨å†…å­˜
+     * @exception å¦‚æœgetReadSize() < æœ‰ç¬¦å·Varint64å®é™…å ç”¨å†…å­˜ æŠ›å‡º std::out_of_range
      */
     int64_t  ReadInt64();
 
     /**
-     * @brief ¶ÁÈ¡ÎŞ·ûºÅVarint64ÀàĞÍµÄÊı¾İ
-     * @pre getReadSize() >= ÎŞ·ûºÅVarint64Êµ¼ÊÕ¼ÓÃÄÚ´æ
-     * @post m_position += ÎŞ·ûºÅVarint64Êµ¼ÊÕ¼ÓÃÄÚ´æ
-     * @exception Èç¹ûgetReadSize() < ÎŞ·ûºÅVarint64Êµ¼ÊÕ¼ÓÃÄÚ´æ Å×³ö std::out_of_range
+     * @brief è¯»å–æ— ç¬¦å·Varint64ç±»å‹çš„æ•°æ®
+     * @pre getReadSize() >= æ— ç¬¦å·Varint64å®é™…å ç”¨å†…å­˜
+     * @post m_position += æ— ç¬¦å·Varint64å®é™…å ç”¨å†…å­˜
+     * @exception å¦‚æœgetReadSize() < æ— ç¬¦å·Varint64å®é™…å ç”¨å†…å­˜ æŠ›å‡º std::out_of_range
      */
     uint64_t ReadUint64();
 
     /**
-     * @brief ¶ÁÈ¡floatÀàĞÍµÄÊı¾İ
+     * @brief è¯»å–floatç±»å‹çš„æ•°æ®
      * @pre getReadSize() >= sizeof(float)
      * @post m_position += sizeof(float);
-     * @exception Èç¹ûgetReadSize() < sizeof(float) Å×³ö std::out_of_range
+     * @exception å¦‚æœgetReadSize() < sizeof(float) æŠ›å‡º std::out_of_range
      */
     float    ReadFloat();
 
     /**
-     * @brief ¶ÁÈ¡doubleÀàĞÍµÄÊı¾İ
+     * @brief è¯»å–doubleç±»å‹çš„æ•°æ®
      * @pre getReadSize() >= sizeof(double)
      * @post m_position += sizeof(double);
-     * @exception Èç¹ûgetReadSize() < sizeof(double) Å×³ö std::out_of_range
+     * @exception å¦‚æœgetReadSize() < sizeof(double) æŠ›å‡º std::out_of_range
      */
     double   ReadDouble();
 
     /**
-     * @brief ¶ÁÈ¡std::stringÀàĞÍµÄÊı¾İ,ÓÃuint16_t×÷Îª³¤¶È
+     * @brief è¯»å–std::stringç±»å‹çš„æ•°æ®,ç”¨uint16_tä½œä¸ºé•¿åº¦
      * @pre getReadSize() >= sizeof(uint16_t) + size
      * @post m_position += sizeof(uint16_t) + size;
-     * @exception Èç¹ûgetReadSize() < sizeof(uint16_t) + size Å×³ö std::out_of_range
+     * @exception å¦‚æœgetReadSize() < sizeof(uint16_t) + size æŠ›å‡º std::out_of_range
      */
     std::string ReadStringF16();
 
     /**
-     * @brief ¶ÁÈ¡std::stringÀàĞÍµÄÊı¾İ,ÓÃuint32_t×÷Îª³¤¶È
+     * @brief è¯»å–std::stringç±»å‹çš„æ•°æ®,ç”¨uint32_tä½œä¸ºé•¿åº¦
      * @pre getReadSize() >= sizeof(uint32_t) + size
      * @post m_position += sizeof(uint32_t) + size;
-     * @exception Èç¹ûgetReadSize() < sizeof(uint32_t) + size Å×³ö std::out_of_range
+     * @exception å¦‚æœgetReadSize() < sizeof(uint32_t) + size æŠ›å‡º std::out_of_range
      */
     std::string ReadStringF32();
 
     /**
-     * @brief ¶ÁÈ¡std::stringÀàĞÍµÄÊı¾İ,ÓÃuint64_t×÷Îª³¤¶È
+     * @brief è¯»å–std::stringç±»å‹çš„æ•°æ®,ç”¨uint64_tä½œä¸ºé•¿åº¦
      * @pre getReadSize() >= sizeof(uint64_t) + size
      * @post m_position += sizeof(uint64_t) + size;
-     * @exception Èç¹ûgetReadSize() < sizeof(uint64_t) + size Å×³ö std::out_of_range
+     * @exception å¦‚æœgetReadSize() < sizeof(uint64_t) + size æŠ›å‡º std::out_of_range
      */
     std::string ReadStringF64();
 
     /**
-     * @brief ¶ÁÈ¡std::stringÀàĞÍµÄÊı¾İ,ÓÃÎŞ·ûºÅVarint64×÷Îª³¤¶È
-     * @pre getReadSize() >= ÎŞ·ûºÅVarint64Êµ¼Ê´óĞ¡ + size
-     * @post m_position += ÎŞ·ûºÅVarint64Êµ¼Ê´óĞ¡ + size;
-     * @exception Èç¹ûgetReadSize() < ÎŞ·ûºÅVarint64Êµ¼Ê´óĞ¡ + size Å×³ö std::out_of_range
+     * @brief è¯»å–std::stringç±»å‹çš„æ•°æ®,ç”¨æ— ç¬¦å·Varint64ä½œä¸ºé•¿åº¦
+     * @pre getReadSize() >= æ— ç¬¦å·Varint64å®é™…å¤§å° + size
+     * @post m_position += æ— ç¬¦å·Varint64å®é™…å¤§å° + size;
+     * @exception å¦‚æœgetReadSize() < æ— ç¬¦å·Varint64å®é™…å¤§å° + size æŠ›å‡º std::out_of_range
      */
     std::string ReadStringVint();
 
 private:
-    // ÄÚ´æ¿é´óĞ¡
+    // å†…å­˜å—å¤§å°
     const size_t node_size_;
-    // Í·½Úµã
+    // å¤´èŠ‚ç‚¹
     Node* head_node_;
-    // Î²½Úµã
+    // å°¾èŠ‚ç‚¹
     Node* tail_node_;
 
-    // Ğ´Î»ÖÃ
+    // å†™ä½ç½®
     size_t write_pos_;
-    // ¶ÁÎ»ÖÃ
+    // è¯»ä½ç½®
     size_t read_pos_;
-    // ×ÜÈİÁ¿
+    // æ€»å®¹é‡
     size_t capacity_;
 
-    // Ğ´½Úµã
+    // å†™èŠ‚ç‚¹
     Node* write_node_;
-    // ¶Á½Úµã
+    // è¯»èŠ‚ç‚¹
     Node* read_node_;
 
-    // Êı¾İ×Ö½ÚĞò
+    // æ•°æ®å­—èŠ‚åº
     int8_t data_endian_;
 };
 

@@ -1,8 +1,8 @@
-/*================================================================*
+ï»¿/*================================================================*
         Copyright (C) 2021 All rights reserved, www.hsby.link.
-      	ÎÄ¼şÃû³Æ£ºcoroutine.cpp
-      	´´ ½¨ Õß£ºhsby
-      	´´½¨ÈÕÆÚ£º2022/1/27
+      	æ–‡ä»¶åç§°ï¼šcoroutine.cpp
+      	åˆ› å»º è€…ï¼šhsby
+      	åˆ›å»ºæ—¥æœŸï¼š2022/1/27
  *================================================================*/
 #include "coroutine.h"
 #include <cstring>
@@ -15,12 +15,12 @@ void sys_context_swap(xco::Coroutine::SysContext* cur_ctx, xco::Coroutine::SysCo
 
 XCO_NAMESPAVE_START
 
-const int   g_co_call_stack_max                     = 128;  // Ğ­³Ìµ÷ÓÃÕ»´óĞ¡
+const int   g_co_call_stack_max                     = 128;  // åç¨‹è°ƒç”¨æ ˆå¤§å°
 
 int co_cnt = 0;
 
 /**
- * @brief Ğ­³Ì»·¾³ĞÅÏ¢
+ * @brief åç¨‹ç¯å¢ƒä¿¡æ¯
  */
 struct CoroutineEnv {
     std::stack<Coroutine::Ptr> co_call_stack;
@@ -31,11 +31,11 @@ struct CoroutineEnv {
         cco->state_ = Coroutine::State::kStHold;
         pco->state_ = Coroutine::State::kStExec;
 
-        // »ñÈ¡Õ»¶¥Ö¸Õë
+        // è·å–æ ˆé¡¶æŒ‡é’ˆ
         char c;
         cco->stack_sp_ = &c;
         if (pco->is_share_stack_mem_) {
-            // ĞÂĞ­³ÌµÄ¹²ÏíÕ»µÄÊ¹ÓÃÕß
+            // æ–°åç¨‹çš„å…±äº«æ ˆçš„ä½¿ç”¨è€…
             occupy_co = pco->stack_mem_->occupy_co;
             pending_co = pco;
             pco->stack_mem_->occupy_co = pco;
@@ -47,10 +47,10 @@ struct CoroutineEnv {
             pending_co = nullptr;
         }
 
-        // ÇĞ»»ÏµÍ³ÉÏÏÂÎÄ
+        // åˆ‡æ¢ç³»ç»Ÿä¸Šä¸‹æ–‡
         cco->sys_context_.Swap(&pco->sys_context_);
 
-        // »¹Ô­¹²ÏíÕ»
+        // è¿˜åŸå…±äº«æ ˆ
         if (occupy_co
             && pending_co
             && occupy_co != pending_co
@@ -82,7 +82,7 @@ struct CoroutineEnv {
 
     Coroutine::Ptr GetCurrentCoroutine() {
         if (co_call_stack.size() == 0) {
-            // ³õÊ¼»¯µ±Ç°ÎªÖ÷Ğ­³Ì
+            // åˆå§‹åŒ–å½“å‰ä¸ºä¸»åç¨‹
             auto main_co = Coroutine::Create();
             main_co->state_ = Coroutine::State::kStExec;
             co_call_stack.push(main_co);
@@ -95,11 +95,11 @@ static thread_local CoroutineEnv s_coroutine_env;
 void Coroutine::SysContext::Init(char *_ss_sp, size_t _ss_size, void *cb, void *arg0, void *arg1) {
     ss_sp = _ss_sp;
     ss_size = _ss_size;
-    // »ñÈ¡Õ»µ×µØÖ·(´æ·Å×Å·µ»ØµØÖ·)
+    // è·å–æ ˆåº•åœ°å€(å­˜æ”¾ç€è¿”å›åœ°å€)
     char* sp = ss_sp + ss_size - sizeof(void*);
     sp = (char*)((unsigned long)sp & -16LL);
 
-    // ½«Õ»µ×´æ·ÅµÄ·µ»ØµØÖ·¸³ÖµÎªpfn
+    // å°†æ ˆåº•å­˜æ”¾çš„è¿”å›åœ°å€èµ‹å€¼ä¸ºpfn
     memset(regs, 0, sizeof(regs));
     void** ret_addr = (void**)(sp);
     *ret_addr = (void*)cb;
@@ -150,7 +150,7 @@ void Coroutine::OnCoroutine(Coroutine* co) {
     co->cb_(/*co->cb_arg_*/);
     co->state_ = State::kStEnd;
     Yield();
-    assert(false); //²»»áµ½´ïÕâÀï
+    assert(false); //ä¸ä¼šåˆ°è¾¾è¿™é‡Œ
 }
 
 void Coroutine::Resume() {

@@ -1,8 +1,8 @@
-/*================================================================*
+ï»¿/*================================================================*
         Copyright (C) 2021 All rights reserved, www.hsby.link.
-      	ÎÄ¼şÃû³Æ£ºcommon.cpp
-      	´´ ½¨ Õß£ºhsby
-      	´´½¨ÈÕÆÚ£º2022/2/10
+      	æ–‡ä»¶åç§°ï¼šcommon.cpp
+      	åˆ› å»º è€…ï¼šhsby
+      	åˆ›å»ºæ—¥æœŸï¼š2022/2/10
  *================================================================*/
 #include "common.h"
 #include <sys/time.h>
@@ -27,14 +27,14 @@ void SetLogLevel(int level) {
 }
 
 /**
- * @brief È¡µÃµ±Ç°Ïß³ÌId
+ * @brief å–å¾—å½“å‰çº¿ç¨‹Id
  */
 int GetThisThreadId(){
     return syscall(SYS_gettid);
 }
 
 /**
- * @brief ÌáÈ¡µ±Ç°¶ÑÕ»ĞÅÏ¢
+ * @brief æå–å½“å‰å †æ ˆä¿¡æ¯
  */
 void BackTrace(std::vector<std::string>& res, int size, int skip) {
     void** buffer = (void**) malloc(sizeof(void*) * size);
@@ -51,7 +51,7 @@ void BackTrace(std::vector<std::string>& res, int size, int skip) {
 }
 
 /**
- * @brief ÌáÈ¡µ±Ç°¶ÑÕ»ĞÅÏ¢
+ * @brief æå–å½“å‰å †æ ˆä¿¡æ¯
  * @return std::string
  */
 std::string BackTraceString(int size, int skip, std::string prefix) {
@@ -66,7 +66,7 @@ std::string BackTraceString(int size, int skip, std::string prefix) {
 }
 
 /**
- * @brief »ñÈ¡µ±Ç°Ê±¼ä£¬ºÁÃë
+ * @brief è·å–å½“å‰æ—¶é—´ï¼Œæ¯«ç§’
  */
 uint64_t TimeStampMs() {
     struct timeval tv;
@@ -75,7 +75,7 @@ uint64_t TimeStampMs() {
 };
 
 /**
- * @brief »ñÈ¡µ±Ç°Ê±¼ä£¬Î¢Ãë
+ * @brief è·å–å½“å‰æ—¶é—´ï¼Œå¾®ç§’
  */
 uint64_t TimeStampUs() {
     struct timeval tv;
@@ -84,7 +84,7 @@ uint64_t TimeStampUs() {
 };
 
 /**
- * @brief »ñÈ¡Ïß³ÌÔËĞĞµ½µ±Ç°Ê±¿ÌµÄÊ±¼ä, Î¢Ãë
+ * @brief è·å–çº¿ç¨‹è¿è¡Œåˆ°å½“å‰æ—¶åˆ»çš„æ—¶é—´, å¾®ç§’
  */
 uint64_t GetRealTimeUs() {
     struct timespec tp;

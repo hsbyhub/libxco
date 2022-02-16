@@ -1,8 +1,8 @@
-/*================================================================*
+ï»¿/*================================================================*
         Copyright (C) 2021 All rights reserved, www.hsby.link.
-      	ÎÄ¼şÃû³Æ£ºhook.h
-      	´´ ½¨ Õß£ºhsby
-      	´´½¨ÈÕÆÚ£º2022/2/10
+      	æ–‡ä»¶åç§°ï¼šhook.h
+      	åˆ› å»º è€…ï¼šhsby
+      	åˆ›å»ºæ—¥æœŸï¼š2022/2/10
  *================================================================*/
 #pragma once
 
@@ -16,12 +16,12 @@
 
 XCO_NAMESPAVE_START
 /**
- * @brief ÊÇ·ñhook
+ * @brief æ˜¯å¦hook
  */
 bool IsHookEnable();
 
 /**
- * @brief ÉèÖÃÊÇ·ñhook
+ * @brief è®¾ç½®æ˜¯å¦hook
  */
 void SetHookEnable(bool flag);
 XCO_NAMESPAVE_END

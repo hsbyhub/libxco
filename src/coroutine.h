@@ -1,8 +1,8 @@
-/*================================================================*
+ï»¿/*================================================================*
         Copyright (C) 2021 All rights reserved, www.hsby.link.
-      	ÎÄ¼şÃû³Æ£ºcoroutine.h
-      	´´ ½¨ Õß£ºhsby
-      	´´½¨ÈÕÆÚ£º2022/1/27
+      	æ–‡ä»¶åç§°ï¼šcoroutine.h
+      	åˆ› å»º è€…ï¼šhsby
+      	åˆ›å»ºæ—¥æœŸï¼š2022/1/27
  *================================================================*/
 #pragma once
 
@@ -25,7 +25,7 @@ public:
     };
 
     /**
-     * @brief Ğ­³ÌÏµÍ³ÉÏÏÂÎÄ
+     * @brief åç¨‹ç³»ç»Ÿä¸Šä¸‹æ–‡
      */
     struct SysContext {
         enum RegIdx{
@@ -44,12 +44,12 @@ public:
         void Swap(SysContext* new_sys_ctx);
 
         char* regs[14];
-        size_t ss_size; // Õ»´óĞ¡
-        char* ss_sp;    // Õ»ÄÚ´æ¿é
+        size_t ss_size; // æ ˆå¤§å°
+        char* ss_sp;    // æ ˆå†…å­˜å—
     };
 
     /**
-     * @brief ÔËĞĞÊ±Õ»ÄÚ´æ
+     * @brief è¿è¡Œæ—¶æ ˆå†…å­˜
      */
     struct StackMem{
         StackMem(int _size = 128 * 1000) {
@@ -63,15 +63,15 @@ public:
                 buffer = nullptr;
             }
         }
-        Coroutine*      occupy_co   = nullptr;  // µ±Ç°Ê¹ÓÃÄÚ´æ¿éµÄĞ­³Ì
-        size_t          size        = 0;        // Ê¹ÓÃ´óĞ¡
-        char*           buffer      = nullptr;  // ÄÚ´æ¿éÆğÊ¼µØÖ·
-        char*           bp          = nullptr;  // Õ»µ×µØÖ·, bp = buffer + size
+        Coroutine*      occupy_co   = nullptr;  // å½“å‰ä½¿ç”¨å†…å­˜å—çš„åç¨‹
+        size_t          size        = 0;        // ä½¿ç”¨å¤§å°
+        char*           buffer      = nullptr;  // å†…å­˜å—èµ·å§‹åœ°å€
+        char*           bp          = nullptr;  // æ ˆåº•åœ°å€, bp = buffer + size
     };
 
 private:
     /**
-     * @brief ¹¹Ôìº¯Êı
+     * @brief æ„é€ å‡½æ•°
      */
     Coroutine(CbType cb = nullptr, /*void* arg = nullptr, */StackMem* stack_mem = nullptr, int stack_size = 128 * 1024);
 
@@ -82,44 +82,44 @@ public:
     }
 
     /**
-     * @brief Îö¹¹º¯Êı
+     * @brief ææ„å‡½æ•°
      */
     ~Coroutine();
 
     /**
-     * @brief Ğ­³Ì´¦Àí
+     * @brief åç¨‹å¤„ç†
      */
     static void OnCoroutine(Coroutine* co);
 
     /**
-     * @brief »½ÆğĞ­³Ì
+     * @brief å”¤èµ·åç¨‹
      */
     void Resume();
 
     /**
-     * @brief ¹ÒÆğĞ­³Ì
+     * @brief æŒ‚èµ·åç¨‹
      */
     static void Yield();
 
     /**
-     * @brief »ñÈ¡µ±Ç°Ğ­³Ì
+     * @brief è·å–å½“å‰åç¨‹
      */
     static Coroutine::Ptr GetCurCoroutine();
 
     /**
-     * @brief ±¸·İÕ»ÄÚ´æ
+     * @brief å¤‡ä»½æ ˆå†…å­˜
      */
     void BackupStackMem();
 
 public:
-    StackMem*           stack_mem_          = nullptr;  // Õ»ÄÚ´æ
-    bool                is_share_stack_mem_ = false;    // ÊÇ·ñ¹²ÏíÕ»
-    CbType              cb_                 = nullptr;  // »Øµ÷
-    State               state_;                         // Ğ­³Ì×´Ì¬
-    SysContext          sys_context_;                   // Ğ­³ÌÏµÍ³ÉÏÏÂÎÄ
-    char*               stack_sp_           = nullptr;  // Õ»Ö¸Õë(¹²ÏíÕ»µÄ±¸·İ)
-    int                 stack_backup_size   = 0;        // Õ»±¸·İ´óĞ¡
-    char*               stack_backup_buffer = nullptr;  // Õ»±¸·İ
+    StackMem*           stack_mem_          = nullptr;  // æ ˆå†…å­˜
+    bool                is_share_stack_mem_ = false;    // æ˜¯å¦å…±äº«æ ˆ
+    CbType              cb_                 = nullptr;  // å›è°ƒ
+    State               state_;                         // åç¨‹çŠ¶æ€
+    SysContext          sys_context_;                   // åç¨‹ç³»ç»Ÿä¸Šä¸‹æ–‡
+    char*               stack_sp_           = nullptr;  // æ ˆæŒ‡é’ˆ(å…±äº«æ ˆçš„å¤‡ä»½)
+    int                 stack_backup_size   = 0;        // æ ˆå¤‡ä»½å¤§å°
+    char*               stack_backup_buffer = nullptr;  // æ ˆå¤‡ä»½
 };
 
 XCO_NAMESPAVE_END

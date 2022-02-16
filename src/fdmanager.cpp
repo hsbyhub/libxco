@@ -1,8 +1,8 @@
-/*================================================================*
+ï»¿/*================================================================*
         Copyright (C) 2021 All rights reserved, www.hsby.link.
-      	ÎÄ¼şÃû³Æ£ºfdmanager.cpp
-      	´´ ½¨ Õß£ºhsby
-      	´´½¨ÈÕÆÚ£º2022/2/10
+      	æ–‡ä»¶åç§°ï¼šfdmanager.cpp
+      	åˆ› å»º è€…ï¼šhsby
+      	åˆ›å»ºæ—¥æœŸï¼š2022/2/10
  *================================================================*/
 #include "fdmanager.h"
 
@@ -47,9 +47,9 @@ bool FdCtx::Init() {
 
     if (m_isSocket) {
         int flags = fcntl_f(m_fd, F_GETFL, 0);
-        // Èç¹û×èÈû
+        // å¦‚æœé˜»å¡
         if (!(flags & O_NONBLOCK)) {
-            // ÉèÖÃ·Ç×èÈû
+            // è®¾ç½®éé˜»å¡
             int ret = fcntl_f(m_fd, F_SETFL, flags | O_NONBLOCK);
             if (ret != 0) {
                 exit(-1);

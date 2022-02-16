@@ -1,8 +1,8 @@
-/*================================================================*
+ï»¿/*================================================================*
         Copyright (C) 2021 All rights reserved, www.hsby.link.
-      	ÎÄ¼şÃû³Æ£ºaddress.h
-      	´´ ½¨ Õß£ºhsby
-      	´´½¨ÈÕÆÚ£º2022/2/10
+      	æ–‡ä»¶åç§°ï¼šaddress.h
+      	åˆ› å»º è€…ï¼šhsby
+      	åˆ›å»ºæ—¥æœŸï¼š2022/2/10
  *================================================================*/
 #pragma once
 
@@ -19,7 +19,7 @@
 
 XCO_NAMESPAVE_START
 /**
- * @brief µØÖ·»ùÀà
+ * @brief åœ°å€åŸºç±»
  */
 class BaseAddress : public BaseDump{
 public:
@@ -35,79 +35,79 @@ public:
     virtual ~BaseAddress() {}
 
     /**
-     * @brief   Í¨¹ıÅĞ¶ÏµØÖ·ÀàĞÍ£¬´´½¨ÏàÓ¦µÄµØÖ·Àà
-     * @return   ³É¹¦·µ»ØÖ¸Õë£¬Ê§°Ü·µ»Ønullptr
+     * @brief   é€šè¿‡åˆ¤æ–­åœ°å€ç±»å‹ï¼Œåˆ›å»ºç›¸åº”çš„åœ°å€ç±»
+     * @return   æˆåŠŸè¿”å›æŒ‡é’ˆï¼Œå¤±è´¥è¿”å›nullptr
      */
     static BaseAddress::Ptr Create(const sockaddr& addr);
 
     /**
-     * @brief               ½âÎöhost(Í¨¹ıresult·µ»Ø·ûºÏÌõ¼şµÄµØÖ·)
-     * @param[out] result   µØÖ·½á¹û
-     * @param[in] host      Ö÷»úÃû
-     * @param[in] family    Ğ­Òé×å
-     * @param[in] type      Ğ­ÒéÀàĞÍ
-     * @param[in] protocol  Ğ­Òé
-     * @return              ÊÇ·ñ³É¹¦
+     * @brief               è§£æhost(é€šè¿‡resultè¿”å›ç¬¦åˆæ¡ä»¶çš„åœ°å€)
+     * @param[out] result   åœ°å€ç»“æœ
+     * @param[in] host      ä¸»æœºå
+     * @param[in] family    åè®®æ—
+     * @param[in] type      åè®®ç±»å‹
+     * @param[in] protocol  åè®®
+     * @return              æ˜¯å¦æˆåŠŸ
      */
     static bool LookUp(std::vector<BaseAddress::Ptr>& result, const std::string& host, int family = AF_UNSPEC, int type = 0, int protocol = 0);
 
     /**
-     * @brief               ½âÎöhost, Ö±½Ó·µ»ØÈÎÒâÒ»¸ö·ûºÏÌõ¼şµÄµØÖ·
-     * @param[in] host      Ö÷»úÃû
-     * @param[in] family    Ğ­Òé×å
-     * @param[in] type      Ğ­ÒéÀàĞÍ
-     * @param[in] protocol  Ğ­Òé
-     * @return              µØÖ·
+     * @brief               è§£æhost, ç›´æ¥è¿”å›ä»»æ„ä¸€ä¸ªç¬¦åˆæ¡ä»¶çš„åœ°å€
+     * @param[in] host      ä¸»æœºå
+     * @param[in] family    åè®®æ—
+     * @param[in] type      åè®®ç±»å‹
+     * @param[in] protocol  åè®®
+     * @return              åœ°å€
      */
     static BaseAddress::Ptr LookUpAny(const std::string& host, int family = AF_UNSPEC, int type = 0, int protocol = 0);
 
     /**
-     * @brief               ½âÎöhost, Ö±½Ó·µ»ØÈÎÒâÒ»¸ö·ûºÏÌõ¼şµÄIpµØÖ·
-     * @param[in] host      Ö÷»úÃû
-     * @param[in] family    Ğ­Òé×å
-     * @param[in] type      Ğ­ÒéÀàĞÍ
-     * @param[in] protocol  Ğ­Òé
-     * @return              µØÖ·
+     * @brief               è§£æhost, ç›´æ¥è¿”å›ä»»æ„ä¸€ä¸ªç¬¦åˆæ¡ä»¶çš„Ipåœ°å€
+     * @param[in] host      ä¸»æœºå
+     * @param[in] family    åè®®æ—
+     * @param[in] type      åè®®ç±»å‹
+     * @param[in] protocol  åè®®
+     * @return              åœ°å€
      */
     static BaseAddress::Ptr LookUpAnyIpAddress(const std::string& host, int family = AF_UNSPEC, int type = 0, int protocol = 0);
 
     /**
-     * @brief               »ñÈ¡±¾µØÍø¿¨ĞÅÏ¢
-     * @param[out] result   ½á¹û
-     * @param[in] family    Ğ­Òé×å
-     * @return              ÊÇ·ñ³É¹¦
+     * @brief               è·å–æœ¬åœ°ç½‘å¡ä¿¡æ¯
+     * @param[out] result   ç»“æœ
+     * @param[in] family    åè®®æ—
+     * @return              æ˜¯å¦æˆåŠŸ
      */
     static bool GetInterfaceAddresses(std::vector<InterfaceInfoUnit>& result,
                                       int family = AF_UNSPEC);
 
     /**
-     * @brief               »ñÈ¡±¾µØÍø¿¨ĞÅÏ¢
-     * @param[out] result   ½á¹û
-     * @param[in] iface     Íø¿¨Ãû
-     * @param[in] family    Ğ­Òé×å
-     * @return              ÊÇ·ñ³É¹¦
+     * @brief               è·å–æœ¬åœ°ç½‘å¡ä¿¡æ¯
+     * @param[out] result   ç»“æœ
+     * @param[in] iface     ç½‘å¡å
+     * @param[in] family    åè®®æ—
+     * @return              æ˜¯å¦æˆåŠŸ
      */
     static bool GetInterfaceAddresses(std::vector<InterfaceInfoUnit>& result,
                                       const std::string& iface,
                                       int family = AF_INET);
 
     /**
-     * @brief È¡sockaddr Ö»¶Á
+     * @brief å–sockaddr åªè¯»
      */
     virtual const sockaddr* GetAddr() const = 0;
 
     /**
-     * @brief È¡sockaddr ¿ÉĞ´
+     * @brief å–sockaddr å¯å†™
      */
     virtual sockaddr* GetAddr() = 0;
 
     /**
-     * @brief È¡sockaddr³¤¶È
+     * @brief å–sockaddré•¿åº¦
      */
     virtual socklen_t GetAddrLen() const = 0;
 
     /**
-     * @brief È¡Ğ­Òé×å
+     * @brief å–åè®®æ—
      */
     int GetFamily() const;
 
@@ -117,54 +117,54 @@ public:
 };
 
 /**
- * @brief IpµØÖ·Àà
+ * @brief Ipåœ°å€ç±»
  */
 class IpAddress : public BaseAddress {
 public:
     typedef std::shared_ptr<IpAddress> Ptr;
 
     /**
-     * @brief               ¸ù¾İÖ÷»úÃû´´½¨µØÖ·Àà
-     * @param[in] hostname  Ö÷»úÃû
-     * @param[in] port      ¶Ë¿ÚºÅ
-     * @return              µØÖ·ÀàÖ¸Õë
+     * @brief               æ ¹æ®ä¸»æœºååˆ›å»ºåœ°å€ç±»
+     * @param[in] hostname  ä¸»æœºå
+     * @param[in] port      ç«¯å£å·
+     * @return              åœ°å€ç±»æŒ‡é’ˆ
      */
     static IpAddress::Ptr Create(const char* hostname = nullptr, uint16_t port = 0);
 
     /**
-     * @brief                   »ñÈ¡¹ã²¥µØÖ·
-     * @param[in] prefix_len    Ç°×º³¤¶È
-     * @return                  µØÖ·Ö¸Õë
+     * @brief                   è·å–å¹¿æ’­åœ°å€
+     * @param[in] prefix_len    å‰ç¼€é•¿åº¦
+     * @return                  åœ°å€æŒ‡é’ˆ
      */
     virtual IpAddress::Ptr BroacastAddress(uint32_t prefix_len) = 0;
 
     /**
-     * @brief                   »ñÈ¡ÍøÂçµØÖ·
-     * @param[in] prefix_len    Ç°×º³¤¶È
-     * @return                  µØÖ·Ö¸Õë
+     * @brief                   è·å–ç½‘ç»œåœ°å€
+     * @param[in] prefix_len    å‰ç¼€é•¿åº¦
+     * @return                  åœ°å€æŒ‡é’ˆ
      */
     virtual IpAddress::Ptr NetworkAddress(uint32_t prefix_len) = 0;
 
     /**
-     * @brief                   »ñÈ¡×ÓÍøÑÚÂë
-     * @param[in] prefix_len    Ç°×º³¤¶È
-     * @return                  µØÖ·Ö¸Õë
+     * @brief                   è·å–å­ç½‘æ©ç 
+     * @param[in] prefix_len    å‰ç¼€é•¿åº¦
+     * @return                  åœ°å€æŒ‡é’ˆ
      */
     virtual IpAddress::Ptr SubnetMaskAddress(uint32_t prefix_len) = 0;
 
     /**
-     * @brief »ñÈ¡¶Ë¿ÚºÅ
+     * @brief è·å–ç«¯å£å·
      */
     virtual uint16_t GetPort() const = 0;
 
     /**
-     * @brief ÉèÖÃ¶Ë¿ÚºÅ
+     * @brief è®¾ç½®ç«¯å£å·
      */
     virtual void SetPort(uint16_t port) = 0;
 };
 
 /**
- * @brief IPv4µØÖ·Àà
+ * @brief IPv4åœ°å€ç±»
  */
 class Ipv4Address : public IpAddress {
 public:
@@ -178,18 +178,18 @@ public:
     void Dump(std::ostream &os) const override;
 
     /**
-     * @brief                   ´´½¨µØÖ·Àà
-     * @param[in] address_int   ÕûĞÍµØÖ·
-     * @param[in] port          ¶Ë¿ÚºÅ
-     * @return                  µØÖ·ÀàÖ¸Õë
+     * @brief                   åˆ›å»ºåœ°å€ç±»
+     * @param[in] address_int   æ•´å‹åœ°å€
+     * @param[in] port          ç«¯å£å·
+     * @return                  åœ°å€ç±»æŒ‡é’ˆ
      */
     static Ipv4Address::Ptr Create(uint32_t address_int = INADDR_ANY, uint16_t port = 0);
 
     /**
-     * @brief                   ´´½¨µØÖ·Àà
-     * @param[in] address_str   ×Ö·û´®µØÖ·
-     * @param[in] port          ¶Ë¿ÚºÅ
-     * @return                  µØÖ·ÀàÖ¸Õë
+     * @brief                   åˆ›å»ºåœ°å€ç±»
+     * @param[in] address_str   å­—ç¬¦ä¸²åœ°å€
+     * @param[in] port          ç«¯å£å·
+     * @return                  åœ°å€ç±»æŒ‡é’ˆ
      */
     static Ipv4Address::Ptr Create(const char* address_str = nullptr, uint16_t port = 0);
 
@@ -209,7 +209,7 @@ private:
 };
 
 /**
- * @brief IPv6µØÖ·Àà
+ * @brief IPv6åœ°å€ç±»
  */
 class Ipv6Address : public IpAddress {
 public:
@@ -223,10 +223,10 @@ public:
     void Dump(std::ostream &os) const override;
 
     /**
-     * @brief               ´´½¨µØÖ·Àà
-     * @param[in] address   µØÖ·
-     * @param[in] port      ¶Ë¿ÚºÅ
-     * @return              µØÖ·ÀàÖ¸Õë
+     * @brief               åˆ›å»ºåœ°å€ç±»
+     * @param[in] address   åœ°å€
+     * @param[in] port      ç«¯å£å·
+     * @return              åœ°å€ç±»æŒ‡é’ˆ
      */
     static Ipv6Address::Ptr Create(const char* address = nullptr, uint16_t port = 0);
 
@@ -247,7 +247,7 @@ private:
 };
 
 /**
- * @brief UnixÓòµØÖ·Àà
+ * @brief UnixåŸŸåœ°å€ç±»
  */
 class UnixAddress : public BaseAddress {
 public:

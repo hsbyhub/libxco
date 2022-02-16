@@ -1,8 +1,8 @@
-/*================================================================*
+ï»¿/*================================================================*
         Copyright (C) 2021 All rights reserved, www.hsby.link.
-      	ÎÄ¼şÃû³Æ£ºecho_server.cc
-      	´´ ½¨ Õß£ºººÉ­²®Òİ
-      	´´½¨ÈÕÆÚ£º2022/2/13
+      	æ–‡ä»¶åç§°ï¼šecho_server.cc
+      	åˆ› å»º è€…ï¼šæ±‰æ£®ä¼¯é€¸
+      	åˆ›å»ºæ—¥æœŸï¼š2022/2/13
  *================================================================*/
 #pragma once
 
@@ -31,10 +31,10 @@ public:
 
 protected:
     /**
-     * @brief ¹¹Ôìº¯Êı (²»¿ª·Å¹¹Ôì£¬·ÀÖ¹share_from_this()·ÃÎÊÊ§°Ü)
-     * @param[in] worker: socket¿Í»§¶Ë¹¤×÷µÄĞ­³Ìµ÷¶ÈÆ÷
+     * @brief æ„é€ å‡½æ•° (ä¸å¼€æ”¾æ„é€ ï¼Œé˜²æ­¢share_from_this()è®¿é—®å¤±è´¥)
+     * @param[in] worker: socketå®¢æˆ·ç«¯å·¥ä½œçš„åç¨‹è°ƒåº¦å™¨
      * @param[in] io_worder: todo
-     * @param[in] accept_worker: ·şÎñÆ÷½ÓÊÜÁ¬½ÓµÄĞ­³Ìµ÷¶ÈÆ÷
+     * @param[in] accept_worker: æœåŠ¡å™¨æ¥å—è¿æ¥çš„åç¨‹è°ƒåº¦å™¨
      * @return
      */
     TcpServer(const std::string& name = "none");
@@ -43,7 +43,7 @@ public:
     static TcpServer::Ptr Create(const std::string& name = "none");
 
     /**
-     * @brief Îö¹¹º¯Êı
+     * @brief ææ„å‡½æ•°
      */
     virtual ~TcpServer();
 

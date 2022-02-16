@@ -1,8 +1,8 @@
-/*================================================================*
+ï»¿/*================================================================*
         Copyright (C) 2021 All rights reserved, www.hsby.link.
-      	ÎÄ¼şÃû³Æ£ºecho_server.cc
-      	´´ ½¨ Õß£ºººÉ­²®Òİ
-      	´´½¨ÈÕÆÚ£º2022/2/13
+      	æ–‡ä»¶åç§°ï¼šecho_server.cc
+      	åˆ› å»º è€…ï¼šæ±‰æ£®ä¼¯é€¸
+      	åˆ›å»ºæ—¥æœŸï¼š2022/2/13
  *================================================================*/
 
 #include "tcp_server.h"
@@ -167,9 +167,7 @@ void TcpServer::OnClientHandle(Socket::Ptr client) {
             idle_cos_.push(std::make_shared<Task>(Coroutine::GetCurCoroutine(), client));
             Coroutine::Yield();
         }
-        LOGDEBUG("get client");
         ClientHandle(client);
-        LOGDEBUG("client close");
         client->Close();
         client = nullptr;
     }

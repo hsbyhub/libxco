@@ -1,8 +1,8 @@
-/*================================================================*
+ï»¿/*================================================================*
         Copyright (C) 2021 All rights reserved, www.hsby.link.
-      	ÎÄ¼þÃû³Æ£ºhttp_session.cc
-      	´´ ½¨ Õß£ºººÉ­²®ÒÝ
-      	´´½¨ÈÕÆÚ£º2021/12/30
+      	æ–‡ä»¶åç§°ï¼šhttp_session.cc
+      	åˆ› å»º è€…ï¼šæ±‰æ£®ä¼¯é€¸
+      	åˆ›å»ºæ—¥æœŸï¼š2021/12/30
  *================================================================*/
 #include "http/http_connection.h"
 #include "http/http_paser.h"
@@ -56,14 +56,14 @@ HttpResponse::Ptr HttpConnection::RecvResponse() {
     if (parser.chunked) {
 
     }else {
-        // Ìî³äbody
+        // å¡«å……body
         if (body_length > 0) {
             body.resize(body_length);
             int len = std::min(data_len - parse_off, body_length);
             memcpy(&body[0], data + parse_off, len);
             body_length -= len;
 
-            // ×·¼Óbody
+            // è¿½åŠ body
             if (body_length > 0) {
                 if (ReadFixSize(&body[len], body_length) <= 0) {
                     Close();
@@ -75,7 +75,7 @@ HttpResponse::Ptr HttpConnection::RecvResponse() {
     }
 
 
-    // ³õÊ¼»¯
+    // åˆå§‹åŒ–
 //    http_rsp_parser->GetResponse()->Init();
     auto rsp = http_rsp_parser->GetResponse();
     if (rsp) {

@@ -1,8 +1,8 @@
-/*================================================================*
+ï»¿/*================================================================*
         Copyright (C) 2021 All rights reserved, www.hsby.link..
-      	ÎÄ¼şÃû³Æ£ºhttp_paser.h
-      	´´ ½¨ Õß£ºººÉ­²®Òİ
-      	´´½¨ÈÕÆÚ£º2021/12/24
+      	æ–‡ä»¶åç§°ï¼šhttp_paser.h
+      	åˆ› å»º è€…ï¼šæ±‰æ£®ä¼¯é€¸
+      	åˆ›å»ºæ—¥æœŸï¼š2021/12/24
  *================================================================*/
 #pragma once
 
@@ -20,61 +20,61 @@ public:
 
 public:
     /**
-     * @brief ¹¹Ôìº¯Êı
+     * @brief æ„é€ å‡½æ•°
      */
     HttpRequestParser();
 
     static HttpRequestParser::Ptr Create();
 public:
     /**
-     * @brief ½âÎöĞ­Òé
-     * @param[in, out] data Ğ­ÒéÎÄ±¾ÄÚ´æ
-     * @param[in] len Ğ­ÒéÎÄ±¾ÄÚ´æ³¤¶È
-     * @return ·µ»ØÊµ¼Ê½âÎöµÄ³¤¶È,²¢ÇÒ½«ÒÑ½âÎöµÄÊı¾İÒÆ³ı
+     * @brief è§£æåè®®
+     * @param[in, out] data åè®®æ–‡æœ¬å†…å­˜
+     * @param[in] len åè®®æ–‡æœ¬å†…å­˜é•¿åº¦
+     * @return è¿”å›å®é™…è§£æçš„é•¿åº¦,å¹¶ä¸”å°†å·²è§£æçš„æ•°æ®ç§»é™¤
      */
     size_t Parse(const char* data, size_t len, size_t off = 0);
 
     /**
-     * @brief ÊÇ·ñ½âÎöÍê³É
-     * @return ÊÇ·ñ½âÎöÍê³É
+     * @brief æ˜¯å¦è§£æå®Œæˆ
+     * @return æ˜¯å¦è§£æå®Œæˆ
      */
     int IsFinished();
 
     /**
-     * @brief ÊÇ·ñÓĞ´íÎó
-     * @return ÊÇ·ñÓĞ´íÎó
+     * @brief æ˜¯å¦æœ‰é”™è¯¯
+     * @return æ˜¯å¦æœ‰é”™è¯¯
      */
     int HasError();
 
     /**
-     * @brief ·µ»ØHttpRequest½á¹¹Ìå
+     * @brief è¿”å›HttpRequestç»“æ„ä½“
      */
     HttpRequest::Ptr GetRequest() const { return request_;}
 
     /**
-     * @brief ÉèÖÃ´íÎó
-     * @param[in] v ´íÎóÖµ
+     * @brief è®¾ç½®é”™è¯¯
+     * @param[in] v é”™è¯¯å€¼
      */
     void SetError(int error){ error_ = error; }
 
     /**
-     * @brief »ñÈ¡ÏûÏ¢Ìå³¤¶È
+     * @brief è·å–æ¶ˆæ¯ä½“é•¿åº¦
      */
     uint64_t GetContentLength();
 
     /**
-     * @brief »ñÈ¡http_parser½á¹¹Ìå
+     * @brief è·å–http_parserç»“æ„ä½“
      */
     const http_parser& GetParser() const { return parser_; }
 
 public:
     /**
-     * @brief ·µ»ØHttpRequestĞ­Òé½âÎöµÄ»º´æ´óĞ¡
+     * @brief è¿”å›HttpRequeståè®®è§£æçš„ç¼“å­˜å¤§å°
      */
     static uint64_t GetHttpRequestBufferSize();
 
     /**
-     * @brief ·µ»ØHttpRequestĞ­ÒéµÄ×î´óÏûÏ¢Ìå´óĞ¡
+     * @brief è¿”å›HttpRequeståè®®çš„æœ€å¤§æ¶ˆæ¯ä½“å¤§å°
      */
     static uint64_t GetHttpRequestMaxBodySize();
 
@@ -96,53 +96,53 @@ public:
 
 public:
     /**
-     * @brief ½âÎöHTTPÏìÓ¦Ğ­Òé
-     * @param[in, out] data Ğ­ÒéÊı¾İÄÚ´æ
-     * @param[in] len Ğ­ÒéÊı¾İÄÚ´æ´óĞ¡
-     * @param[in] chunck ÊÇ·ñÔÚ½âÎöchunck
-     * @return ·µ»ØÊµ¼Ê½âÎöµÄ³¤¶È,²¢ÇÒÒÆ³ıÒÑ½âÎöµÄÊı¾İ
+     * @brief è§£æHTTPå“åº”åè®®
+     * @param[in, out] data åè®®æ•°æ®å†…å­˜
+     * @param[in] len åè®®æ•°æ®å†…å­˜å¤§å°
+     * @param[in] chunck æ˜¯å¦åœ¨è§£æchunck
+     * @return è¿”å›å®é™…è§£æçš„é•¿åº¦,å¹¶ä¸”ç§»é™¤å·²è§£æçš„æ•°æ®
      */
     size_t Parse(const char* data, size_t len, size_t offset, bool chunck);
 
     /**
-     * @brief ÊÇ·ñ½âÎöÍê³É
+     * @brief æ˜¯å¦è§£æå®Œæˆ
      */
     int IsFinished();
 
     /**
-     * @brief ÊÇ·ñÓĞ´íÎó
+     * @brief æ˜¯å¦æœ‰é”™è¯¯
      */
     int HasError();
 
     /**
-     * @brief ·µ»ØHttpResponse
+     * @brief è¿”å›HttpResponse
      */
     HttpResponse::Ptr GetResponse() const { return response_;}
 
     /**
-     * @brief ÉèÖÃ´íÎóÂë
-     * @param[in] v ´íÎóÂë
+     * @brief è®¾ç½®é”™è¯¯ç 
+     * @param[in] v é”™è¯¯ç 
      */
     void SetError(int error) { error_ = error;}
 
     /**
-     * @brief »ñÈ¡ÏûÏ¢Ìå³¤¶È
+     * @brief è·å–æ¶ˆæ¯ä½“é•¿åº¦
      */
     uint64_t GetContentLength();
 
     /**
-     * @brief ·µ»Øhttpclient_parser
+     * @brief è¿”å›httpclient_parser
      */
     const httpclient_parser& GetParser() const { return parser_;}
 
 public:
     /**
-     * @brief ·µ»ØHTTPÏìÓ¦½âÎö»º´æ´óĞ¡
+     * @brief è¿”å›HTTPå“åº”è§£æç¼“å­˜å¤§å°
      */
     static uint64_t GetHttpResponseBufferSize();
 
     /**
-     * @brief ·µ»ØHTTPÏìÓ¦×î´óÏûÏ¢Ìå´óĞ¡
+     * @brief è¿”å›HTTPå“åº”æœ€å¤§æ¶ˆæ¯ä½“å¤§å°
      */
     static uint64_t GetHttpResponseMaxBodySize();
 

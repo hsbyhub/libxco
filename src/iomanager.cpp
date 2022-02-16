@@ -1,8 +1,8 @@
-/*================================================================*
+ï»¿/*================================================================*
         Copyright (C) 2021 All rights reserved, www.hsby.link.
-      	ÎÄ¼şÃû³Æ£ºiomanager.cpp
-      	´´ ½¨ Õß£ºhsby
-      	´´½¨ÈÕÆÚ£º2022/2/9
+      	æ–‡ä»¶åç§°ï¼šiomanager.cpp
+      	åˆ› å»º è€…ï¼šhsby
+      	åˆ›å»ºæ—¥æœŸï¼š2022/2/9
  *================================================================*/
 #include "iomanager.h"
 #include <assert.h>
@@ -29,7 +29,7 @@ uint32_t IoManager::SetEvent(int fd, uint32_t ev, Coroutine::Ptr co) {
     auto& ctx = fd_ctxs_[fd];
     assert(ev && (!(ev & EPOLLIN && ev & EPOLLOUT)));
 
-    // ĞŞ¸Äepoll
+    // ä¿®æ”¹epoll
     int op = ctx.evs ? EPOLL_CTL_MOD : EPOLL_CTL_ADD;
     epoll_event epev;
     memset(&epev, 0, sizeof(epev));
@@ -126,7 +126,7 @@ void IoManager::OnIdle() {
         }while(true);
         LOGDEBUG("epoll_wait, " << XCO_VARS_EXP(ret))
 
-        // ´¦Àí¶¨Ê±Æ÷ÊÂ¼ş
+        // å¤„ç†å®šæ—¶å™¨äº‹ä»¶
         std::vector<std::function<void()>> cbs;
         ListExpriredCb(cbs);
         for (auto cb : cbs) {

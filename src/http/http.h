@@ -1,8 +1,8 @@
-/*================================================================*
+ï»¿/*================================================================*
         Copyright (C) 2021 All rights reserved, www.hsby.link.
-      	ÎÄ¼şÃû³Æ£ºsocket.cc
-      	´´ ½¨ Õß£ºººÉ­²®Òİ
-      	´´½¨ÈÕÆÚ£º2021/12/21
+      	æ–‡ä»¶åç§°ï¼šsocket.cc
+      	åˆ› å»º è€…ï¼šæ±‰æ£®ä¼¯é€¸
+      	åˆ›å»ºæ—¥æœŸï¼š2021/12/21
  *================================================================*/
 
 #include <string>
@@ -139,40 +139,40 @@ enum class HttpMethod{
 };
 
 /**
- * @brief ºöÂÔ´óĞ¡Ğ´±È½Ï·Âº¯Êı
+ * @brief å¿½ç•¥å¤§å°å†™æ¯”è¾ƒä»¿å‡½æ•°
  */
 struct CaseInsensitiveCompare {
     /**
-     * @brief ºöÂÔ´óĞ¡Ğ´±È½Ï×Ö·û´®
+     * @brief å¿½ç•¥å¤§å°å†™æ¯”è¾ƒå­—ç¬¦ä¸²
      */
     bool operator()(const std::string& lhs, const std::string& rhs) const;
 };
 
 /**
- * @brief ½«×Ö·û´®·½·¨Ãû×ª³ÉHTTP·½·¨Ã¶¾Ù
- * @param[in] method_str HTTP·½·¨
- * @return HTTP·½·¨Ã¶¾Ù
+ * @brief å°†å­—ç¬¦ä¸²æ–¹æ³•åè½¬æˆHTTPæ–¹æ³•æšä¸¾
+ * @param[in] method_str HTTPæ–¹æ³•
+ * @return HTTPæ–¹æ³•æšä¸¾
  */
 HttpMethod StringToHttpMethod(const std::string& method_str);
 
 /**
- * @brief ½«×Ö·û´®Ö¸Õë×ª»»³ÉHTTP·½·¨Ã¶¾Ù
- * @param[in] m ×Ö·û´®·½·¨Ã¶¾Ù
- * @return HTTP·½·¨Ã¶¾Ù
+ * @brief å°†å­—ç¬¦ä¸²æŒ‡é’ˆè½¬æ¢æˆHTTPæ–¹æ³•æšä¸¾
+ * @param[in] m å­—ç¬¦ä¸²æ–¹æ³•æšä¸¾
+ * @return HTTPæ–¹æ³•æšä¸¾
  */
 HttpMethod CharsToHttpMethod(const char* m);
 
 /**
- * @brief ½«HTTP·½·¨Ã¶¾Ù×ª»»³É×Ö·û´®
- * @param[in] m HTTP·½·¨Ã¶¾Ù
- * @return ×Ö·û´®
+ * @brief å°†HTTPæ–¹æ³•æšä¸¾è½¬æ¢æˆå­—ç¬¦ä¸²
+ * @param[in] m HTTPæ–¹æ³•æšä¸¾
+ * @return å­—ç¬¦ä¸²
  */
 const char* HttpMethodToString(const HttpMethod& m);
 
 /**
- * @brief ½«HTTP×´Ì¬Ã¶¾Ù×ª»»³É×Ö·û´®
- * @param[in] m HTTP×´Ì¬Ã¶¾Ù
- * @return ×Ö·û´®
+ * @brief å°†HTTPçŠ¶æ€æšä¸¾è½¬æ¢æˆå­—ç¬¦ä¸²
+ * @param[in] m HTTPçŠ¶æ€æšä¸¾
+ * @return å­—ç¬¦ä¸²
  */
 const char* HttpStatusToString(const HttpStatus& s);
 
@@ -185,9 +185,9 @@ public:
 
 public:
     /**
-     * @brief ¹¹Ôìº¯Êı
-     * @param[in] version °æ±¾
-     * @param[in] close ÊÇ·ñkeepalive
+     * @brief æ„é€ å‡½æ•°
+     * @param[in] version ç‰ˆæœ¬
+     * @param[in] close æ˜¯å¦keepalive
      */
     HttpRequest(uint8_t version = 0x11, bool close = true);
 
@@ -206,29 +206,29 @@ public:
     void InitCookies();
 
 private:
-    //// HTTP´¦Àí·½·¨
+    //// HTTPå¤„ç†æ–¹æ³•
     HttpMethod method_;
-    //// HTTP°æ±¾
+    //// HTTPç‰ˆæœ¬
     uint8_t version_;
-    //// ÊÇ·ñ×Ô¶¯¹Ø±Õ
+    //// æ˜¯å¦è‡ªåŠ¨å…³é—­
     bool is_close_;
-    //// ÊÇ·ñÎªwebsocket
+    //// æ˜¯å¦ä¸ºwebsocket
     bool is_web_socket_;
 
     uint8_t paser_paraflag_;
-    //// ÇëÇóÂ·¾¶
+    //// è¯·æ±‚è·¯å¾„
     std::string path_;
-    //// ÇëÇó²éÑ¯
+    //// è¯·æ±‚æŸ¥è¯¢
     std::string query_;
-    //// ÇëÇóÖ¡
+    //// è¯·æ±‚å¸§
     std::string fragment_;
-    //// ÇëÇóÏûÏ¢Ìå
+    //// è¯·æ±‚æ¶ˆæ¯ä½“
     std::string body_;
-    //// ÇëÇóÍ·²¿Ñ¡Ïî
+    //// è¯·æ±‚å¤´éƒ¨é€‰é¡¹
     MapType headers_;
-    //// ÇëÇó²ÎÊı
+    //// è¯·æ±‚å‚æ•°
     MapType params_;
-    //// ÇëÇócooki
+    //// è¯·æ±‚cooki
     MapType cookies_;
 
 public:
@@ -269,26 +269,26 @@ public:
 
 public:
     /**
-     * @brief ÉèÖÃÖØ¶¨Ïò
-     * @param[in] uri:×ÊÔ´¶¨Î»·û
+     * @brief è®¾ç½®é‡å®šå‘
+     * @param[in] uri:èµ„æºå®šä½ç¬¦
      */
     void SetRedirect(const std::string& uri);
 
 
 private:
-    //// ÏìÓ¦×´Ì¬
+    //// å“åº”çŠ¶æ€
     HttpStatus status_;
-    //// °æ±¾
+    //// ç‰ˆæœ¬
     uint8_t version_;
-    //// ÊÇ·ñ×Ô¶¯¹Ø±Õ
+    //// æ˜¯å¦è‡ªåŠ¨å…³é—­
     bool is_close_;
-    //// ÊÇ·ñÎªwebsocket
+    //// æ˜¯å¦ä¸ºwebsocket
     bool is_websocket_;
-    //// ÏìÓ¦ÏûÏ¢Ìå
+    //// å“åº”æ¶ˆæ¯ä½“
     std::string body_;
-    //// ÏìÓ¦Ô­Òò
+    //// å“åº”åŸå› 
     std::string reason_;
-    //// ÏìÓ¦Í·²¿MAP
+    //// å“åº”å¤´éƒ¨MAP
     MapType headers_;
     //// cookies
     std::vector<std::string> cookies_;

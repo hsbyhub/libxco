@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file bytearray.h
  * @brief 二进制数组(序列化/反序列化)
  * @author sylar.yin

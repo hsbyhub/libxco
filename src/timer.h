@@ -1,8 +1,8 @@
-/*================================================================*
+ï»¿/*================================================================*
         Copyright (C) 2021 All rights reserved, www.hsby.link.
-      	ÎÄ¼şÃû³Æ£ºtimer.h
-      	´´ ½¨ Õß£ºhsby
-      	´´½¨ÈÕÆÚ£º2022/2/9
+      	æ–‡ä»¶åç§°ï¼štimer.h
+      	åˆ› å»º è€…ï¼šhsby
+      	åˆ›å»ºæ—¥æœŸï¼š2022/2/9
  *================================================================*/
 #pragma once
 
@@ -16,7 +16,7 @@
 XCO_NAMESPAVE_START
 
 /**
- * @brief ¶¨Ê±Æ÷ÊÂ¼şÀà
+ * @brief å®šæ—¶å™¨äº‹ä»¶ç±»
  */
 class TimerManager;
 class Timer : public std::enable_shared_from_this<Timer>{
@@ -27,21 +27,21 @@ public:
 
 private:
     /**
-     * @brief ¶¨Ê±Æ÷ÊÂ¼ş¹¹Ôìº¯Êı£¬ Ë½ÓĞ£¬Ö»ÄÜÓÉTimerManager¹¹Ôì
-     * @param[in] ms        ºÁÃë£¬¼ÆÊ±Æ÷µÄ´¥·¢Ê±¼ä
-     * @param[in] cb        ´¥·¢ÊÂ¼ş
-     * @param[in] recurring ÊÇ·ñ¶à´Î´¥·¢
-     * @param[in] manager   ¹ÜÀíÆ÷
+     * @brief å®šæ—¶å™¨äº‹ä»¶æ„é€ å‡½æ•°ï¼Œ ç§æœ‰ï¼Œåªèƒ½ç”±TimerManageræ„é€ 
+     * @param[in] ms        æ¯«ç§’ï¼Œè®¡æ—¶å™¨çš„è§¦å‘æ—¶é—´
+     * @param[in] cb        è§¦å‘äº‹ä»¶
+     * @param[in] recurring æ˜¯å¦å¤šæ¬¡è§¦å‘
+     * @param[in] manager   ç®¡ç†å™¨
      */
     Timer(uint64_t ms, std::function<void()> cb, bool recurring, TimerManager* manager);
 
     /**
-     * @brief ¹¹ÔìÒ»¸öÖ»ÓĞm_nextµÄÊÂ¼ş£¬ÓÃÓÚÁÙÊ±¶Ô±È
+     * @brief æ„é€ ä¸€ä¸ªåªæœ‰m_nextçš„äº‹ä»¶ï¼Œç”¨äºä¸´æ—¶å¯¹æ¯”
      */
     Timer(uint64_t next);
 
     /**
-     * @brief ±È½ÏÆ÷
+     * @brief æ¯”è¾ƒå™¨
      */
     struct Comparetor {
         bool operator()(const Timer::Ptr& l, const Timer::Ptr& r) const;
@@ -49,26 +49,26 @@ private:
 
 public:
     /**
-     * @brief È¡Ïû¼ÆÊ±Æ÷ÊÂ¼ş
+     * @brief å–æ¶ˆè®¡æ—¶å™¨äº‹ä»¶
      */
     bool Cancel();
 
     /**
-     * @brief Ë¢ĞÂ¼ÆÊ±Æ÷ÊÂ¼şÊ±¼ä
+     * @brief åˆ·æ–°è®¡æ—¶å™¨äº‹ä»¶æ—¶é—´
      */
     bool Refresh();
 
     /**
-     * @brief ÖØÖÃ¼ÆÊ±Æ÷ÊÂ¼şÊ±¼ä
+     * @brief é‡ç½®è®¡æ—¶å™¨äº‹ä»¶æ—¶é—´
      */
     bool Reset(uint64_t ms, bool from_now = true);
 private:
 
-    uint64_t interval_ms_ = 0; //¶¨Ê±Æ÷¹¹ÔìÊ±´¥·¢Ê±¼ä
-    std::function<void()> m_cb; //ÊÂ¼ş»Øµ÷
-    bool is_recurring_ = false; // ÊÇ·ñ¶à´Î´¥·¢
-    uint64_t next_trigger_time_ms_ = 0; //ÏÂÒ»´Î´¥·¢µÄÊ±¼ä
-    TimerManager* timer_manager_; //¼ÆÊ±Æ÷ÊÂ¼ş¹ÜÀíÆ÷
+    uint64_t interval_ms_ = 0; //å®šæ—¶å™¨æ„é€ æ—¶è§¦å‘æ—¶é—´
+    std::function<void()> m_cb; //äº‹ä»¶å›è°ƒ
+    bool is_recurring_ = false; // æ˜¯å¦å¤šæ¬¡è§¦å‘
+    uint64_t next_trigger_time_ms_ = 0; //ä¸‹ä¸€æ¬¡è§¦å‘çš„æ—¶é—´
+    TimerManager* timer_manager_; //è®¡æ—¶å™¨äº‹ä»¶ç®¡ç†å™¨
 };
 
 class TimerManager : public std::enable_shared_from_this<TimerManager>{
@@ -78,47 +78,47 @@ public:
     typedef std::shared_ptr<TimerManager> Ptr;
 
     /**
-     * @brief ¼ÆÊ±Æ÷¹ÜÀíÆ÷¹¹Ôìº¯Êı
+     * @brief è®¡æ—¶å™¨ç®¡ç†å™¨æ„é€ å‡½æ•°
      */
     TimerManager();
 
     /**
-     * @brief ¼ÆÊ±Æ÷¹ÜÀíÆ÷Îö¹¹º¯Êı
+     * @brief è®¡æ—¶å™¨ç®¡ç†å™¨ææ„å‡½æ•°
      * @details virtual
      */
     virtual ~TimerManager();
 
     /**
-     * @brief Ìí¼Ó¼ÆÊ±Æ÷ÊÂ¼ş
+     * @brief æ·»åŠ è®¡æ—¶å™¨äº‹ä»¶
      */
     Timer::Ptr AddTimer(uint64_t ms, std::function<void()> cb,
                         bool recurring = false);
 
     /**
-     * @brief Ìí¼ÓÌõ¼ş¼ÆÊ±Æ÷ÊÂ¼ş
+     * @brief æ·»åŠ æ¡ä»¶è®¡æ—¶å™¨äº‹ä»¶
      */
     Timer::Ptr AddConditionTimer(uint64_t ms, std::function<void()> cb,
                                  std::weak_ptr<void> cond_weak,
                                  bool recurring = false);
 
     /**
-     * @brief »ñÈ¡ÏÂÒ»¸ö¼ÆÊ±Æ÷ÊÂ¼şµÄÊ±¼ä
+     * @brief è·å–ä¸‹ä¸€ä¸ªè®¡æ—¶å™¨äº‹ä»¶çš„æ—¶é—´
      */
     int64_t GetNextTimerDistNow();
 
     /**
-     * @brief ·µ»ØÒÑ¾­³¬Ê±µÄ¼ÆÊ±Æ÷ÊÂ¼ş»Øµ÷
-     * @param[out] cbs ³¬Ê±µÄ»Øµ÷
+     * @brief è¿”å›å·²ç»è¶…æ—¶çš„è®¡æ—¶å™¨äº‹ä»¶å›è°ƒ
+     * @param[out] cbs è¶…æ—¶çš„å›è°ƒ
      */
     void ListExpriredCb(std::vector<std::function<void()>>& cbs);
 
     /**
-     * @brief ÅĞ¶Ïµ±Ç°ÊÇ·ñÓĞ¶¨Ê±Æ÷ÊÂ¼ş
+     * @brief åˆ¤æ–­å½“å‰æ˜¯å¦æœ‰å®šæ—¶å™¨äº‹ä»¶
      */
     bool HasTimer();
 
     /**
-     * @brief Ìí¼Ó¼ÆÊ±Æ÷ÊÂ¼ş
+     * @brief æ·»åŠ è®¡æ—¶å™¨äº‹ä»¶
      */
     void AddTimer(Timer::Ptr timer/*, RWMutexType::WriteLockGuardType& wlock*/);
 

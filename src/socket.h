@@ -1,8 +1,8 @@
-/*================================================================*
+ï»¿/*================================================================*
         Copyright (C) 2021 All rights reserved, www.hsby.link.
-      	ÎÄ¼şÃû³Æ£ºsocket.h
-      	´´ ½¨ Õß£ºhsby
-      	´´½¨ÈÕÆÚ£º2022/2/10
+      	æ–‡ä»¶åç§°ï¼šsocket.h
+      	åˆ› å»º è€…ï¼šhsby
+      	åˆ›å»ºæ—¥æœŸï¼š2022/2/10
  *================================================================*/
 #pragma once
 #include <memory>
@@ -38,289 +38,289 @@ public:
 
 public:
     /**
-     * @brief ³õÊ¼»¯
-     * @param[in] sock:Ì×½Ó×Ö¾ä±ú
+     * @brief åˆå§‹åŒ–
+     * @param[in] sock:å¥—æ¥å­—å¥æŸ„
      */
     bool Init(int sock = -1);
 
     /**
-     * @brief ³õÊ¼»¯Ì×½Ó×Ö¾ä±ú
-     * @param auto_create:ÊÇ·ñ×Ô¶¯´´½¨
-     * @return ÊÇ·ñ³É¹¦
+     * @brief åˆå§‹åŒ–å¥—æ¥å­—å¥æŸ„
+     * @param auto_create:æ˜¯å¦è‡ªåŠ¨åˆ›å»º
+     * @return æ˜¯å¦æˆåŠŸ
      */
     bool InitSystemSocket(bool auto_create = false);
 
     /**
-     * @brief ´´½¨TcpÌ×½Ó×Ö
-     * @param[in] address:µØÖ·
-     * @return Ì×½Ó×Ö
+     * @brief åˆ›å»ºTcpå¥—æ¥å­—
+     * @param[in] address:åœ°å€
+     * @return å¥—æ¥å­—
      */
     static Socket::Ptr CreateTCP(BaseAddress::Ptr address = nullptr);
 
     /**
-     * @brief ´´½¨UdpÌ×½Ó×Ö
-     * @param[in] address:µØÖ·
-     * @return Ì×½Ó×Ö
+     * @brief åˆ›å»ºUdpå¥—æ¥å­—
+     * @param[in] address:åœ°å€
+     * @return å¥—æ¥å­—
      */
     static Socket::Ptr CreateUDP(BaseAddress::Ptr address = nullptr);
 
     /**
-     * @brief ´´½¨TcpÌ×½Ó×Ö
-     * @param[in] address:µØÖ·
-     * @return Ì×½Ó×Ö
+     * @brief åˆ›å»ºTcpå¥—æ¥å­—
+     * @param[in] address:åœ°å€
+     * @return å¥—æ¥å­—
      */
     static Socket::Ptr CreateTCP6(BaseAddress::Ptr address = nullptr);
 
     /**
-     * @brief ´´½¨UdpÌ×½Ó×Ö
-     * @param[in] address:µØÖ·
-     * @return Ì×½Ó×Ö
+     * @brief åˆ›å»ºUdpå¥—æ¥å­—
+     * @param[in] address:åœ°å€
+     * @return å¥—æ¥å­—
      */
     static Socket::Ptr CreateUDP6(BaseAddress::Ptr address = nullptr);
 
     /**
-     * @brief ´´½¨UnixTCPÌ×½Ó×Ö
-     * @param[in] address:µØÖ·
-     * @return Ì×½Ó×Ö
+     * @brief åˆ›å»ºUnixTCPå¥—æ¥å­—
+     * @param[in] address:åœ°å€
+     * @return å¥—æ¥å­—
      */
     static Socket::Ptr CreateUnixTCP();
 
     /**
-     * @brief ´´½¨UnixUDPÌ×½Ó×Ö
-     * @param[in] address:µØÖ·
-     * @return Ì×½Ó×Ö
+     * @brief åˆ›å»ºUnixUDPå¥—æ¥å­—
+     * @param[in] address:åœ°å€
+     * @return å¥—æ¥å­—
      */
     static Socket::Ptr CreateUnixUDP();
 
     /**
-     * @brief   ½ÓÊÕÁ¬½Ó
-     * @return  Ì×½Ó×Ö
+     * @brief   æ¥æ”¶è¿æ¥
+     * @return  å¥—æ¥å­—
      */
     Socket::Ptr Accept();
 
     /**
-     * @brief   °ó¶¨µØÖ·
-     * @return  ÊÇ·ñ³É¹¦
+     * @brief   ç»‘å®šåœ°å€
+     * @return  æ˜¯å¦æˆåŠŸ
      */
     bool Bind(const BaseAddress::Ptr addr);
 
     /**
-     * @brief Á¬½ÓÄ¿±êµØÖ·
-     * @param[in]dest:Ä¿±êµØÖ·
-     * @param[in]time_out_ms:³¬Ê±(ºÁÃë)
-     * @return ÊÇ·ñ³É¹¦
+     * @brief è¿æ¥ç›®æ ‡åœ°å€
+     * @param[in]dest:ç›®æ ‡åœ°å€
+     * @param[in]time_out_ms:è¶…æ—¶(æ¯«ç§’)
+     * @return æ˜¯å¦æˆåŠŸ
      */
     bool Connect(const BaseAddress::Ptr dest, int64_t time_out_ms = -1);
 
     /**
-     * @brief           ¼àÌı
-     * @param backlog   Á¬½ÓÊıÁ¿
-     * @return          ÊÇ·ñ³É¹¦
+     * @brief           ç›‘å¬
+     * @param backlog   è¿æ¥æ•°é‡
+     * @return          æ˜¯å¦æˆåŠŸ
      */
     bool Listen(int backlog = SOMAXCONN);
 
     /**
-     * @brief   ¹Ø±ÕÁ¬½Ó
+     * @brief   å…³é—­è¿æ¥
      */
     bool Close();
 
     /**
-     * @brief ·¢ËÍÏûÏ¢
-     * @param[in] buffer:ÏûÏ¢(string)
-     * @param[in] flags:±êÖ¾
-     * @return ·¢ËÍ³É¹¦µÄ×Ö½ÚÊı
+     * @brief å‘é€æ¶ˆæ¯
+     * @param[in] buffer:æ¶ˆæ¯(string)
+     * @param[in] flags:æ ‡å¿—
+     * @return å‘é€æˆåŠŸçš„å­—èŠ‚æ•°
      */
     int Send(const std::string& buffer, int flags = 0);
 
     /**
-     * @brief ½ÓÊÕÏûÏ¢
-     * @param[out] buffer:ÏûÏ¢(string)
-     * @param[in] flags:±êÖ¾
-     * @return ·¢ËÍ³É¹¦µÄ×Ö½ÚÊı
+     * @brief æ¥æ”¶æ¶ˆæ¯
+     * @param[out] buffer:æ¶ˆæ¯(string)
+     * @param[in] flags:æ ‡å¿—
+     * @return å‘é€æˆåŠŸçš„å­—èŠ‚æ•°
      */
     int Send(const char* buffer, size_t len, int flags = 0);
 
     /**
-     * @brief ·¢ËÍÏûÏ¢
-     * @param[in] iov:ÏûÏ¢(iovec)
-     * @param[in] flags:±êÖ¾
-     * @return ·¢ËÍ³É¹¦µÄ×Ö½ÚÊı
+     * @brief å‘é€æ¶ˆæ¯
+     * @param[in] iov:æ¶ˆæ¯(iovec)
+     * @param[in] flags:æ ‡å¿—
+     * @return å‘é€æˆåŠŸçš„å­—èŠ‚æ•°
      */
     int Send(const iovec* iov, size_t iov_len, int flags = 0);
 
     /**
-     * @brief ·¢ËÍÏûÏ¢µ½Ä¿±êµØÖ·
-     * @param[in] to:Ä¿±êµØÖ·
-     * @param[in] buffer:ÏûÏ¢(string)
-     * @param[in] flags:±êÖ¾
-     * @return ·¢ËÍ³É¹¦µÄ×Ö½ÚÊı
+     * @brief å‘é€æ¶ˆæ¯åˆ°ç›®æ ‡åœ°å€
+     * @param[in] to:ç›®æ ‡åœ°å€
+     * @param[in] buffer:æ¶ˆæ¯(string)
+     * @param[in] flags:æ ‡å¿—
+     * @return å‘é€æˆåŠŸçš„å­—èŠ‚æ•°
      */
     int SendTo(const BaseAddress::Ptr to, const char* buffer, size_t len, int flags = 0);
 
     /**
-     * @brief ·¢ËÍÏûÏ¢µ½Ä¿±êµØÖ·
-     * @param[in] to:Ä¿±êµØÖ·
-     * @param[in] buffer:ÏûÏ¢(string)
-     * @param[in] flags:±êÖ¾
-     * @return ·¢ËÍ³É¹¦µÄ×Ö½ÚÊı
+     * @brief å‘é€æ¶ˆæ¯åˆ°ç›®æ ‡åœ°å€
+     * @param[in] to:ç›®æ ‡åœ°å€
+     * @param[in] buffer:æ¶ˆæ¯(string)
+     * @param[in] flags:æ ‡å¿—
+     * @return å‘é€æˆåŠŸçš„å­—èŠ‚æ•°
      */
     int SendTo(const BaseAddress::Ptr to, const std::string& buffer, int flags = 0);
 
     /**
-     * @brief ·¢ËÍÏûÏ¢µ½Ä¿±êµØÖ·
-     * @param[in] to:Ä¿±êµØÖ·
-     * @param[in] iov:ÏûÏ¢(iovec)
-     * @param[in] flags:±êÖ¾
-     * @return ·¢ËÍ³É¹¦µÄ×Ö½ÚÊı
+     * @brief å‘é€æ¶ˆæ¯åˆ°ç›®æ ‡åœ°å€
+     * @param[in] to:ç›®æ ‡åœ°å€
+     * @param[in] iov:æ¶ˆæ¯(iovec)
+     * @param[in] flags:æ ‡å¿—
+     * @return å‘é€æˆåŠŸçš„å­—èŠ‚æ•°
      */
     int SendTo(const BaseAddress::Ptr to, const iovec* iov, size_t iov_len, int flags = 0);
 
     /**
-     * @brief ½ÓÊÕÏûÏ¢
-     * @param[out] buffer:ÏûÏ¢
-     * @param[in] len:ÏûÏ¢³¤¶È
-     * @param[in] flags:±êÖ¾
-     * @return ·¢ËÍ³É¹¦µÄ×Ö½ÚÊı
+     * @brief æ¥æ”¶æ¶ˆæ¯
+     * @param[out] buffer:æ¶ˆæ¯
+     * @param[in] len:æ¶ˆæ¯é•¿åº¦
+     * @param[in] flags:æ ‡å¿—
+     * @return å‘é€æˆåŠŸçš„å­—èŠ‚æ•°
      */
     int Recv(char* buffer, size_t len, int flags = 0);
 
     /**
-     * @brief ½ÓÊÕÏûÏ¢
-     * @param[out] buffer:ÏûÏ¢(string)
-     * @param[in] flags:±êÖ¾
-     * @return ·¢ËÍ³É¹¦µÄ×Ö½ÚÊı
+     * @brief æ¥æ”¶æ¶ˆæ¯
+     * @param[out] buffer:æ¶ˆæ¯(string)
+     * @param[in] flags:æ ‡å¿—
+     * @return å‘é€æˆåŠŸçš„å­—èŠ‚æ•°
      */
     int Recv(std::string& buffer, int flags = 0);
 
     /**
-     * @brief ½ÓÊÕÏûÏ¢
-     * @param[out] iov:ÏûÏ¢(iovec)
-     * @param[in] flags:±êÖ¾
-     * @return ·¢ËÍ³É¹¦µÄ×Ö½ÚÊı
+     * @brief æ¥æ”¶æ¶ˆæ¯
+     * @param[out] iov:æ¶ˆæ¯(iovec)
+     * @param[in] flags:æ ‡å¿—
+     * @return å‘é€æˆåŠŸçš„å­—èŠ‚æ•°
      */
     int Recv(iovec* iov, size_t iov_len, int flags = 0);
 
     /**
-     * @brief ´Ófrom½ÓÊÕÏûÏ¢
-     * @param[out] from:À´Ô´µØÖ·
-     * @param[out] buffer:ÏûÏ¢(string)
-     * @param[in] flags:±êÖ¾
-     * @return ·¢ËÍ³É¹¦µÄ×Ö½ÚÊı
+     * @brief ä»fromæ¥æ”¶æ¶ˆæ¯
+     * @param[out] from:æ¥æºåœ°å€
+     * @param[out] buffer:æ¶ˆæ¯(string)
+     * @param[in] flags:æ ‡å¿—
+     * @return å‘é€æˆåŠŸçš„å­—èŠ‚æ•°
      */
     int RecvFrom(BaseAddress::Ptr from, const char* buffer, size_t len, int flags = 0);
 
     /**
-     * @brief ´Ófrom½ÓÊÕÏûÏ¢
-     * @param[out] from:À´Ô´µØÖ·
-     * @param[out] buffer:ÏûÏ¢(string)
-     * @param[in] flags:±êÖ¾
-     * @return ·¢ËÍ³É¹¦µÄ×Ö½ÚÊı
+     * @brief ä»fromæ¥æ”¶æ¶ˆæ¯
+     * @param[out] from:æ¥æºåœ°å€
+     * @param[out] buffer:æ¶ˆæ¯(string)
+     * @param[in] flags:æ ‡å¿—
+     * @return å‘é€æˆåŠŸçš„å­—èŠ‚æ•°
      */
     int RecvFrom(BaseAddress::Ptr from, std::string& buffer, int flags = 0);
 
     /**
-     * @brief ´Ófrom½ÓÊÕÏûÏ¢
-     * @param[out] from:À´Ô´µØÖ·
-     * @param[out] iov:ÏûÏ¢(iovec)
-     * @param[in] flags:±êÖ¾
-     * @return ·¢ËÍ³É¹¦µÄ×Ö½ÚÊı
+     * @brief ä»fromæ¥æ”¶æ¶ˆæ¯
+     * @param[out] from:æ¥æºåœ°å€
+     * @param[out] iov:æ¶ˆæ¯(iovec)
+     * @param[in] flags:æ ‡å¿—
+     * @return å‘é€æˆåŠŸçš„å­—èŠ‚æ•°
      */
     int RecvFrom(BaseAddress::Ptr from, iovec* iov, size_t iov_len, int flags = 0);
 
     /**
-     * @brief »ñÈ¡Ğ­Òé×å
+     * @brief è·å–åè®®æ—
      */
     int GetFamily() const;
 
     /**
-     * @brief »ñÈ¡ÀàĞÍ
+     * @brief è·å–ç±»å‹
      */
     int GetType() const;
 
     /**
-     * @brief »ñÈ¡Ğ­Òé
+     * @brief è·å–åè®®
      */
     int GetProtocol() const;
 
     /**
-     * @brief ÊÇ·ñÒÑÁ¬½Ó
+     * @brief æ˜¯å¦å·²è¿æ¥
      */
     bool IsConnected();
 
     /**
-     * @brief ÊÇ·ñÓĞĞ§
+     * @brief æ˜¯å¦æœ‰æ•ˆ
      */
     bool IsValid();
 
     /**
-     * @brief »ñÈ¡´íÎóÂë
+     * @brief è·å–é”™è¯¯ç 
      */
     int GetError() const;
 
     /**
-     * @brief »ñÈ¡·¢ËÍ³¬Ê±
+     * @brief è·å–å‘é€è¶…æ—¶
      */
     int64_t GetSendTimeOut() const;
 
     /**
-     * @brief ÉèÖÃ·¢ËÍ³¬Ê±
+     * @brief è®¾ç½®å‘é€è¶…æ—¶
      */
     void SetSendTimeOut(int64_t time_out);
 
     /**
-     * @brief »ñÈ¡½ÓÊÕ³¬Ê±
+     * @brief è·å–æ¥æ”¶è¶…æ—¶
      */
     int64_t GetRecvTimeOut() const;
 
     /**
-     * @brief ÉèÖÃ½ÓÊÕ³¬Ê±
+     * @brief è®¾ç½®æ¥æ”¶è¶…æ—¶
      */
     void SetRecvTimeOut(int64_t time_out);
 
     /**
-     * @brief »ñÈ¡Ì×½Ó×Ö¾ä±ú
+     * @brief è·å–å¥—æ¥å­—å¥æŸ„
      */
     int GetSockfd() const;
 
     /**
-     * @brief »ñÈ¡±¾µØµØÖ· Í¬Ê±³õÊ¼»¯±¾µØµØÖ·
+     * @brief è·å–æœ¬åœ°åœ°å€ åŒæ—¶åˆå§‹åŒ–æœ¬åœ°åœ°å€
      */
     BaseAddress::Ptr GetLocalAddress();
 
     /**
-     * @brief »ñÈ¡Ô¶¶ËµØÖ· Í¬Ê±³õÊ¼»¯±¾µØµØÖ·
+     * @brief è·å–è¿œç«¯åœ°å€ åŒæ—¶åˆå§‹åŒ–æœ¬åœ°åœ°å€
      */
     BaseAddress::Ptr GetRemoteAddress();
 
     /**
-     * @brief È¡Ïû¶Á
+     * @brief å–æ¶ˆè¯»
      */
     bool CancelRead();
 
     /**
-     * @brief È¡ÏûĞ´
+     * @brief å–æ¶ˆå†™
      */
     bool CancelWrite();
 
     /**
-     * @brief È¡Ïû½ÓÊÜÁ¬½Ó
+     * @brief å–æ¶ˆæ¥å—è¿æ¥
      */
     bool CancelAccept();
 
     /**
-     * @brief È¡ÏûÈ«²¿ÊÂ¼ş
+     * @brief å–æ¶ˆå…¨éƒ¨äº‹ä»¶
      */
     bool CancelAll();
 
     /**
-     * @brief   »ñÈ¡Ì×½Ó×ÖÑ¡Ïî
-     * @return  ÊÇ·ñ³É¹¦
+     * @brief   è·å–å¥—æ¥å­—é€‰é¡¹
+     * @return  æ˜¯å¦æˆåŠŸ
      */
     bool GetOption(int level, int option, void* val, socklen_t* len) const;
 
     /**
-     * @brief   »ñÈ¡Ì×½Ó×ÖÑ¡Ïî
-     * @return  ÊÇ·ñ³É¹¦
+     * @brief   è·å–å¥—æ¥å­—é€‰é¡¹
+     * @return  æ˜¯å¦æˆåŠŸ
      */
     template<typename T>
     bool GetOption(int level, int option, T& val)  const{
@@ -329,14 +329,14 @@ public:
     }
 
     /**
-     * @brief   ÉèÖÃÌ×½Ó×ÖÑ¡Ïî
-     * @return  ÊÇ·ñ³É¹¦
+     * @brief   è®¾ç½®å¥—æ¥å­—é€‰é¡¹
+     * @return  æ˜¯å¦æˆåŠŸ
      */
     bool SetOption(int level, int option, const void* val, socklen_t len);
 
     /**
-     * @brief   ÉèÖÃÌ×½Ó×ÖÑ¡Ïî
-     * @return  ÊÇ·ñ³É¹¦
+     * @brief   è®¾ç½®å¥—æ¥å­—é€‰é¡¹
+     * @return  æ˜¯å¦æˆåŠŸ
      */
     template<typename T>
     bool SetOption(int level, int option, const T& val) {

@@ -1,8 +1,8 @@
-/*================================================================*
+ï»¿/*================================================================*
         Copyright (C) 2021 All rights reserved, www.hsby.link.
-      	ÎÄ¼şÃû³Æ£ºecho_server.cc
-      	´´ ½¨ Õß£ºººÉ­²®Òİ
-      	´´½¨ÈÕÆÚ£º2022/2/13
+      	æ–‡ä»¶åç§°ï¼šecho_server.cc
+      	åˆ› å»º è€…ï¼šæ±‰æ£®ä¼¯é€¸
+      	åˆ›å»ºæ—¥æœŸï¼š2022/2/13
  *================================================================*/
 #pragma once
 
@@ -19,97 +19,97 @@ public:
 
 public:
     /**
-      * @brief ¶ÁÊı¾İ
-      * @param[out] buffer ½ÓÊÕÊı¾İµÄÄÚ´æ
-      * @param[in] length ½ÓÊÕÊı¾İµÄÄÚ´æ´óĞ¡
+      * @brief è¯»æ•°æ®
+      * @param[out] buffer æ¥æ”¶æ•°æ®çš„å†…å­˜
+      * @param[in] length æ¥æ”¶æ•°æ®çš„å†…å­˜å¤§å°
       * @return
-      *      @retval >0 ·µ»Ø½ÓÊÕµ½µÄÊı¾İµÄÊµ¼Ê´óĞ¡
-      *      @retval =0 ±»¹Ø±Õ
-      *      @retval <0 ³öÏÖÁ÷´íÎó
+      *      @retval >0 è¿”å›æ¥æ”¶åˆ°çš„æ•°æ®çš„å®é™…å¤§å°
+      *      @retval =0 è¢«å…³é—­
+      *      @retval <0 å‡ºç°æµé”™è¯¯
       */
     virtual int Read(void* buffer, size_t length) = 0;
 
     /**
-     * @brief ¶ÁÊı¾İ
-     * @param[out] ba ½ÓÊÕÊı¾İµÄByteArray
-     * @param[in] length ½ÓÊÕÊı¾İµÄÄÚ´æ´óĞ¡
+     * @brief è¯»æ•°æ®
+     * @param[out] ba æ¥æ”¶æ•°æ®çš„ByteArray
+     * @param[in] length æ¥æ”¶æ•°æ®çš„å†…å­˜å¤§å°
      * @return
-     *      @retval >0 ·µ»Ø½ÓÊÕµ½µÄÊı¾İµÄÊµ¼Ê´óĞ¡
-     *      @retval =0 ±»¹Ø±Õ
-     *      @retval <0 ³öÏÖÁ÷´íÎó
+     *      @retval >0 è¿”å›æ¥æ”¶åˆ°çš„æ•°æ®çš„å®é™…å¤§å°
+     *      @retval =0 è¢«å…³é—­
+     *      @retval <0 å‡ºç°æµé”™è¯¯
      */
     virtual int Read(ByteArray::Ptr ba, size_t length) = 0;
 
     /**
-     * @brief ¶Á¹Ì¶¨³¤¶ÈµÄÊı¾İ
-     * @param[out] buffer ½ÓÊÕÊı¾İµÄÄÚ´æ
-     * @param[in] length ½ÓÊÕÊı¾İµÄÄÚ´æ´óĞ¡
+     * @brief è¯»å›ºå®šé•¿åº¦çš„æ•°æ®
+     * @param[out] buffer æ¥æ”¶æ•°æ®çš„å†…å­˜
+     * @param[in] length æ¥æ”¶æ•°æ®çš„å†…å­˜å¤§å°
      * @return
-     *      @retval >0 ·µ»Ø½ÓÊÕµ½µÄÊı¾İµÄÊµ¼Ê´óĞ¡
-     *      @retval =0 ±»¹Ø±Õ
-     *      @retval <0 ³öÏÖÁ÷´íÎó
+     *      @retval >0 è¿”å›æ¥æ”¶åˆ°çš„æ•°æ®çš„å®é™…å¤§å°
+     *      @retval =0 è¢«å…³é—­
+     *      @retval <0 å‡ºç°æµé”™è¯¯
      */
     virtual int ReadFixSize(void* buffer, size_t length);
 
     /**
-     * @brief ¶Á¹Ì¶¨³¤¶ÈµÄÊı¾İ
-     * @param[out] ba ½ÓÊÕÊı¾İµÄByteArray
-     * @param[in] length ½ÓÊÕÊı¾İµÄÄÚ´æ´óĞ¡
+     * @brief è¯»å›ºå®šé•¿åº¦çš„æ•°æ®
+     * @param[out] ba æ¥æ”¶æ•°æ®çš„ByteArray
+     * @param[in] length æ¥æ”¶æ•°æ®çš„å†…å­˜å¤§å°
      * @return
-     *      @retval >0 ·µ»Ø½ÓÊÕµ½µÄÊı¾İµÄÊµ¼Ê´óĞ¡
-     *      @retval =0 ±»¹Ø±Õ
-     *      @retval <0 ³öÏÖÁ÷´íÎó
+     *      @retval >0 è¿”å›æ¥æ”¶åˆ°çš„æ•°æ®çš„å®é™…å¤§å°
+     *      @retval =0 è¢«å…³é—­
+     *      @retval <0 å‡ºç°æµé”™è¯¯
      */
     virtual int ReadFixSize(ByteArray::Ptr ba, size_t length);
 
     /**
-     * @brief Ğ´Êı¾İ
-     * @param[in] buffer Ğ´Êı¾İµÄÄÚ´æ
-     * @param[in] length Ğ´ÈëÊı¾İµÄÄÚ´æ´óĞ¡
+     * @brief å†™æ•°æ®
+     * @param[in] buffer å†™æ•°æ®çš„å†…å­˜
+     * @param[in] length å†™å…¥æ•°æ®çš„å†…å­˜å¤§å°
      * @return
-     *      @retval >0 ·µ»ØĞ´Èëµ½µÄÊı¾İµÄÊµ¼Ê´óĞ¡
-     *      @retval =0 ±»¹Ø±Õ
-     *      @retval <0 ³öÏÖÁ÷´íÎó
+     *      @retval >0 è¿”å›å†™å…¥åˆ°çš„æ•°æ®çš„å®é™…å¤§å°
+     *      @retval =0 è¢«å…³é—­
+     *      @retval <0 å‡ºç°æµé”™è¯¯
      */
     virtual int Write(const void* buffer, size_t length) = 0;
 
     /**
-     * @brief Ğ´Êı¾İ
-     * @param[in] ba Ğ´Êı¾İµÄByteArray
-     * @param[in] length Ğ´ÈëÊı¾İµÄÄÚ´æ´óĞ¡
+     * @brief å†™æ•°æ®
+     * @param[in] ba å†™æ•°æ®çš„ByteArray
+     * @param[in] length å†™å…¥æ•°æ®çš„å†…å­˜å¤§å°
      * @return
-     *      @retval >0 ·µ»ØĞ´Èëµ½µÄÊı¾İµÄÊµ¼Ê´óĞ¡
-     *      @retval =0 ±»¹Ø±Õ
-     *      @retval <0 ³öÏÖÁ÷´íÎó
+     *      @retval >0 è¿”å›å†™å…¥åˆ°çš„æ•°æ®çš„å®é™…å¤§å°
+     *      @retval =0 è¢«å…³é—­
+     *      @retval <0 å‡ºç°æµé”™è¯¯
      */
     virtual int Write(ByteArray::Ptr ba, size_t length) = 0;
 
     /**
-     * @brief Ğ´¹Ì¶¨³¤¶ÈµÄÊı¾İ
-     * @param[in] buffer Ğ´Êı¾İµÄÄÚ´æ
-     * @param[in] length Ğ´ÈëÊı¾İµÄÄÚ´æ´óĞ¡
+     * @brief å†™å›ºå®šé•¿åº¦çš„æ•°æ®
+     * @param[in] buffer å†™æ•°æ®çš„å†…å­˜
+     * @param[in] length å†™å…¥æ•°æ®çš„å†…å­˜å¤§å°
      * @return
-     *      @retval >0 ·µ»ØĞ´Èëµ½µÄÊı¾İµÄÊµ¼Ê´óĞ¡
-     *      @retval =0 ±»¹Ø±Õ
-     *      @retval <0 ³öÏÖÁ÷´íÎó
+     *      @retval >0 è¿”å›å†™å…¥åˆ°çš„æ•°æ®çš„å®é™…å¤§å°
+     *      @retval =0 è¢«å…³é—­
+     *      @retval <0 å‡ºç°æµé”™è¯¯
      */
     virtual int WriteFixSize(const void* buffer, size_t length);
 
     /**
-     * @brief Ğ´¹Ì¶¨³¤¶ÈµÄÊı¾İ
-     * @param[in] ba Ğ´Êı¾İµÄByteArray
-     * @param[in] length Ğ´ÈëÊı¾İµÄÄÚ´æ´óĞ¡
+     * @brief å†™å›ºå®šé•¿åº¦çš„æ•°æ®
+     * @param[in] ba å†™æ•°æ®çš„ByteArray
+     * @param[in] length å†™å…¥æ•°æ®çš„å†…å­˜å¤§å°
      * @return
-     *      @retval >0 ·µ»ØĞ´Èëµ½µÄÊı¾İµÄÊµ¼Ê´óĞ¡
-     *      @retval =0 ±»¹Ø±Õ
-     *      @retval <0 ³öÏÖÁ÷´íÎó
+     *      @retval >0 è¿”å›å†™å…¥åˆ°çš„æ•°æ®çš„å®é™…å¤§å°
+     *      @retval =0 è¢«å…³é—­
+     *      @retval <0 å‡ºç°æµé”™è¯¯
      */
     virtual int WriteFixSize(ByteArray::Ptr ba, size_t length);
 
     virtual int ReadHandle(char* buf, size_t buf_size, std::function<int(int read_len)> handle);
 
     /**
-     * @brief ¹Ø±ÕÁ÷
+     * @brief å…³é—­æµ
      */
     virtual void Close() = 0;
 

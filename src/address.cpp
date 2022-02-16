@@ -1,8 +1,8 @@
-/*================================================================*
+ï»¿/*================================================================*
         Copyright (C) 2021 All rights reserved, www.hsby.link.
-      	ÎÄ¼şÃû³Æ£ºaddress.cpp
-      	´´ ½¨ Õß£ºhsby
-      	´´½¨ÈÕÆÚ£º2022/2/10
+      	æ–‡ä»¶åç§°ï¼šaddress.cpp
+      	åˆ› å»º è€…ï¼šhsby
+      	åˆ›å»ºæ—¥æœŸï¼š2022/2/10
  *================================================================*/
 #include "address.h"
 
@@ -67,7 +67,7 @@ bool BaseAddress::LookUp(std::vector<BaseAddress::Ptr> &result, const std::strin
         return false;
     }
 
-    // ±éÀú½á¹ûÁ´±í
+    // éå†ç»“æœé“¾è¡¨
     auto ai_res_ptr = ai_res_head;
     while(ai_res_ptr) {
         if (ai_res_ptr->ai_addr) {
@@ -118,12 +118,12 @@ bool BaseAddress::GetInterfaceAddresses(std::vector<InterfaceInfoUnit> &result, 
 
     try {
         for (auto ia_ptr = ia_res; ia_ptr != nullptr; ia_ptr = ia_ptr->ifa_next) {
-            // ¼ì²éµØÖ·×å
+            // æ£€æŸ¥åœ°å€æ—
             if (family != AF_UNSPEC && ia_ptr->ifa_addr->sa_family != family) {
                 continue;
             }
 
-            // ¼ì²éµØÖ·
+            // æ£€æŸ¥åœ°å€
             if (!ia_ptr->ifa_addr) {
                 continue;
             }
