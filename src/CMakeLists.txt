@@ -12,19 +12,19 @@ set(CMAKE_CXX_FLAGS "$ENV{CXXFLAAGS} -O2 -g -std=c++11 -Wall -Wno-deprecated -We
 enable_language(C ASM)
 
 # Add static and shared library target.
-file(GLOB libxco_srcs ${PROJECT_SOURCE_DIR}/src/*.cpp ${PROJECT_SOURCE_DIR}/src/http/*.cpp ${PROJECT_SOURCE_DIR}/src/*.S)
+file(GLOB libxco_srcs ${PROJECT_SOURCE_DIR}/*.cpp ${PROJECT_SOURCE_DIR}/http/*.cpp ${PROJECT_SOURCE_DIR}/*.S)
 add_library(xco_static STATIC ${libxco_srcs})
 #add_library(xco_shared SHARED ${libxco_srcs})
 set_target_properties(xco_static PROPERTIES OUTPUT_NAME xco)
 #set_target_properties(xco_shared PROPERTIES OUTPUT_NAME xco VERSION ${LIBXCO_VERSION} SOVERSION ${LIBXCO_VERSION})
 
 # Set install.
-install(TARGETS xco_static LIBRARY DESTINATION "lib" ARCHIVE DESTINATION "lib")
+install(TARGETS xco_static LIBRARY DESTINATION "../lib" ARCHIVE DESTINATION "../lib")
 #install(TARGETS xco_shared LIBRARY DESTINATION "lib" ARCHIVE DESTINATION "lib")
-install(DIRECTORY ${PROJECT_SOURCE_DIR}/src/ ${PROJECT_SOURCE_DIR}/src/http/ DESTINATION "include/xco" FILES_MATCHING PATTERN "*.h")
+install(DIRECTORY ${PROJECT_SOURCE_DIR} ${PROJECT_SOURCE_DIR}/http DESTINATION "include/xco" FILES_MATCHING PATTERN "*.h")
 
 # Add test target.
-include_directories(${PROJECT_SOURCE_DIR}/src)
+include_directories(.)
 set(libs dl xco_static)
 file(GLOB src_files ${PROJECT_SOURCE_DIR}/test/*.cpp)
 foreach(src_file ${src_files})

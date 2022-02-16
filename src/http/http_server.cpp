@@ -38,14 +38,6 @@ void HttpServer::ClientHandle(Socket::Ptr client) {
             break;
         }
 
-        //std::string req;
-        //req.resize(4096);
-        //int ret = session->Read(&req[0], req.size());
-        //if (ret <= 0) {
-        //    break;
-        //}
-        //LOGDEBUG(XCO_VARS_EXP(req));
-        //session->Write(&rsp[0], rsp.size());
     }
 }
 
