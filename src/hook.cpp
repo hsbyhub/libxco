@@ -110,14 +110,13 @@ static ssize_t do_io(int fd, SysFunType sys_fun, const char* hook_fun_name,
     std::shared_ptr<time_info> tinfo(new time_info);
 
 retry:
-    ssize_t n = 0;
-    do {
-        LOGDEBUG("try to call " << hook_fun_name << XCO_FUNC_ERROR_WITH_ARG_EXP(n));
-        n = sys_fun(fd, std::forward<Args>(args)...);
-    }while(n == -1 && errno == EINTR);
+    ssize_t n = sys_fun(fd, std::forward<Args>(args)...);
+    //while(n == -1 && errno == EINTR) {
+    //    n = sys_fun(fd, std::forward<Args>(args)...);
+    //}
 
     if (n == -1 && errno == EAGAIN) {
-        LOGDEBUG("begin sync deal, " << XCO_VARS_EXP(fd, hook_fun_name));
+        //LOGDEBUG("sync deal, " << XCO_VARS_EXP(fd, hook_fun_name));
         auto iom = xco::IoManager::GetCurIoManager();
         xco::Timer::Ptr timer;
         std::weak_ptr<time_info> wtinfo(tinfo);
@@ -473,7 +472,6 @@ int setsockopt(int sockfd, int level, int optname, const void *optval, socklen_t
         if (optname == SO_RCVTIMEO || optname == SO_SNDTIMEO) {
             auto ctx = xco::FdManagerSgt::Instance().Get(sockfd);
             if (ctx) {
-                LOGDEBUG(XCO_FUNC_WITH_ARG_EXP(TimevalToMs(*(const timeval *) optval)));
                 ctx->SetTimeout(optname, TimevalToMs(*(const timeval *) optval));
             }
         }

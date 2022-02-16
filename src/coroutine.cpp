@@ -131,7 +131,6 @@ Coroutine::Coroutine(CbType cb, /*void* cb_arg, */Coroutine::StackMem *stack_mem
     sys_context_.Init(stack_mem_->buffer, stack_mem_->size, (void*)&OnCoroutine, this, nullptr);
     state_ = State::kStInit;
     co_cnt++;
-    LOGDEBUG("Coroutine constructor "<< XCO_VARS_EXP(co_cnt));
 }
 
 Coroutine::~Coroutine() {
@@ -144,7 +143,6 @@ Coroutine::~Coroutine() {
         stack_backup_buffer = nullptr;
     }
     co_cnt--;
-    LOGDEBUG("Coroutine destructor "<< XCO_VARS_EXP(co_cnt));
 }
 
 void Coroutine::OnCoroutine(Coroutine* co) {

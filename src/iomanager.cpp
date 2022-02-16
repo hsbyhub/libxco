@@ -111,7 +111,7 @@ IoManager *IoManager::GetCurIoManager() {
 void IoManager::OnIdle() {
 
     const static int64_t MAX_EPOLL_TIMEOUT_MS = 2000;
-    const static int MAX_EPOLL_RET_EPEV_CNT = 64;
+    const static int MAX_EPOLL_RET_EPEV_CNT = 512;
 
     while(true) {
         int64_t timeout = GetNextTimerDistNow();

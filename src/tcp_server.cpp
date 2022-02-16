@@ -9,7 +9,7 @@
 
 XCO_NAMESPAVE_START
 
-static int64_t g_tcp_server_accept_timeout = 500;
+static int64_t g_tcp_server_accept_timeout = 2 * 1000;
 
 TcpServer::TcpServer(const std::string& name)
     : name_(name)
@@ -148,7 +148,7 @@ void TcpServer::OnAccept(Socket::Ptr listen_socket) {
     }
     while(!GetIsStop()) {
         while (idle_cos_.empty()) {
-            usleep(50);
+            usleep(500);
         }
         auto client = listen_socket->Accept();
         if (!client) {
