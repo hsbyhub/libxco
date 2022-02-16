@@ -167,7 +167,9 @@ void TcpServer::OnClientHandle(Socket::Ptr client) {
             idle_cos_.push(std::make_shared<Task>(Coroutine::GetCurCoroutine(), client));
             Coroutine::Yield();
         }
+        LOGDEBUG("get client");
         ClientHandle(client);
+        LOGDEBUG("client close");
         client->Close();
         client = nullptr;
     }

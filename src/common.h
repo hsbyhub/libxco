@@ -21,6 +21,8 @@
 #include <byteswap.h>
 #include <stdint.h>
 #include <boost/lexical_cast.hpp>
+#include <csignal>
+#include <sys/wait.h>
 #include "cxxabi.h"
 
 // 命名空间
@@ -554,4 +556,22 @@ template<typename Type>
 const char* GetTypeName() {
     static const char* s_name = abi::__cxa_demangle(typeid(Type).name(), nullptr, nullptr, nullptr);
     return s_name;
+}
+
+/**
+ * @brief 创建多进程程序
+ */
+inline void MultiProcess(int process_cnt, std::function<void()> fun, void(*on_main_int)(int) = nullptr, void(*on_child_int)(int) = nullptr) {
+    if (on_main_int) {
+        signal(SIGINT, on_main_int);
+    }
+    for (int i = 0; i < process_cnt; ++i) {
+        int ret = fork();
+        if (ret != 0) {
+            continue;
+        } else {
+            fun();
+        }
+    }
+    wait(nullptr);
 }

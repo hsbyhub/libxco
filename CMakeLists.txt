@@ -12,7 +12,7 @@ set(CMAKE_CXX_FLAGS "$ENV{CXXFLAAGS} -O2 -g -std=c++11 -Wall -Wno-deprecated -We
 enable_language(C ASM)
 
 # Add static and shared library target.
-file(GLOB libxco_srcs ${PROJECT_SOURCE_DIR}/src/*.cpp ${PROJECT_SOURCE_DIR}/src/*.S)
+file(GLOB libxco_srcs ${PROJECT_SOURCE_DIR}/src/*.cpp ${PROJECT_SOURCE_DIR}/src/http/*.cpp ${PROJECT_SOURCE_DIR}/src/*.S)
 add_library(xco_static STATIC ${libxco_srcs})
 #add_library(xco_shared SHARED ${libxco_srcs})
 set_target_properties(xco_static PROPERTIES OUTPUT_NAME xco)
