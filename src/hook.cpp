@@ -110,10 +110,7 @@ static ssize_t AsyncIo(int fd, SysFunType sys_fun, const char* sys_fun_name,
     std::shared_ptr<time_info> tinfo(new time_info);
 
 retry:
-    auto t0 = TimeStampUs();
     ssize_t n = sys_fun(fd, std::forward<Args>(args)...);
-    auto t1 = TimeStampUs();
-    LOGDEBUG(XCO_FUNC_WITH_ARG_EXP(fd, sys_fun_name, n, t1-t0));
     while(n == -1 && errno == EINTR) {
         n = sys_fun(fd, std::forward<Args>(args)...);
     }

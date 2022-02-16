@@ -21,10 +21,6 @@ public:
         Coroutine::Ptr write_co     = nullptr;
         uint32_t evs                = 0;
 
-        std::string ToString() {
-            return XCO_FUNC_WITH_ARG_EXP(fd, evs);
-        }
-
         void SetEv(int f, uint32_t ev, Coroutine::Ptr co) {
             if (ev & EPOLLIN) {
                 read_co = co;
@@ -60,7 +56,6 @@ public:
                 write_co.reset();
             }
             evs &= ~ev;
-            //Check();
         }
 
     };

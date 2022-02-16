@@ -8,6 +8,8 @@
 #include "http/http_paser.h"
 #include "common.h"
 
+char* g_recv_buffer = new char[64 * 1000 * 1000];
+
 XCO_NAMESPAVE_START
 namespace http {
 
@@ -19,13 +21,15 @@ HttpSession::Ptr HttpSession::Create(Socket::Ptr socket, bool auto_close) {
 }
 
 HttpRequest::Ptr HttpSession::RecvRequest() {
+    TimeInterval ti;
     auto http_req_parser = HttpRequestParser::Create();
+    LOGWARN("HttpRequestParser::Create()" << ti);
     if (!http_req_parser) {
         return nullptr;
     }
     int buff_size = HttpRequestParser::GetHttpRequestMaxBodySize();
-    std::vector<char> buffer(buff_size, 0);
-    char* data = &buffer[0];
+    auto data = g_recv_buffer;
+    LOGWARN("bzero" << ti);
     bool is_finish = false;
     int parse_off = 0;
     int read_off = 0;
@@ -57,7 +61,7 @@ HttpRequest::Ptr HttpSession::RecvRequest() {
     if (!is_finish) {
         return nullptr;
     }
-
+    LOGWARN("std::vector<char>()" << ti);
     int body_length = http_req_parser->GetContentLength();
     if (body_length > 0) {
         std::string body;
@@ -77,6 +81,7 @@ HttpRequest::Ptr HttpSession::RecvRequest() {
     }
 
     http_req_parser->GetRequest()->Init();
+    LOGWARN("http_req_parser->GetRequest()->Init()" << ti);
 
     return http_req_parser->GetRequest();
 }

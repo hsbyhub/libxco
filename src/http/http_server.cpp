@@ -30,7 +30,6 @@ void HttpServer::ClientHandle(Socket::Ptr client) {
             LOGDEBUG("Recv req fail");
             break;
         }
-        LOGDEBUG(XCO_VARS_EXP(client->ToString(), *req));
         bool close = !is_keep_alive/* || req->GetIsClose()*/;
         auto rsp = HttpResponse::Create(req->GetVersion(), close);
         rsp->SetBody("some text");
@@ -38,7 +37,6 @@ void HttpServer::ClientHandle(Socket::Ptr client) {
         if (close) {
             break;
         }
-        sleep(0);
 
         //std::string req;
         //req.resize(4096);
