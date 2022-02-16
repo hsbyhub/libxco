@@ -34,7 +34,6 @@ public:
             }
             evs |= ev;
             fd = f;
-            Check();
         }
 
         void TrgEv(uint32_t ev) {
@@ -49,7 +48,6 @@ public:
                 write_co.reset();
             }
             evs &= ~ev;
-            Check();
         }
 
         void DelEv(uint32_t ev) {
@@ -62,23 +60,9 @@ public:
                 write_co.reset();
             }
             evs &= ~ev;
-            Check();
+            //Check();
         }
 
-        void Check() {
-            if (evs & EPOLLIN) {
-                assert(read_co);
-            }
-            if (evs & EPOLLOUT) {
-                assert(write_co);
-            }
-            if (read_co) {
-                assert(evs & EPOLLIN);
-            }
-            if (write_co) {
-                assert(evs & EPOLLOUT);
-            }
-        }
     };
 
 public:

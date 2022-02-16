@@ -111,9 +111,9 @@ static ssize_t do_io(int fd, SysFunType sys_fun, const char* hook_fun_name,
 
 retry:
     ssize_t n = sys_fun(fd, std::forward<Args>(args)...);
-    //while(n == -1 && errno == EINTR) {
-    //    n = sys_fun(fd, std::forward<Args>(args)...);
-    //}
+    while(n == -1 && errno == EINTR) {
+        n = sys_fun(fd, std::forward<Args>(args)...);
+    }
 
     if (n == -1 && errno == EAGAIN) {
         //LOGDEBUG("sync deal, " << XCO_VARS_EXP(fd, hook_fun_name));

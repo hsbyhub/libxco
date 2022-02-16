@@ -316,31 +316,31 @@ public:
      * @brief   获取套接字选项
      * @return  是否成功
      */
-    bool GetOption(int level, int option, void* result, socklen_t* len) const;
+    bool GetOption(int level, int option, void* val, socklen_t* len) const;
 
     /**
      * @brief   获取套接字选项
      * @return  是否成功
      */
     template<typename T>
-    bool GetOption(int level, int option, T& result)  const{
+    bool GetOption(int level, int option, T& val)  const{
         auto len = sizeof(T);
-        return GetOption(level, option, &result, &len);
+        return GetOption(level, option, &val, &len);
     }
 
     /**
      * @brief   设置套接字选项
      * @return  是否成功
      */
-    bool SetOption(int level, int option, const void* result, socklen_t len);
+    bool SetOption(int level, int option, const void* val, socklen_t len);
 
     /**
      * @brief   设置套接字选项
      * @return  是否成功
      */
     template<typename T>
-    bool SetOption(int level, int option, const T& result) {
-        return SetOption(level, option, &result, sizeof(T));
+    bool SetOption(int level, int option, const T& val) {
+        return SetOption(level, option, &val, sizeof(T));
     }
 
     static bool IsValidSockfd(int sockfd) {return sockfd != -1;}

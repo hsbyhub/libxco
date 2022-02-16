@@ -478,16 +478,16 @@ bool Socket::CancelAll() {
     return true;
 }
 
-bool Socket::GetOption(int level, int option, void *result, socklen_t *len) const {
-    int ret = getsockopt(sockfd_, level, option, result, len);
+bool Socket::GetOption(int level, int option, void *val, socklen_t *len) const {
+    int ret = getsockopt(sockfd_, level, option, val, len);
     if (ret) {
         return false;
     }
     return true;
 }
 
-bool Socket::SetOption(int level, int option, const void *result, socklen_t len) {
-    int ret = setsockopt(sockfd_, level, option, result, len);
+bool Socket::SetOption(int level, int option, const void *val, socklen_t len) {
+    int ret = setsockopt(sockfd_, level, option, val, len);
     if (ret) {
         return false;
     }
