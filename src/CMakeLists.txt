@@ -4,8 +4,8 @@ set(LIBXCO_VERSION 0.1)
 
 # Set config.
 set(CMAKE_CXX_STANDARD 11)
-set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
-set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
+set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/../build/bin)
+set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/../build/lib)
 set(CMAKE_CXX_FLAGS "$ENV{CXXFLAAGS} -O2 -g -std=c++11 -Wall -Wno-deprecated -Werror -Wno-unused-function -Wno-builtin-macro-redefined")
 
 # Use c and asm.
@@ -24,9 +24,9 @@ install(TARGETS xco_static LIBRARY DESTINATION "../lib" ARCHIVE DESTINATION "../
 install(DIRECTORY ${PROJECT_SOURCE_DIR} ${PROJECT_SOURCE_DIR}/http DESTINATION "include/xco" FILES_MATCHING PATTERN "*.h")
 
 # Add test target.
-include_directories(.)
+include_directories(${PROJECT_SOURCE_DIR})
 set(libs dl xco_static)
-file(GLOB src_files ${PROJECT_SOURCE_DIR}/test/*.cpp)
+file(GLOB src_files ${PROJECT_SOURCE_DIR}/../test/*.cpp)
 foreach(src_file ${src_files})
     STRING(REGEX REPLACE ".+/(.+)\\..*" "\\1" target ${src_file})
     add_executable(${target} ${src_file})
