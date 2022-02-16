@@ -79,18 +79,18 @@ struct time_info{
 /**
  * @brief todo
  */
-template<typename OriginFun, typename ... Args>
-static ssize_t do_io(int fd, OriginFun fun, const char* hook_fun_name,
+template<typename SysFunType, typename ... Args>
+static ssize_t do_io(int fd, SysFunType sys_fun, const char* hook_fun_name,
                      uint32_t event, int timeout_so, Args&&... args) {
     // 如果没有Hook
     if (!xco::IsHookEnable()) {
-        return fun(fd, std::forward<Args>(args)...);
+        return sys_fun(fd, std::forward<Args>(args)...);
     }
 
     // 取得套接字，如果取不到说明非网络套接字
     xco::FdCtx::Ptr ctx = xco::FdManagerSgt::Instance().Get(fd);
     if (!ctx) {
-        return fun(fd, std::forward<Args>(args)...);
+        return sys_fun(fd, std::forward<Args>(args)...);
     }
 
     // 如果套接字已关闭
@@ -101,7 +101,7 @@ static ssize_t do_io(int fd, OriginFun fun, const char* hook_fun_name,
 
     // 如果非soket或者用户指定非阻塞
     if (!ctx->IsSocket() || ctx->IsUserNonblock()) {
-        return fun(fd, std::forward<Args>(args)...);
+        return sys_fun(fd, std::forward<Args>(args)...);
     }
 
     uint64_t time_out = ctx->GetTimeout(timeout_so);
@@ -110,29 +110,30 @@ static ssize_t do_io(int fd, OriginFun fun, const char* hook_fun_name,
     std::shared_ptr<time_info> tinfo(new time_info);
 
 retry:
-    ssize_t n = fun(fd, std::forward<Args>(args)...);
-    while(n == -1 && errno == EINTR) {
-        n = fun(fd, std::forward<Args>(args)...);
-    }
+    ssize_t n = 0;
+    do {
+        LOGDEBUG("try to call " << hook_fun_name << XCO_FUNC_ERROR_WITH_ARG_EXP(n));
+        n = sys_fun(fd, std::forward<Args>(args)...);
+    }while(n == -1 && errno == EINTR);
 
     if (n == -1 && errno == EAGAIN) {
-        LOGDEBUG(XCO_VARS_EXP(fd, hook_fun_name));
-        auto iow = xco::IoManager::GetCurIoManager();
+        LOGDEBUG("begin sync deal, " << XCO_VARS_EXP(fd, hook_fun_name));
+        auto iom = xco::IoManager::GetCurIoManager();
         xco::Timer::Ptr timer;
         std::weak_ptr<time_info> wtinfo(tinfo);
 
         if (time_out != (uint64_t) - 1) {
-            timer = iow->AddConditionTimer(time_out, [wtinfo, fd, iow, event]() {
+            timer = iom->AddConditionTimer(time_out, [wtinfo, fd, iom, event]() {
                 auto t = wtinfo.lock();
                 if (!t || t->cancelled) {
                     return;
                 }
                 t->cancelled = ETIMEDOUT;
-                iow->TrgEvent(fd, event);
+                iom->TrgEvent(fd, event);
             }, wtinfo);
         }
 
-        int rt = iow->SetEvent(fd, event, xco::Coroutine::GetCurCoroutine());
+        int rt = iom->SetEvent(fd, event, xco::Coroutine::GetCurCoroutine());
 
         if (!rt) {
             if (timer) {
@@ -140,9 +141,7 @@ retry:
             }
             return -1;
         }else {
-            LOGDEBUG("Hook Yield, "<< XCO_VARS_EXP(fd, hook_fun_name));
             xco::Coroutine::Yield();
-            LOGDEBUG("Hook Yield return, "<< XCO_VARS_EXP(fd, hook_fun_name));
             if (timer) {
                 timer->Cancel();
             }

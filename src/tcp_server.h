@@ -51,8 +51,8 @@ public:
     void Dump(std::ostream &os) const override;
 
 public:
-    virtual bool Init(BaseAddress::Ptr address, IoManager* io_manager = IoManager::GetCurIoManager(), uint32_t client_handler_cnt = 1024 * 10/*, bool ssl = false*/);
-    virtual bool Init(Socket::Ptr socket, IoManager* io_manager = IoManager::GetCurIoManager(), uint32_t client_handler_cnt = 1024 * 10/*, bool ssl = false*/);
+    virtual bool Init(BaseAddress::Ptr address, IoManager* io_manager = IoManager::GetCurIoManager(), uint32_t client_handler_cnt = 512/*, bool ssl = false*/);
+    virtual bool Init(Socket::Ptr socket, IoManager* io_manager = IoManager::GetCurIoManager(), uint32_t client_handler_cnt = 512/*, bool ssl = false*/);
     virtual bool Bind(const std::vector<BaseAddress::Ptr>& addrs/*, BOOL SSL = FALSE*/);
     virtual bool Start();
     virtual void Stop();
@@ -70,7 +70,7 @@ private:
     std::string                 name_                   = "none";
     IoManager*                  io_manager_             = nullptr;
     int64_t                     accept_timeout_         = -1;
-    uint32_t                    client_handler_cnt_     = 1024 * 10;
+    uint32_t                    client_handler_cnt_     = 512;
     std::string                 type_                   = "tcp";
     bool                        is_stop_                = true;
     bool                        ssl_                    = false;
