@@ -54,7 +54,22 @@ int main(int argc, char** argv) {
                 LOGFATAL("HttpServer::Start fail");
                 exit(-1);
             }
-            iom.Start();
+
+            auto servlet_dispatch = http_server->GetServletDispatch();
+            servlet_dispatch->SetServlet("/", [](HttpRequest::Ptr req, HttpResponse::Ptr rsp, HttpSession::Ptr session){
+                rsp->SetBody("Servlet path is \"/\"");
+                return 0;
+            });
+            servlet_dispatch->SetServlet("/abc", [](HttpRequest::Ptr req, HttpResponse::Ptr rsp, HttpSession::Ptr session){
+                rsp->SetBody("Servlet path is \"/abc\"");
+                return 0;
+            });
+            servlet_dispatch->SetGlobServlet("*", [](HttpRequest::Ptr req, HttpResponse::Ptr rsp, HttpSession::Ptr session){
+                rsp->SetBody("GlobServlet path is \"*\"");
+                return 0;
+            });
+
+        iom.Start();
         }, OnMainInt);
     return 0;
 }

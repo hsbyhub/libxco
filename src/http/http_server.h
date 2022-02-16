@@ -29,7 +29,7 @@ public:
     void ClientHandle(Socket::Ptr client) override;
 
 private:
-    bool is_keep_alive;
+    bool is_keep_alive_;
     ServletDispatch::Ptr servlet_dispatch_;
 
 public:

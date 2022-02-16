@@ -100,7 +100,6 @@ uint32_t IoManager::DelEvent(int fd, uint32_t evs) {
 }
 
 uint32_t IoManager::CncAllEvent(int fd) {
-    LOGDEBUG( "CncAllEvent, " << XCO_VARS_EXP(fd));
     return TrgEvent(fd, EPOLLIN | EPOLLOUT);
 }
 

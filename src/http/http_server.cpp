@@ -15,7 +15,7 @@ namespace http {
 
 HttpServer::HttpServer(const std::string &name, bool keepalive)
             : TcpServer(name),
-              is_keep_alive(keepalive),
+              is_keep_alive_(keepalive),
               servlet_dispatch_(std::make_shared<ServletDispatch>()){
 }
 
@@ -30,9 +30,10 @@ void HttpServer::ClientHandle(Socket::Ptr client) {
             LOGDEBUG("Recv req fail");
             break;
         }
-        bool close = !is_keep_alive/* || req->GetIsClose()*/;
+        bool close = !is_keep_alive_/* || req->GetIsClose()*/;
         auto rsp = HttpResponse::Create(req->GetVersion(), close);
-        rsp->SetBody("some text");
+        // rsp->SetBody("some text");
+        servlet_dispatch_->Handle(req, rsp, session);
         session->SendResponse(rsp);
         if (close) {
             break;
