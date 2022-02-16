@@ -46,6 +46,8 @@ void OnHandleTask(void* arg) {
 }
 
 void OnHandleAccept() {
+    //timeval tv{0, 500};
+    //setsockopt(g_listen_fd, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv));
     while(true) {
         while(task_list.empty()) {
             usleep(50);
@@ -110,7 +112,7 @@ int main(int argc, char** argv) {
     int accept_co_cnt = atoi(argv[2]);
     int client_handle_co_cnt= atoi(argv[3]);
 
-    //SetLogLevel(4);
+    SetLogLevel(4);
 
     // »ñÈ¡¼àÌýÌ×½Ó×Ö
     g_listen_fd = CreateListenSocket("0.0.0.0", 80);

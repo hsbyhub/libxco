@@ -346,13 +346,13 @@ public:
     static bool IsValidSockfd(int sockfd) {return sockfd != -1;}
 
 private:
-    int sockfd_       = -1;
+    int sockfd_     = -1;
     int family_     = 0;
     int type_       = 0;
     int protocol_   = 0;
 
-    bool is_connected_ = false;
-    BaseAddress::Ptr local_address = nullptr;
+    bool is_connected_              = false;
+    BaseAddress::Ptr local_address  = nullptr;
     BaseAddress::Ptr remote_address = nullptr;
 };
 

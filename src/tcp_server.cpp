@@ -14,7 +14,7 @@ static int64_t g_tcp_server_accept_timeout = 500;
 TcpServer::TcpServer(const std::string& name)
     : name_(name)
     , io_manager_(nullptr)
-    , accept_timeout(g_tcp_server_accept_timeout){
+    , accept_timeout_(g_tcp_server_accept_timeout){
 }
 
 TcpServer::Ptr TcpServer::Create(const std::string &name) {
@@ -32,7 +32,7 @@ void TcpServer::Dump(std::ostream &os) const {
         os << "TcpServer no init";
         return;
     }
-    os << "TcpServer{" << XCO_VARS_EXP(type_, name_, ssl_, accept_timeout);
+    os << "TcpServer{" << XCO_VARS_EXP(type_, name_, ssl_, accept_timeout_);
     os << "\"sockets\":[";
     for (auto& socket : sockets_) {
         os << "{" << "socket:" << *socket << "},";
@@ -40,7 +40,7 @@ void TcpServer::Dump(std::ostream &os) const {
     os << "]}";
 }
 
-bool TcpServer::Init(BaseAddress::Ptr address, IoManager* io_manager) {
+bool TcpServer::Init(BaseAddress::Ptr address, IoManager* io_manager, uint32_t client_handler_cnt) {
     if (is_init_) {
         return false;
     }
@@ -51,11 +51,12 @@ bool TcpServer::Init(BaseAddress::Ptr address, IoManager* io_manager) {
         return false;
     }
     io_manager_ = io_manager;
+    client_handler_cnt_ = client_handler_cnt;
     is_init_ = true;
     return true;
 }
 
-bool TcpServer::Init(Socket::Ptr socket, IoManager *io_manager) {
+bool TcpServer::Init(Socket::Ptr socket, IoManager *io_manager, uint32_t client_handler_cnt) {
     if (is_init_) {
         return false;
     }
@@ -67,6 +68,7 @@ bool TcpServer::Init(Socket::Ptr socket, IoManager *io_manager) {
         return false;
     }
     io_manager_ = io_manager;
+    client_handler_cnt_ = client_handler_cnt;
     is_init_ = true;
     return true;
 }
@@ -107,8 +109,9 @@ bool TcpServer::Start() {
         io_manager_->Schedule(Coroutine::Create(std::bind(&TcpServer::OnAccept, shared_from_this(), socket)));
     }
 
-    // 开始主循环
-    io_manager_->Start();
+    for (uint32_t i = 0; i < client_handler_cnt_; ++i) {
+        io_manager_->Schedule(Coroutine::Create(std::bind(&TcpServer::OnClientHandle, shared_from_this(), nullptr)));
+    }
 
     return true;
 }
@@ -127,6 +130,9 @@ void TcpServer::Stop() {
 }
 
 void TcpServer::ClientHandle(Socket::Ptr client) {
+    if (!client) {
+        return ;
+    }
     std::string recv_buf;
     while (client->Recv(recv_buf) > 0) {
         if (recv_buf == "0000") {
@@ -137,15 +143,33 @@ void TcpServer::ClientHandle(Socket::Ptr client) {
 }
 
 void TcpServer::OnAccept(Socket::Ptr listen_socket) {
-    if (accept_timeout != -1) {
+    if (accept_timeout_ != -1) {
         listen_socket->SetRecvTimeOut(g_tcp_server_accept_timeout);
     }
     while(!GetIsStop()) {
+        while (idle_cos_.empty()) {
+            usleep(50);
+        }
         auto client = listen_socket->Accept();
         if (!client) {
             continue;
         }
-        io_manager_->Schedule(Coroutine::Create(std::bind(&TcpServer::ClientHandle, shared_from_this(), client)));
+        auto t = idle_cos_.front();
+        idle_cos_.pop();
+        t->cli = client;
+        t->co->Resume();
+    }
+}
+
+void TcpServer::OnClientHandle(Socket::Ptr client) {
+    while(!GetIsStop()) {
+        while (!client) {
+            idle_cos_.push(std::make_shared<Task>(Coroutine::GetCurCoroutine(), client));
+            Coroutine::Yield();
+        }
+        ClientHandle(client);
+        client->Close();
+        client = nullptr;
     }
 }
 

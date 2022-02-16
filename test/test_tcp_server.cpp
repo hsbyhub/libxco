@@ -10,13 +10,15 @@
 #include <assert.h>
 #include <sys/wait.h>
 
+using namespace std;
+using namespace xco;
+
 const std::string rsp = "HTTP/1.1 200 OK\r\nContent-length:8\r\n\r\nabcdefgh\r\n";
 int process_cnt = 0;
-int accept_co_cnt = 0;
 int client_handle_co_cnt = 0;
-xco::Socket::Ptr g_listen_sock = nullptr;
+Socket::Ptr g_listen_sock = nullptr;
 
-class SimpleHttpServer : public xco::TcpServer {
+class SimpleHttpServer : public TcpServer {
 public:
     typedef std::shared_ptr<SimpleHttpServer> Ptr;
 public:
@@ -25,14 +27,15 @@ public:
     }
 
 public:
-    void ClientHandle(xco::Socket::Ptr client) override {
+    void ClientHandle(Socket::Ptr client) override {
+        if (!client) {
+            return ;
+        }
         std::string req;
         req.resize(4096);
         while(client->Recv(&req[0], req.size()) > 0) {
             client->Send(rsp);
         }
-        LOGDEBUG("client close, " << client->ToString());
-        client->Close();
     }
 };
 
@@ -49,25 +52,20 @@ void OnChildInt(int) {
     exit(-1);
 }
 
-void Run() {
-
-}
-
 int main(int argc, char** argv) {
-    if (argc != 4) {
-        LOGFATAL("Usage: test_iomanager process_count accept_fiber_count on_client_handle_fiber_count");
+    if (argc != 3) {
+        LOGFATAL("Usage: test_iomanager process_count max_client_cnt");
         exit(-1);
     }
     process_cnt = atoi(argv[1]);
-    accept_co_cnt = atoi(argv[2]);
-    client_handle_co_cnt= atoi(argv[3]);
+    client_handle_co_cnt= atoi(argv[2]);
     signal(SIGINT, OnMainInt);
 
-    // SetLogLevel(5);
-    g_listen_sock = xco::Socket::CreateTCP();
+    SetLogLevel(5);
+    g_listen_sock = Socket::CreateTCP();
     assert(g_listen_sock);
     assert(g_listen_sock->Init());
-    assert(g_listen_sock->Bind(xco::Ipv4Address::Create("0.0.0.0", 80)));
+    assert(g_listen_sock->Bind(Ipv4Address::Create("0.0.0.0", 80)));
     assert(g_listen_sock->Listen(128));
 
     for (int i = 0; i < process_cnt; ++i) {
@@ -76,16 +74,17 @@ int main(int argc, char** argv) {
             continue;
         } else {
             signal(SIGINT, OnChildInt);
-            xco::IoManager iom;
+            IoManager iom;
             auto shs = SimpleHttpServer::Create();
-            if (!shs->Init(g_listen_sock)) {
-                LOGFATAL("SimpleHttpServer init fail");
-                return -1;
+            if (!shs->Init(g_listen_sock, &iom, client_handle_co_cnt)) {
+                LOGFATAL("SimpleHttpServer::Init fail");
+                exit(-1);
             }
             if (!shs->Start()) {
-                LOGFATAL("SimpleHttpServer start fail");
-                return -1;
+                LOGFATAL("SimpleHttpServer::Start fail");
+                exit(-1);
             }
+            iom.Start();
         }
     }
 

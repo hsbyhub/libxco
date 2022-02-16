@@ -130,8 +130,7 @@ void IoManager::OnIdle() {
         std::vector<std::function<void()>> cbs;
         ListExpriredCb(cbs);
         for (auto cb : cbs) {
-            cb();
-            //Schedule(xco::Coroutine::Create(cb));
+            Schedule(xco::Coroutine::Create(cb));
         }
 
         for (int i = 0; i < ret; ++i) {
@@ -142,12 +141,7 @@ void IoManager::OnIdle() {
             }
 
             if (ret_epev.events & (EPOLLERR | EPOLLHUP)) {
-                LOGDEBUG("epoll return err, " << XCO_VARS_EXP(ctx->fd, ret_epev.events));
                 ret_epev.events = (EPOLLIN | EPOLLOUT);
-            }
-
-            if (ctx->fd == 3) {
-                LOGDEBUG(ctx->ToString() << "epoll return " << XCO_VARS_EXP(ret_epev.events));
             }
 
             TrgEvent(ctx->fd, ret_epev.events);
