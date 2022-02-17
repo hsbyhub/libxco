@@ -32,7 +32,6 @@ void HttpServer::ClientHandle(Socket::Ptr client) {
         }
         bool close = !is_keep_alive_/* || req->GetIsClose()*/;
         auto rsp = HttpResponse::Create(req->GetVersion(), close);
-        // rsp->SetBody("some text");
         servlet_dispatch_->Handle(req, rsp, session);
         session->SendResponse(rsp);
         if (close) {
