@@ -129,7 +129,8 @@ void IoManager::OnIdle() {
         std::vector<std::function<void()>> cbs;
         ListExpriredCb(cbs);
         for (auto cb : cbs) {
-            Schedule(xco::Coroutine::Create(cb));
+            cb();
+            //Schedule(xco::Coroutine::Create(cb));
         }
 
         for (int i = 0; i < ret; ++i) {
