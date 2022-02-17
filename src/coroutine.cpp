@@ -17,8 +17,6 @@ XCO_NAMESPAVE_START
 
 const int   g_co_call_stack_max                     = 128;  // 协程调用栈大小
 
-int co_cnt = 0;
-
 /**
  * @brief 协程环境信息
  */
@@ -63,10 +61,10 @@ struct CoroutineEnv {
         if (co_call_stack.size() >= g_co_call_stack_max - 1) {
             throw std::out_of_range("coroutine call stack out of size");
         }
-        auto cco = GetCurrentCoroutine();
+        auto cco = GetCurrentCoroutine().get();
         co_call_stack.push(co);
-        auto pco = co_call_stack.top();
-        Swap(cco.get(), pco.get());
+        auto pco = co_call_stack.top().get();
+        Swap(cco, pco);
     }
 
     Coroutine* PullCoroutine() {
@@ -75,8 +73,8 @@ struct CoroutineEnv {
         }
         auto cco = GetCurrentCoroutine().get();
         co_call_stack.pop();
-        auto pco = co_call_stack.top();
-        Swap(cco, pco.get());
+        auto pco = co_call_stack.top().get();
+        Swap(cco, pco);
         return cco;
     }
 
@@ -130,7 +128,6 @@ Coroutine::Coroutine(CbType cb, /*void* cb_arg, */Coroutine::StackMem *stack_mem
     cb_ = cb;
     sys_context_.Init(stack_mem_->buffer, stack_mem_->size, (void*)&OnCoroutine, this, nullptr);
     state_ = State::kStInit;
-    co_cnt++;
 }
 
 Coroutine::~Coroutine() {
@@ -142,7 +139,6 @@ Coroutine::~Coroutine() {
         free(stack_backup_buffer);
         stack_backup_buffer = nullptr;
     }
-    co_cnt--;
 }
 
 void Coroutine::OnCoroutine(Coroutine* co) {
