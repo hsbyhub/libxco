@@ -2,7 +2,7 @@
 
 ---
 
-作者：SenXinXie
+Author：SenXinXie
 
 [点击查看中文README](./README.md)
 
