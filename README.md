@@ -4,8 +4,8 @@
 作者：谢森鑫
 
 ## 简介
-libxco是一个轻量级高性能协程网络库，用户使用libxco可以轻松快速地拥有一个协程环境，  
-除此之外，lixxco还提供http的相关组件，比如HttpServer类，可以轻松快速地搭建一个Http服务器，  
+libxco是一个轻量级高性能协程网络库，用户使用libxco可以轻松快速地拥有一个协程环境，
+除此之外，lixxco还提供http的相关组件，比如HttpServer类，可以轻松快速地搭建一个Http服务器，
 用户只需要为不同的URI注册不同的回调，即可轻松快速地实现不同的业务逻辑。
 
 ## 压测效果
@@ -19,6 +19,7 @@ libxco是一个轻量级高性能协程网络库，用户使用libxco可以轻�
 ```
 ┃
 ┠─── CMakeLists.txt             CMake工程配置文件
+┠─── test                       测试用例
 ┠─── src                        库实现
 ┃    ┠─── common.cpp            公共工具
 ┃    ┠─── sys_context_swap.S    协程上下文切换(参考腾讯的libco)
@@ -35,12 +36,12 @@ libxco是一个轻量级高性能协程网络库，用户使用libxco可以轻�
 ┃    ┠─── tcp_server.cpp        tcp服务器
 ┃    ┗─── http                  http实现(包括HttpServer)
 ┃
-┗─── test                       测试用例
+┃
 ```
 
 ## 开发环境
 - 操作系统：  Centos7
-- 开发工具： Neovim5.0
+- 开发工具： Neovim5.0 & Clion
 - 编译器： GCC4.8
 - 工程构建： CMake2.8
 - 版本控制： Git
@@ -53,30 +54,35 @@ cmake ../src
 make && make install
 ```
 - 创建、唤起、挂起协程
-![image-20220218102720523](https://gitee.com/hsby/img/raw/master/202202181027571.png)
+
+  ![image-20220218102720523](https://gitee.com/hsby/img/raw/master/202202181027571.png)
   
 - 使用协程调度器
 
+  ![image-20220218110441629](https://gitee.com/hsby/img/raw/master/202202181104671.png)
+
+更多使用方法可以参考test下的用例
+
 
 ## Hook的系统调用(协程调度环境下)
-sleep
-usleep
-nanosleep
-socket
-connect
-accept
-read
-readv
-recv
-recvfrom
-recvmsg
-write
-writev
-send
-sendto
-sendmsg
-close
-fcntl
-ioctl
-getsockopt
-setsockopt
+sleep  
+usleep  
+nanosleep  
+socket  
+connect  
+accept  
+read  
+readv  
+recv  
+recvfrom  
+recvmsg  
+write  
+writev  
+send  
+sendto  
+sendmsg  
+close  
+fcntl  
+ioctl  
+getsockopt  
+setsockopt  
