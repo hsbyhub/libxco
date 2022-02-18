@@ -1,7 +1,7 @@
 # libxco
 
 ---
-作者：谢森鑫
+作者：谢森鑫(hsbymail@163.com)
 
 [Click to view english README](./README_en.md)
 
