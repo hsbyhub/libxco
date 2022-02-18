@@ -20,23 +20,23 @@ libxco是一个轻量级高性能协程网络库，用户使用libxco可以轻�
 ## 目录
 ```
 ┃
-┠─── CMakeLists.txt             CMake工程配置文件
-┠─── test                       测试用例
-┠─── src                        库实现
-┃    ┠─── common.cpp            公共工具
-┃    ┠─── sys_context_swap.S    协程上下文切换(参考腾讯的libco)
-┃    ┠─── coroutine.cpp	        协程
-┃    ┠─── scheduler.cpp         协程调度
-┃    ┠─── timer.cpp             计时器事件
-┃    ┠─── fdmanager.cpp         套接字管理
-┃    ┠─── iomanager.cpp         协程调度下的IO管理器
-┃    ┠─── hook.cpp              协程环境下针对系统调用进行hook(包括阻塞和影响协程上下文的系统调用)
-┃    ┠─── address.cpp           套接字地址（对sockaddr结构族进行封装）
-┃    ┠─── socket.cpp            套接字（主要针对TCP套接字进行封装）
-┃    ┠─── bytearray.cpp         序列化
-┃    ┠─── socket_stream.cpp     套接字流
-┃    ┠─── tcp_server.cpp        tcp服务器
-┃    ┗─── http                  http实现(包括HttpServer)
+┠─── CMakeLists.txt             CMake configuration file
+┠─── test                       Test examples
+┠─── src                        Implementation
+┃    ┠─── common.cpp            Common tools
+┃    ┠─── sys_context_swap.S    Coroutine context swap
+┃    ┠─── coroutine.cpp	        Coroutine
+┃    ┠─── scheduler.cpp         Coroutine scheduler
+┃    ┠─── timer.cpp             Timer
+┃    ┠─── fdmanager.cpp         Fd manager
+┃    ┠─── iomanager.cpp         Io manager under coroutine schedule
+┃    ┠─── hook.cpp              Hook to system calls under under coroutine schedule
+┃    ┠─── address.cpp           Wrap to struct sockaddr family
+┃    ┠─── socket.cpp            Wrap to TCP socket
+┃    ┠─── bytearray.cpp         Serialization
+┃    ┠─── socket_stream.cpp     Socket stream
+┃    ┠─── tcp_server.cpp        TCP server
+┃    ┗─── http                  About HTTP
 ┃
 ┃
 ```
