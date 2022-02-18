@@ -6,24 +6,21 @@
  *================================================================*/
 
 #include "coroutine.h"
-#include <iostream>
-#include <unistd.h>
 
 void fun() {
     while(true) {
-        //LOGDEBUG("before Yield fun_co");
+        LOGDEBUG("before Yield fun_co");
         xco::Coroutine::Yield();
-        //LOGDEBUG("after Yield fun_co");
+        LOGDEBUG("after Yield fun_co");
     }
 }
 
 void test_resume() {
     auto co = xco::Coroutine::Create(fun);
     for (int i = 0; i < 1000 * 10000; ++i) {
-        //LOGDEBUG("before Resume fun_co");
+        LOGDEBUG("before Resume fun_co");
         co->Resume();
-        //LOGDEBUG("after Resume fun_co");
-        //sleep(1);
+        LOGDEBUG("after Resume fun_co");
     }
 }
 

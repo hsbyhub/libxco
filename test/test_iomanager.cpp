@@ -1,8 +1,8 @@
 /*================================================================*
         Copyright (C) 2021 All rights reserved, www.hsby.link.
-      	ÎÄ¼þÃû³Æ£ºtest_epoll.cpp
-      	´´ ½¨ Õß£ºhsby
-      	´´½¨ÈÕÆÚ£º2022/2/9
+      	æ–‡ä»¶åç§°ï¼štest_epoll.cpp
+      	åˆ› å»º è€…ï¼šhsby
+      	åˆ›å»ºæ—¥æœŸï¼š2022/2/9
  *================================================================*/
 
 #include "iomanager.h"
@@ -33,7 +33,7 @@ void OnHandleTask(void* arg) {
             xco::Coroutine::Yield();
         }
         int client = task->client;
-        // ¿ªÊ¼¶ÁÐ´
+        // å¼€å§‹è¯»å†™
         int ret = read(client, &req[0], req.size());
         if (ret > 0) {
             ret = write(client, &rsp[0], rsp.size());
@@ -56,7 +56,7 @@ void OnHandleAccept() {
         if (client < 0) {
             continue;
         }
-        // ÄÃ³öÇëÇó
+        // æ‹¿å‡ºè¯·æ±‚
         auto task = task_list.front();
         task_list.pop();
         task->client = client;
@@ -114,7 +114,7 @@ int main(int argc, char** argv) {
 
     SetLogLevel(4);
 
-    // »ñÈ¡¼àÌýÌ×½Ó×Ö
+    // èŽ·å–ç›‘å¬å¥—æŽ¥å­—
     g_listen_fd = CreateListenSocket("0.0.0.0", 80);
     assert(g_listen_fd > 0);
 
