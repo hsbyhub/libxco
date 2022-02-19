@@ -24,14 +24,14 @@ Socket::~Socket() {
 }
 
 void Socket::Dump(std::ostream &os) const {
-    os << XCO_VARS_EXP(sockfd_, is_connected_, family_, type_, protocol_);
+    os << EXP_VARS(sockfd_, is_connected_, family_, type_, protocol_);
     if (local_address) {
-        os << ", " << XCO_VARS_EXP(local_address->ToString());
+        os << ", " << EXP_VARS(local_address->ToString());
     }else {
         os << ", local_address=null";
     }
     if (remote_address) {
-        os << ", " << XCO_VARS_EXP(remote_address->ToString());
+        os << ", " << EXP_VARS(remote_address->ToString());
     }else {
         os << ", remote_address=null";
     }

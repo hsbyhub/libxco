@@ -9,8 +9,6 @@
 #include "stream.h"
 #include "socket.h"
 #include "common.h"
-#include "util/function_builder.hpp"
-#include "util/struct.hpp"
 
 XCO_NAMESPAVE_START
 class SocketStream : public Stream, public BaseDump{

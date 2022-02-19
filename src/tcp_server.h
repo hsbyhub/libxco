@@ -13,8 +13,6 @@
 #include "socket.h"
 #include "address.h"
 #include "common.h"
-#include "util/struct.hpp"
-#include "util/function_builder.hpp"
 
 XCO_NAMESPAVE_START
 

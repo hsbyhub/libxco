@@ -7,7 +7,7 @@
 #pragma once
 #include <memory>
 #include "iomanager.h"
-#include "util/struct.hpp"
+#include "common.h"
 
 XCO_NAMESPAVE_START
 /**

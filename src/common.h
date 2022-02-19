@@ -26,7 +26,10 @@
 #include <sys/time.h>
 #include <sys/syscall.h>
 #include <execinfo.h>
-#include "cxxabi.h"
+#include <cxxabi.h>
+#include "util/string_ex.hpp"
+#include "util/function_builder.hpp"
+#include "util/struct.hpp"
 
 // 命名空间
 #define XCO_NAMESPAVE_START namespace xco{
@@ -91,75 +94,6 @@ void SetLogLevel(int level);
         assert(0);                                            \
     }
 //================================= 断言 end =================================//
-
-//================================= 便捷表达 start =================================//
-#define XCO_ERROR_EXP (std::string("errno=") + std::to_string(errno) + ", strerr=" + strerror(errno))
-#define XCO_VARS_EXP(...) (ParseArgList(#__VA_ARGS__, 0, "", __VA_ARGS__))
-#define XCO_FUNC_WITH_ARG_EXP(...) (ParseFuncExp(__PRETTY_FUNCTION__, XCO_VARS_EXP(__VA_ARGS__)))
-#define XCO_FUNC_ERROR_EXP (std::string(__PRETTY_FUNCTION__ )+ " error, " + XCO_ERROR_EXP)
-#define XCO_FUNC_ERROR_WITH_ARG_EXP(...) (XCO_FUNC_WITH_ARG_EXP(__VA_ARGS__) + " error, " + XCO_ERROR_EXP)
-
-inline std::string ParseFuncExp(const std::string& func_name, const std::string& func_args_express) {
-    std::stringstream ss;
-    size_t i = 0;
-    while(i < func_name.size()) {
-        ss << func_name[i];
-        if (func_name[i] == '(') break;
-        i++;
-    }
-    ss << func_args_express;
-    while(i < func_name.size()) {
-        if (func_name[i] == ')') break;
-        i++;
-    }
-    if (i < func_name.size()) {
-        ss << func_name[i];
-    }
-    return ss.str();
-}
-
-inline bool IsArgListSplit(char ch) {
-    return ch == ',';
-}
-
-// 终止遍历可变参数
-inline void ParseArgList(std::stringstream& ss,
-                         const std::string& format, int format_idx,
-                         const std::string& prefix) {
-}
-// 遍历可变参数
-template<typename VarType, typename ...VarTypes>
-void ParseArgList(std::stringstream& ss,
-                  const std::string& format, int format_idx,
-                  const std::string& prefix,
-                  VarType var, VarTypes...vars) {
-    ss << prefix;
-    bool found_name = false;
-    for (; format_idx < format.size(); format_idx++) {
-        char ch = format[format_idx];
-        if (!found_name && !IsArgListSplit(ch)) {
-            found_name = true;
-        }
-        if (found_name) {
-            if (IsArgListSplit(ch))  {
-                break;
-            }
-            ss << ch;
-        }
-    }
-    ss << "=" << var;
-    ParseArgList(ss, format, format_idx, ",", vars...);
-}
-
-template<typename VarType, typename ...VarTypes>
-std::string ParseArgList(const std::string& format, int format_begin,
-                         const std::string& prefix,
-                         VarType var, VarTypes...vars) {
-    std::stringstream ss;
-    ParseArgList(ss, format, format_begin, prefix, var, vars...);
-    return ss.str();
-}
-//================================= 便捷表达 end =================================//
 
 //=================================字节序 start=================================//
 /**
