@@ -51,7 +51,7 @@ bool FdCtx::Init() {
         if (!(flags & O_NONBLOCK)) {
             // 设置非阻塞
             int ret = fcntl_f(m_fd, F_SETFL, flags | O_NONBLOCK);
-            assert(ret == 0);
+            XCO_ASSERT(ret == 0);
         }
         m_isSysNonblock = true;
     }else {

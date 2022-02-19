@@ -16,6 +16,7 @@
 #include <vector>
 #include <map>
 #include "common.h"
+#include "util/struct.hpp"
 
 XCO_NAMESPAVE_START
 /**

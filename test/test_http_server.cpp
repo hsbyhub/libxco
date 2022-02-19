@@ -14,7 +14,7 @@ int client_handle_co_cnt = 0;
 xco::Socket::Ptr g_listen_sock = nullptr;
 
 void OnMainInt(int) {
-    LOGDEBUG("OnMainInt");
+    XCO_LOGDEBUG("OnMainInt");
     if (g_listen_sock) {
         g_listen_sock->Close();
     }
@@ -43,15 +43,15 @@ int main(int argc, char** argv) {
             IoManager iom;
             auto http_server = HttpServer::Create("none", true);
             if (!http_server) {
-                LOGFATAL("HttpServer::Create fail");
+                XCO_LOGFATAL("HttpServer::Create fail");
                 exit(-1);
             }
             if (!http_server->Init(g_listen_sock, &iom, client_handle_co_cnt)) {
-                LOGFATAL("HttpServer::Init fail");
+                XCO_LOGFATAL("HttpServer::Init fail");
                 exit(-1);
             }
             if (!http_server->Start()) {
-                LOGFATAL("HttpServer::Start fail");
+                XCO_LOGFATAL("HttpServer::Start fail");
                 exit(-1);
             }
 

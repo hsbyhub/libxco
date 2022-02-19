@@ -9,9 +9,9 @@
 
 void fun() {
     while(true) {
-        LOGDEBUG("fun before Yield");
+        XCO_LOGDEBUG("fun before Yield");
         xco::Coroutine::Yield();
-        LOGDEBUG("fun after Yield");
+        XCO_LOGDEBUG("fun after Yield");
     }
 }
 

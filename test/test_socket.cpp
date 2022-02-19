@@ -1,8 +1,8 @@
 /*================================================================*
         Copyright (C) 2021 All rights reserved, www.hsby.link.
-      	ÎÄ¼þÃû³Æ£ºtest_socket.cpp
-      	´´ ½¨ Õß£ºhsby
-      	´´½¨ÈÕÆÚ£º2022/2/10
+      	ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½Æ£ï¿½test_socket.cpp
+      	ï¿½ï¿½ ï¿½ï¿½ ï¿½ß£ï¿½hsby
+      	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú£ï¿½2022/2/10
  *================================================================*/
 
 #include "iomanager.h"
@@ -23,13 +23,13 @@ queue<Task*> task_list;
 xco::Socket::Ptr g_listen_sock = nullptr;
 
 void OnChildInt(int) {
-    LOGDEBUG("child process recv SIGINT");
+    XCO_LOGDEBUG("child process recv SIGINT");
     g_listen_sock->Close();
     exit(-1);
 }
 
 void OnMainInt(int) {
-    LOGDEBUG("main process recv SIGINT");
+    XCO_LOGDEBUG("main process recv SIGINT");
     kill(0, SIGINT);
     wait(nullptr);
     exit(-1);
@@ -43,13 +43,13 @@ void OnHandleTask(Task* task) {
             task_list.push(task);
             xco::Coroutine::Yield();
         }
-        // ¿ªÊ¼¶ÁÐ´
+        // ï¿½ï¿½Ê¼ï¿½ï¿½Ð´
         auto client = task->client;
         int ret = client->Recv(&req[0], req.size());
-        LOGDEBUG("recv, " << XCO_VARS_EXP(ret));
+        XCO_LOGDEBUG("recv, " << XCO_VARS_EXP(ret));
         if (ret > 0) {
             ret = client->Send(rsp);
-            LOGDEBUG("send, " << XCO_VARS_EXP(ret));
+            XCO_LOGDEBUG("send, " << XCO_VARS_EXP(ret));
             continue;
         }
         client->Close();
@@ -67,7 +67,7 @@ void OnHandleAccept() {
         if (!client) {
             continue;
         }
-        // ÄÃ³öÇëÇó
+        // ï¿½Ã³ï¿½ï¿½ï¿½ï¿½ï¿½
         auto task = task_list.front();
         task_list.pop();
         task->client = client;

@@ -34,12 +34,12 @@ public:
 
         void TrgEv(uint32_t ev) {
             if (ev & EPOLLIN) {
-                assert(evs & EPOLLIN);
+                XCO_ASSERT(evs & EPOLLIN);
                 IoManager::Schedule(read_co);
                 read_co.reset();
             }
             if (ev & EPOLLOUT) {
-                assert(evs & EPOLLOUT);
+                XCO_ASSERT(evs & EPOLLOUT);
                 IoManager::Schedule(write_co);
                 write_co.reset();
             }
@@ -48,11 +48,11 @@ public:
 
         void DelEv(uint32_t ev) {
             if (ev & EPOLLIN) {
-                assert(evs & EPOLLIN);
+                XCO_ASSERT(evs & EPOLLIN);
                 read_co.reset();
             }
             if (ev & EPOLLOUT) {
-                assert(evs & EPOLLOUT);
+                XCO_ASSERT(evs & EPOLLOUT);
                 write_co.reset();
             }
             evs &= ~ev;

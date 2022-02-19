@@ -9,7 +9,7 @@
 
 void func() {
     while(true) {
-        LOGDEBUG("sleep");
+        XCO_LOGDEBUG("sleep");
         usleep(100);
     }
 }

@@ -12,6 +12,7 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include "common.h"
+#include "util/struct.hpp"
 
 XCO_NAMESPAVE_START
 

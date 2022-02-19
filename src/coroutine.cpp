@@ -146,7 +146,7 @@ void Coroutine::OnCoroutine(Coroutine* co) {
     co->cb_(/*co->cb_arg_*/);
     co->state_ = State::kStEnd;
     Yield();
-    assert(false); //不会到达这里
+    XCO_ASSERT(false); //不会到达这里
 }
 
 void Coroutine::Resume() {

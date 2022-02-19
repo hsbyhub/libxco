@@ -14,7 +14,7 @@ XCO_NAMESPAVE_START
 
 IoManager::IoManager() {
     epoll_fd_ = epoll_create(1);
-    assert(epoll_fd_ > 0);
+    XCO_ASSERT(epoll_fd_ > 0);
 }
 
 IoManager::~IoManager() {
@@ -27,7 +27,7 @@ uint32_t IoManager::SetEvent(int fd, uint32_t ev, Coroutine::Ptr co) {
     }
 
     auto& ctx = fd_ctxs_[fd];
-    assert(ev && (!(ev & EPOLLIN && ev & EPOLLOUT)));
+    XCO_ASSERT(ev && (!(ev & EPOLLIN && ev & EPOLLOUT)));
 
     // 修改epoll
     int op = ctx.evs ? EPOLL_CTL_MOD : EPOLL_CTL_ADD;
@@ -36,8 +36,8 @@ uint32_t IoManager::SetEvent(int fd, uint32_t ev, Coroutine::Ptr co) {
     epev.events = ctx.evs | ev | EPOLLET;
     epev.data.ptr = &ctx;
     if (epoll_ctl(epoll_fd_, op, fd, &epev)) {
-        LOGFATAL(XCO_FUNC_WITH_ARG_EXP(fd, op, ev));
-        assert(false);
+        XCO_LOGFATAL(XCO_FUNC_WITH_ARG_EXP(fd, op, ev));
+        XCO_ASSERT(false);
         return 0;
     }
 
@@ -63,8 +63,8 @@ uint32_t IoManager::TrgEvent(int fd, uint32_t evs) {
     epev.events = remain_evs | EPOLLET;
     epev.data.ptr = &ctx;
     if (epoll_ctl(epoll_fd_, op, fd, &epev)) {
-        LOGFATAL(XCO_FUNC_WITH_ARG_EXP(fd, op, evs, change_evs, remain_evs));
-        assert(false);
+        XCO_LOGFATAL(XCO_FUNC_WITH_ARG_EXP(fd, op, evs, change_evs, remain_evs));
+        XCO_ASSERT(false);
         return 0;
     }
 
@@ -89,8 +89,8 @@ uint32_t IoManager::DelEvent(int fd, uint32_t evs) {
     epev.events = remain_evs | EPOLLET;
     epev.data.ptr = &ctx;
     if (epoll_ctl(epoll_fd_, op, fd, &epev)) {
-        LOGFATAL("DelEvent" << XCO_FUNC_WITH_ARG_EXP(fd, op, evs, change_evs, remain_evs));
-        assert(false);
+        XCO_LOGFATAL("DelEvent" << XCO_FUNC_WITH_ARG_EXP(fd, op, evs, change_evs, remain_evs));
+        XCO_ASSERT(false);
         return 0;
     }
 
@@ -123,7 +123,7 @@ void IoManager::OnIdle() {
                 break;
             };
         }while(true);
-        LOGDEBUG("epoll_wait, " << XCO_VARS_EXP(ret))
+        XCO_LOGDEBUG("epoll_wait, " << XCO_VARS_EXP(ret))
 
         // 处理定时器事件
         std::vector<std::function<void()>> cbs;

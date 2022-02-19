@@ -29,14 +29,15 @@
 #define XCO_NAMESPAVE_START namespace xco{
 #define XCO_NAMESPAVE_END }
 
+
 // 日志
 void DumpFmtDate(std::ostream& os);
 int GetLogLevel();
 void SetLogLevel(int level);
-#define DEBUG 1
-#define WARN  2
-#define ERROR 3
-#define FATAL 4
+#define XCO_DEBUG 1
+#define XCO_WARN  2
+#define XCO_ERROR 3
+#define XCO_FATAL 4
 #define LOG_IF_LEVEL(level, msg)                                \
         if (level >= GetLogLevel()){                            \
              std::cout  << __FILE__ << ":" << __LINE__ << "|";  \
@@ -44,52 +45,10 @@ void SetLogLevel(int level);
              std::cout  << #level << "|"                        \
                         << msg << std::endl << std::flush;      \
         }
-#define LOGDEBUG(msg)   LOG_IF_LEVEL(DEBUG, msg)
-#define LOGWARN(msg)    LOG_IF_LEVEL(WARN, msg)
-#define LOGERROR(msg)   LOG_IF_LEVEL(ERROR, msg)
-#define LOGFATAL(msg)   LOG_IF_LEVEL(FATAL, msg)
-
-/**
- * @brief 单例模式
- */
-template<typename T, typename X = void, int N = 0>
-class Singleton{
-public:
-    static T& Instance(){
-        static T v;
-        return v;
-    }
-};
-
-/**
- * @brief 不可拷贝基类
- */
-class Noncopyable {
-public:
-    Noncopyable() = default;
-    ~Noncopyable() = default;
-    Noncopyable(const Noncopyable&) = delete;
-    Noncopyable& operator=(const Noncopyable&) = delete;
-};
-
-/**
- * @brief ToString
- */
-class BaseDump {
-public:
-    BaseDump(){}
-    virtual ~BaseDump(){}
-    virtual void Dump(std::ostream& os) const{}
-    std::string ToString() const{
-        std::stringstream ss;
-        Dump(ss);
-        return ss.str();
-    }
-};
-inline std::ostream &operator<<(std::ostream &os, const BaseDump& base_dump) {
-    base_dump.Dump(os);
-    return os;
-}
+#define XCO_LOGDEBUG(msg)   LOG_IF_LEVEL(XCO_DEBUG, msg)
+#define XCO_LOGWARN(msg)    LOG_IF_LEVEL(XCO_WARN, msg)
+#define XCO_LOGERROR(msg)   LOG_IF_LEVEL(XCO_ERROR, msg)
+#define XCO_LOGFATAL(msg)   LOG_IF_LEVEL(XCO_FATAL, msg)
 
 /**
  * @brief 提供GCC预测信息(CPU流水线技术下提高性能)
@@ -113,10 +72,8 @@ inline std::ostream &operator<<(std::ostream &os, const BaseDump& base_dump) {
  * @brief 断言，自动输出最多100层堆栈信息
  */
 #define XCO_ASSERT(arg)           \
-    if (XCO_UNLICKLY(!(arg))){                   \
-        XCO_LOG_ERROR(XCO_LOG_NAME("system")) << "ASSERTION:  "#arg" "\
-                << "\nbacktrace: "                              \
-                << XCO::BackTraceString(100, 1, "\n        "); \
+    if (XCO_UNLICKLY(!(arg))){ \
+        XCO_LOGFATAL("ASSERTION:  "#arg" " << "backtrace: " << BackTraceString(100, 1, "\n        ")); \
         assert(0);                                            \
     }
 
@@ -125,11 +82,10 @@ inline std::ostream &operator<<(std::ostream &os, const BaseDump& base_dump) {
  */
 #define XCO_ASSERT_MSG(arg, msg)                   \
     if (XCO_UNLICKLY(!(arg))){                                    \
-        XCO_LOG_ERROR(XCO_LOG_NAME("system")) << "ASSERTION:  "#arg" " \
-                << "\nmessage: " << msg                          \
-                << "\nbacktrace: "                               \
-                << XCO::BackTraceString(100, 1, "\n        ");  \
-        assert(0);                                             \
+        XCO_LOG_FATAL("ASSERTION:  "#arg" "\
+                << "\nbacktrace: "                              \
+                << BackTraceString(100, 1, "\n        ")); \
+        assert(0);                                            \
     }
 //================================= 断言 end =================================//
 
@@ -202,6 +158,52 @@ std::string ParseArgList(const std::string& format, int format_begin,
 }
 //================================= 便捷表达 end =================================//
 
+//=================================字节序 start=================================//
+/**
+ * @brief 字节序转换
+ * @param[in]
+ * @return
+ */
+template<typename T>
+typename std::enable_if<sizeof(T) == sizeof(uint16_t), T>::type ByteSwap(T value) {
+    return static_cast<T>(bswap_16((uint16_t)value));
+}
+
+template<typename T>
+typename std::enable_if<sizeof(T) == sizeof(uint32_t), T>::type ByteSwap(T value) {
+    return static_cast<T>(bswap_32((uint32_t)value));
+}
+
+template<typename T>
+typename std::enable_if<sizeof(T) == sizeof(uint64_t), T>::type ByteSwap(T value) {
+    return static_cast<T>(bswap_64((uint64_t)value));
+}
+
+#if BYTE_ORDER == LITTLE_ENDIAN
+#define XCO_ENDIAN XCO_ENDIAN_LITTLE
+#else
+#define XCO_ENDIAN XCO_ENDIAN_BIG
+#endif
+
+#if XCO_ENDIAN == XCO_ENDIAN_LITTLE
+template<typename T> T ByteSwapOnLittleEndian(T t) {
+    return ByteSwap(t);
+}
+template<typename T> T ByteSwapOnBigEndian(T t) {
+    return t;
+}
+#else
+template<typename T> T ByteSwapOnLittleEndian(T t) {
+    return t;
+}
+template<typename T> T ByteSwapOnBigEndian(T t) {
+    return ByteSwap(t);
+}
+#endif
+//=================================字节序 end=================================//
+
+XCO_NAMESPAVE_START
+
 //=================================操作模板 <start>=================================//
 /**
  * @brief 获取Map中的key值,并转成对应类型,返回是否成功
@@ -271,173 +273,6 @@ void CopyMap(const MapType& mp_src, MapType& mp_dst) {
 }
 //=================================操作模板 <end>=================================//
 
-//================================= 自动生成代码 start =================================//
-/**
- * @brief 生成变量的setter
- */
-#define FUNCTION_BUILDER_VAR_SETTER(name, var)  \
-void Set##name(const decltype(var)& value) {    \
-    (var) = value;                              \
-}
-
-/**
- * @brief 生成变量的getter
- */
-#define FUNCTION_BUILDER_VAR_GETTER(name, var)  \
-decltype(var) Get##name() const {               \
-    return var;                                 \
-}
-
-/**
- * @brief 生成变量的setter和getter
- */
-#define FUNCTION_BUILDER_VAR(name, var)         \
-        FUNCTION_BUILDER_VAR_SETTER(name, var)  \
-        FUNCTION_BUILDER_VAR_GETTER(name, var)
-
-/**
- * @brief 生成map的setter
- */
-#define FUNCTION_BUILDER_MAP_SETTER(name, mp)                                   \
-void Set##name(const typename decltype(mp)::key_type& key,                      \
-               const typename decltype(mp)::value_type::second_type& value) {   \
-    (mp)[key] = value;                                                          \
-}
-
-/**
- * @brief 生成map的getter
- */
-#define FUNCTION_BUILDER_MAP_GETTER(name, mp)                                   \
-typename decltype(mp)::value_type::second_type                                  \
-Get##name(const typename decltype(mp)::key_type& key) const {                   \
-    auto it = (mp).find(key);                                                   \
-    return it == (mp).end() ? decltype(mp)::key_type() : it->second;            \
-}
-
-/**
- * @brief 生成map的getter with default
- */
-#define FUNCTION_BUILDER_MAP_GETTER_DEFAULT(name, mp)                           \
-typename decltype(mp)::value_type::second_type                                  \
-Get##name(const typename decltype(mp)::key_type& key,                           \
-          const typename decltype(mp)::value_type::second_type& def) const {    \
-    auto it = (mp).find(key);                                                   \
-    return it == (mp).end() ? def : it->second;                                 \
-}
-
-/**
- * @brief 生成map的del
- */
-#define FUNCTION_BUILDER_MAP_DEL(name, mp)                                      \
-void Del##name(const decltype(mp)::key_type& key) {                             \
-    (mp).erase(key);                                                            \
-}
-
-/**
- * @brief 生成map的has
- */
-#define FUNCTION_BUILDER_MAP_HAS(name, mp)                                      \
-bool Has##name(const decltype(mp)::key_type& key) const {                       \
-    return (mp).find(key) != (mp).end();                                        \
-}
-
-/**
- * @brief 生成map的所有操作函数
- */
-#define FUNCTION_BUILDER_MAP(name, mp)                  \
-        FUNCTION_BUILDER_MAP_SETTER(name, mp)           \
-        FUNCTION_BUILDER_MAP_GETTER(name, mp)           \
-        FUNCTION_BUILDER_MAP_GETTER_DEFAULT(name, mp)   \
-        FUNCTION_BUILDER_MAP_DEL(name, mp)              \
-        FUNCTION_BUILDER_MAP_HAS(name, mp)              \
-
-/**
- * @brief 生成可以强制转换为某种类型的Getter
- * @param[in] key:键值
- * @param[in] def:默认值
- * @param[out] val:返回值
- * @return T类型的返回值
- */
-#define FUNCTION_BUILDER_MAP_AS(name, mp)                                       \
-template<class T>                                                               \
-T Get##name##As(const typename decltype(mp)::key_type& key,                     \
-                const T& def = T()) const {                                     \
-    return GetAsFromMap(mp, key, def);                                          \
-}                                                                               \
-                                                                                \
-template<class T>                                                               \
-bool Get##name##AsWithCheck(const typename decltype(mp)::key_type& key, T& val, \
-                            const T& def = T()) const {                         \
-    return GetAsFromMapWithCheck(mp, key, val, def);                            \
-}
-
-/**
- * @brief 生成可以强制转换为某种类型的Getter
- * @param[in] key:键值
- * @param[in] def:默认值
- * @param[out] val:返回值
- * @return T类型的返回值
- */
-#define FUNCTION_BUILDER_MAP_AS_WITH_PREDEAL(name, mp, predel)                  \
-template<class T>                                                               \
-T Get##name##As(const typename decltype(mp)::key_type& key,                     \
-                const T& def = T()) {                                           \
-    predel;                                                                     \
-    return GetAsFromMap(mp, key, def);                                          \
-}                                                                               \
-                                                                                \
-template<class T>                                                               \
-bool Get##name##AsWithCheck(const typename decltype(mp)::key_type& key, T& val, \
-                            const T& def = T()) {                               \
-    predel;                                                                     \
-    return GetAsFromMapWithCheck(mp, key, val, def);                            \
-}
-//=================================自动生成代码 end=================================//
-
-//=================================字节序 start=================================//
-/**
- * @brief 字节序转换
- * @param[in]
- * @return
- */
-template<typename T>
-typename std::enable_if<sizeof(T) == sizeof(uint16_t), T>::type ByteSwap(T value) {
-    return static_cast<T>(bswap_16((uint16_t)value));
-}
-
-template<typename T>
-typename std::enable_if<sizeof(T) == sizeof(uint32_t), T>::type ByteSwap(T value) {
-    return static_cast<T>(bswap_32((uint32_t)value));
-}
-
-template<typename T>
-typename std::enable_if<sizeof(T) == sizeof(uint64_t), T>::type ByteSwap(T value) {
-    return static_cast<T>(bswap_64((uint64_t)value));
-}
-
-#if BYTE_ORDER == LITTLE_ENDIAN
-#define XCO_ENDIAN XCO_ENDIAN_LITTLE
-#else
-#define XCO_ENDIAN XCO_ENDIAN_BIG
-#endif
-
-#if XCO_ENDIAN == XCO_ENDIAN_LITTLE
-template<typename T> T ByteSwapOnLittleEndian(T t) {
-    return ByteSwap(t);
-}
-template<typename T> T ByteSwapOnBigEndian(T t) {
-    return t;
-}
-#else
-template<typename T> T ByteSwapOnLittleEndian(T t) {
-    return t;
-}
-template<typename T> T ByteSwapOnBigEndian(T t) {
-    return ByteSwap(t);
-}
-#endif
-//=================================字节序 end=================================//
-
 //=================================线程相关 <start>=================================//
 /**
  * @brief 获取当前线程Id
@@ -504,9 +339,7 @@ template<typename T>
 void MemSetZero(T& t) {
     memset(&t, 0, sizeof(t));
 }
-//=================================内存相关 <end>=================================//
 
-//=================================二进制相关 <start>=================================//
 /**
  * @brief 计算类型为T, 前缀为prefix_len的后缀掩码(例如 T=uint32_t, prefix_len=24, return 0.0.0.255)
  * @return
@@ -550,8 +383,11 @@ std::string IntToBitString(Type v) {
     }
     return ss.str();
 }
-//=================================二进制相关 <end>=================================//
+//=================================内存相关 <end>=================================//
 
+/**
+ * @brief 获取类型名字符串
+ */
 template<typename Type>
 const char* GetTypeName() {
     static const char* s_name = abi::__cxa_demangle(typeid(Type).name(), nullptr, nullptr, nullptr);
@@ -575,3 +411,5 @@ inline void MultiProcess(int process_cnt, std::function<void()> fun, void(*on_ma
     }
     wait(nullptr);
 }
+
+XCO_NAMESPAVE_END

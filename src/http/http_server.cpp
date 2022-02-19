@@ -27,7 +27,7 @@ void HttpServer::ClientHandle(Socket::Ptr client) {
     while(session->IsConnected()) {
         auto req = session->RecvRequest();
         if (!req) {
-            LOGDEBUG("Recv req fail");
+            XCO_LOGDEBUG("Recv req fail");
             break;
         }
         bool close = !is_keep_alive_/* || req->GetIsClose()*/;

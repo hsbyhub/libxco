@@ -8,6 +8,7 @@
 #include <memory>
 #include "address.h"
 #include "common.h"
+#include "util/struct.hpp"
 
 XCO_NAMESPAVE_START
 

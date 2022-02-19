@@ -40,21 +40,21 @@ public:
 };
 
 void OnMainInt(int) {
-    LOGWARN("main process recv SIGINT");
+    XCO_LOGWARN("main process recv SIGINT");
     kill(0, SIGINT);
     wait(nullptr);
     exit(-1);
 }
 
 void OnChildInt(int) {
-    LOGWARN("child process recv SIGINT");
+    XCO_LOGWARN("child process recv SIGINT");
     g_listen_sock->Close();
     exit(-1);
 }
 
 int main(int argc, char** argv) {
     if (argc != 3) {
-        LOGFATAL("Usage: test_iomanager process_count max_client_cnt");
+        XCO_LOGFATAL("Usage: test_iomanager process_count max_client_cnt");
         exit(-1);
     }
     process_cnt = atoi(argv[1]);
@@ -77,11 +77,11 @@ int main(int argc, char** argv) {
             IoManager iom;
             auto shs = SimpleHttpServer::Create();
             if (!shs->Init(g_listen_sock, &iom, client_handle_co_cnt)) {
-                LOGFATAL("SimpleHttpServer::Init fail");
+                XCO_LOGFATAL("SimpleHttpServer::Init fail");
                 exit(-1);
             }
             if (!shs->Start()) {
-                LOGFATAL("SimpleHttpServer::Start fail");
+                XCO_LOGFATAL("SimpleHttpServer::Start fail");
                 exit(-1);
             }
             iom.Start();

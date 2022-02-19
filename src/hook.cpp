@@ -139,7 +139,7 @@ retry:
             }
             return -1;
         }else {
-            LOGDEBUG(XCO_FUNC_WITH_ARG_EXP(fd, sys_fun_name) << ", Yield");
+            XCO_LOGDEBUG(XCO_FUNC_WITH_ARG_EXP(fd, sys_fun_name) << ", Yield");
             xco::Coroutine::Yield();
             if (timer) {
                 timer->Cancel();
@@ -473,7 +473,7 @@ int setsockopt(int sockfd, int level, int optname, const void *optval, socklen_t
         if (optname == SO_RCVTIMEO || optname == SO_SNDTIMEO) {
             auto ctx = xco::FdManagerSgt::Instance().Get(sockfd);
             if (ctx) {
-                ctx->SetTimeout(optname, TimevalToMs(*(const timeval *) optval));
+                ctx->SetTimeout(optname, xco::TimevalToMs(*(const timeval *) optval));
             }
         }
     }

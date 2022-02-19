@@ -9,25 +9,25 @@
 
 void fun() {
     while(true) {
-        LOGDEBUG("before Yield fun_co");
+        XCO_LOGDEBUG("before Yield fun_co");
         xco::Coroutine::Yield();
-        LOGDEBUG("after Yield fun_co");
+        XCO_LOGDEBUG("after Yield fun_co");
     }
 }
 
 void test_resume() {
     auto co = xco::Coroutine::Create(fun);
     for (int i = 0; i < 1000 * 10000; ++i) {
-        LOGDEBUG("before Resume fun_co");
+        XCO_LOGDEBUG("before Resume fun_co");
         co->Resume();
-        LOGDEBUG("after Resume fun_co");
+        XCO_LOGDEBUG("after Resume fun_co");
     }
 }
 
 void OnTestShareStackMem(int co_id) {
     while(true) {
         char buff[128];
-        LOGDEBUG("co_id = " << co_id << ", buff ptr = " << (size_t)buff);
+        XCO_LOGDEBUG("co_id = " << co_id << ", buff ptr = " << (size_t)buff);
         xco::Coroutine::Yield();
     }
 }

@@ -9,6 +9,7 @@
 #include <execinfo.h>
 #include <sys/syscall.h>
 
+
 void DumpFmtDate(std::ostream& os){
     char buf[64];
     time_t t = time(0);
@@ -25,6 +26,8 @@ int GetLogLevel() {
 void SetLogLevel(int level) {
     g_xco_log_level = level;
 }
+
+XCO_NAMESPAVE_START
 
 /**
  * @brief 取得当前线程Id
@@ -95,3 +98,5 @@ uint64_t GetRealTimeUs() {
 int64_t TimevalToMs(const timeval &tv) {
     return tv.tv_sec * 1000 + tv.tv_usec;
 }
+
+XCO_NAMESPAVE_END

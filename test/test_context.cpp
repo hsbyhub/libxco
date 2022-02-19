@@ -1,8 +1,8 @@
 /*================================================================*
         Copyright (C) 2021 All rights reserved, www.hsby.link.
-      	ÎÄ¼þÃû³Æ£ºtest_context.cpp
-      	´´ ½¨ Õß£ºhsby
-      	´´½¨ÈÕÆÚ£º2022/2/8
+      	ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½Æ£ï¿½test_context.cpp
+      	ï¿½ï¿½ ï¿½ï¿½ ï¿½ß£ï¿½hsby
+      	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú£ï¿½2022/2/8
  *================================================================*/
 #include <ucontext.h>
 #include <memory>
@@ -41,9 +41,9 @@ void DestoryCtx(ucontext_t* ctx) {
 
 void fun() {
     while(true) {
-        //LOGDEBUG("before swap to main_ctx");
+        //XCO_LOGDEBUG("before swap to main_ctx");
         swapcontext(fun_ctx, main_ctx);
-        //LOGDEBUG("after swap to main_ctx");
+        //XCO_LOGDEBUG("after swap to main_ctx");
     }
 }
 
@@ -51,9 +51,9 @@ void test_context() {
     main_ctx = MakeCtx();
     fun_ctx = MakeCtx(fun);
     for (int i = 0; i < 1000 * 10000; ++i) {
-        //LOGDEBUG("before swap to fun_ctx");
+        //XCO_LOGDEBUG("before swap to fun_ctx");
         swapcontext(main_ctx, fun_ctx);
-        //LOGDEBUG("after swap to fun_ctx");
+        //XCO_LOGDEBUG("after swap to fun_ctx");
     }
     DestoryCtx(main_ctx);
     DestoryCtx(fun_ctx);
