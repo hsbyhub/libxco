@@ -13,7 +13,10 @@ enable_language(C ASM)
 
 # Add static and shared library target.
 set(libs dl)
-file(GLOB libxco_srcs ${PROJECT_SOURCE_DIR}/*.cpp ${PROJECT_SOURCE_DIR}/http/*.cpp ${PROJECT_SOURCE_DIR}/*.S)
+file(GLOB libxco_srcs
+        ${PROJECT_SOURCE_DIR}/*.cpp
+        ${PROJECT_SOURCE_DIR}/http/*.cpp
+        ${PROJECT_SOURCE_DIR}/*.S)
 add_library(xco_static STATIC ${libxco_srcs})
 add_library(xco_shared SHARED ${libxco_srcs})
 target_link_libraries(xco_static ${libs})

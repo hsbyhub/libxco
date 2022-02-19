@@ -6,6 +6,8 @@
  *================================================================*/
 #pragma once
 
+#include <sstream>
+
 #define EXP_ERROR (std::string("errno=") + std::to_string(errno) + ", strerr=" + strerror(errno))
 #define EXP_VARS(...) (ParseArgList(#__VA_ARGS__, 0, "", __VA_ARGS__))
 #define EXP_FUNC_WITH_ARG(...) (ParseFuncExp(__PRETTY_FUNCTION__, EXP_VARS(__VA_ARGS__)))
