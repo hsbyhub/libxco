@@ -28,6 +28,7 @@ set_target_properties(xco_shared PROPERTIES OUTPUT_NAME xco VERSION ${LIBXCO_VER
 #install(TARGETS xco_static LIBRARY DESTINATION "lib" ARCHIVE DESTINATION "lib")
 install(TARGETS xco_shared LIBRARY DESTINATION "lib" ARCHIVE DESTINATION "lib")
 install(DIRECTORY . ./http DESTINATION "include/xco" FILES_MATCHING PATTERN "*.h")
+install(DIRECTORY ./util DESTINATION "include/xco" FILES_MATCHING PATTERN "*.hpp")
 
 # Add test target.
 include_directories(${PROJECT_SOURCE_DIR})
