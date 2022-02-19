@@ -34,7 +34,7 @@
 
 
 // 日志
-void DumpFmtDate(std::ostream& os);
+void FormatDate(std::ostream& os);
 int GetLogLevel();
 void SetLogLevel(int level);
 #define XCO_DEBUG 1
@@ -44,7 +44,7 @@ void SetLogLevel(int level);
 #define LOG_IF_LEVEL(level, msg)                                \
         if (level >= GetLogLevel()){                            \
              std::cout  << __FILE__ << ":" << __LINE__ << "|";  \
-             DumpFmtDate(std::cout); std::cout << "|";          \
+             FormatDate(std::cout); std::cout << "|";          \
              std::cout  << #level << "|"                        \
                         << msg << std::endl << std::flush;      \
         }
