@@ -46,17 +46,17 @@ void SetLogLevel(int level);
 #define XCO_WARN  2
 #define XCO_ERROR 3
 #define XCO_FATAL 4
-#define LOG_IF_LEVEL(level, msg)                                \
+#define XCO_LOG_IF_LEVEL(level, msg)                                \
         if (level >= GetLogLevel()){                            \
              std::cout  << __FILE__ << ":" << __LINE__ << "|";  \
              FormatDate(std::cout); std::cout << "|";          \
              std::cout  << #level << "|"                        \
                         << msg << std::endl << std::flush;      \
         }
-#define XCO_LOGDEBUG(msg)   LOG_IF_LEVEL(XCO_DEBUG, msg)
-#define XCO_LOGWARN(msg)    LOG_IF_LEVEL(XCO_WARN, msg)
-#define XCO_LOGERROR(msg)   LOG_IF_LEVEL(XCO_ERROR, msg)
-#define XCO_LOGFATAL(msg)   LOG_IF_LEVEL(XCO_FATAL, msg)
+#define XCO_LOGDEBUG(msg)   XCO_LOG_IF_LEVEL(XCO_DEBUG, msg)
+#define XCO_LOGWARN(msg)    XCO_LOG_IF_LEVEL(XCO_WARN, msg)
+#define XCO_LOGERROR(msg)   XCO_LOG_IF_LEVEL(XCO_ERROR, msg)
+#define XCO_LOGFATAL(msg)   XCO_LOG_IF_LEVEL(XCO_FATAL, msg)
 
 /**
  * @brief 提供GCC预测信息(CPU流水线技术下提高性能)
