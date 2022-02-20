@@ -31,7 +31,7 @@ int main(int argc, char** argv) {
     process_cnt = atoi(argv[1]);
     client_handle_co_cnt= atoi(argv[2]);
 
-    SetLogLevel(5);
+    xco::SetLogLevel(5);
 
     g_listen_sock = Socket::CreateTCP();
     assert(g_listen_sock);

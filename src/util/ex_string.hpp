@@ -8,11 +8,11 @@
 
 #include <sstream>
 
-#define EXP_ERROR (std::string("errno=") + std::to_string(errno) + ", strerr=" + strerror(errno))
-#define EXP_VARS(...) (ParseArgList(#__VA_ARGS__, 0, "", __VA_ARGS__))
-#define EXP_FUNC_WITH_ARG(...) (ParseFuncExp(__PRETTY_FUNCTION__, EXP_VARS(__VA_ARGS__)))
-#define EXP_FUNC_ERROR (std::string(__PRETTY_FUNCTION__ )+ " error, " + EXP_ERROR)
-#define EXP_FUNC_ERROR_WITH_ARG(...) (EXP_FUNC_WITH_ARG(__VA_ARGS__) + " error, " + EXP_ERROR)
+#define XCO_EXP_ERROR (std::string("errno=") + std::to_string(errno) + ", strerr=" + strerror(errno))
+#define XCO_EXP_VARS(...) (ParseArgList(#__VA_ARGS__, 0, "", __VA_ARGS__))
+#define XCO_EXP_FUNC_WITH_ARG(...) (ParseFuncExp(__PRETTY_FUNCTION__, XCO_EXP_VARS(__VA_ARGS__)))
+#define XCO_EXP_FUNC_ERROR (std::string(__PRETTY_FUNCTION__ )+ " error, " + XCO_EXP_ERROR)
+#define XCO_EXP_FUNC_ERROR_WITH_ARG(...) (XCO_EXP_FUNC_WITH_ARG(__VA_ARGS__) + " error, " + XCO_EXP_ERROR)
 
 inline std::string ParseFuncExp(const std::string& func_name, const std::string& func_args_express) {
     std::stringstream ss;

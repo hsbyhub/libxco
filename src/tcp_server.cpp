@@ -32,7 +32,7 @@ void TcpServer::Dump(std::ostream &os) const {
         os << "TcpServer no init";
         return;
     }
-    os << "TcpServer{" << EXP_VARS(type_, name_, ssl_, accept_timeout_);
+    os << "TcpServer{" << XCO_EXP_VARS(type_, name_, ssl_, accept_timeout_);
     os << "\"sockets\":[";
     for (auto& socket : sockets_) {
         os << "{" << "socket:" << *socket << "},";

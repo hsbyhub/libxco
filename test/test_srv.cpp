@@ -39,12 +39,12 @@ void OnHandleClient(xco::Socket::Ptr client) {
     // client->SetRecvTimeOut(1000);
     while(true) {
         int ret = client->Recv(&req[0], req.size());
-        XCO_LOGDEBUG("recv, " << EXP_VARS(ret));
+        XCO_LOGDEBUG("recv, " << XCO_EXP_VARS(ret));
         if (ret <= 0) {
             break;
         }
         ret = client->Send(rsp);
-        XCO_LOGDEBUG("send, " << EXP_VARS(ret));
+        XCO_LOGDEBUG("send, " << XCO_EXP_VARS(ret));
     }
     real_client_handle_co_cnt--;
     XCO_LOGDEBUG(client->ToString() << " close");
@@ -75,7 +75,7 @@ int main(int argc, char** argv) {
     client_handle_co_cnt= atoi(argv[3]);
     signal(SIGINT, OnMainInt);
 
-    SetLogLevel(5);
+    xco::SetLogLevel(5);
     g_listen_sock = xco::Socket::CreateTCP();
     assert(g_listen_sock);
     assert(g_listen_sock->Init());

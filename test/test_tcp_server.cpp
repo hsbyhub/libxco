@@ -61,7 +61,7 @@ int main(int argc, char** argv) {
     client_handle_co_cnt= atoi(argv[2]);
     signal(SIGINT, OnMainInt);
 
-    //SetLogLevel(5);
+    //xco::SetLogLevel(5);
     g_listen_sock = Socket::CreateTCP();
     assert(g_listen_sock);
     assert(g_listen_sock->Init());

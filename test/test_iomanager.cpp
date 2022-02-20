@@ -39,7 +39,7 @@ void OnHandleTask(void* arg) {
             ret = write(client, &rsp[0], rsp.size());
             continue;
         }
-        XCO_LOGDEBUG("close, " << EXP_VARS(client));
+        XCO_LOGDEBUG("close, " << XCO_EXP_VARS(client));
         close(client);
         task->client = -1;
     }
@@ -112,7 +112,7 @@ int main(int argc, char** argv) {
     int accept_co_cnt = atoi(argv[2]);
     int client_handle_co_cnt= atoi(argv[3]);
 
-    SetLogLevel(4);
+    xco::SetLogLevel(4);
 
     // 获取监听套接字
     g_listen_fd = CreateListenSocket("0.0.0.0", 80);

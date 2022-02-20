@@ -139,7 +139,7 @@ retry:
             }
             return -1;
         }else {
-            XCO_LOGDEBUG(EXP_FUNC_WITH_ARG(fd, sys_fun_name) << ", Yield");
+            XCO_LOGDEBUG(XCO_EXP_FUNC_WITH_ARG(fd, sys_fun_name) << ", Yield");
             xco::Coroutine::Yield();
             if (timer) {
                 timer->Cancel();

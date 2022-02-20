@@ -6,6 +6,8 @@
  *================================================================*/
 #include "common.h"
 
+XCO_NAMESPAVE_START
+
 static int g_xco_log_level = 1;
 
 void FormatDate(std::ostream& os){
@@ -23,3 +25,5 @@ int GetLogLevel() {
 void SetLogLevel(int level) {
     g_xco_log_level = level;
 }
+
+XCO_NAMESPAVE_END

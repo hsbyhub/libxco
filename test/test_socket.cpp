@@ -46,10 +46,10 @@ void OnHandleTask(Task* task) {
         // ��ʼ��д
         auto client = task->client;
         int ret = client->Recv(&req[0], req.size());
-        XCO_LOGDEBUG("recv, " << EXP_VARS(ret));
+        XCO_LOGDEBUG("recv, " << XCO_EXP_VARS(ret));
         if (ret > 0) {
             ret = client->Send(rsp);
-            XCO_LOGDEBUG("send, " << EXP_VARS(ret));
+            XCO_LOGDEBUG("send, " << XCO_EXP_VARS(ret));
             continue;
         }
         client->Close();
@@ -84,7 +84,7 @@ int main(int argc, char** argv) {
     int accept_co_cnt = atoi(argv[2]);
     int client_handle_co_cnt= atoi(argv[3]);
 
-    SetLogLevel(4);
+    xco::SetLogLevel(4);
 
     g_listen_sock = xco::Socket::CreateTCP();
     assert(g_listen_sock);
