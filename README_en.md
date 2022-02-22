@@ -55,9 +55,10 @@ Process status
 
 ## Installation & Usage
 ```
-mkdir build && cd build
-cmake ../src
-make && make install
+git clone https://gitee.com/hsby/libxco
+cd libxco
+chmod a+x install.sh
+./install.sh
 ```
 - Create, resume and yield a coroutine  
 ![image-20220218102720523](https://gitee.com/hsby/img/raw/master/202202181115734.png)
