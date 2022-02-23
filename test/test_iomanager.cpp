@@ -39,7 +39,7 @@ void OnHandleTask(void* arg) {
             ret = write(client, &rsp[0], rsp.size());
             continue;
         }
-        XCO_LOGDEBUG("close, " << XCO_EXP_VARS(client));
+        XCO_LOGDEBUG("close, " << EX_STRING_VARS(client));
         close(client);
         task->client = -1;
     }

@@ -46,7 +46,7 @@ ByteArray::~ByteArray() {
 }
 
 void ByteArray::Dump(std::ostream &os) const {
-    os << "ByteArray{" << XCO_EXP_VARS(node_size_, write_pos_, read_pos_, capacity_, data_endian_) << "}";
+    os << "ByteArray{" << EX_STRING_VARS(node_size_, write_pos_, read_pos_, capacity_, data_endian_) << "}";
 }
 
 size_t ByteArray::GetCapSize() const{
