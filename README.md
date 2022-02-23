@@ -51,9 +51,10 @@ libxco是一个轻量级高性能协程网络库，用户使用libxco可以轻�
 
 ## 安装和使用
 ```
-mkdir build && cd build
-cmake ../src
-make && make install
+git clone https://gitee.com/hsby/libxco
+cd libxco
+chmod a+x install.sh
+./install.sh
 ```
 - 创建、唤起、挂起协程  
 ![image-20220218102720523](https://gitee.com/hsby/img/raw/master/202202181027571.png)
