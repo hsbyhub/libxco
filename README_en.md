@@ -15,10 +15,10 @@ Users only need to register different URI as different business logics that can 
 ## Pressure Test
 
 Single-machine stress test on Centos7 (4-core) under VirtualBox virtual machine  
-![image-20220218095832880](https://gitee.com/hsby/img/raw/master/202202181115621.png)
+![image-20220312105339382](https://raw.githubusercontent.com/hsbyhub/ximg/main/202203121055924.png)
 
 Process status  
-![image-20220218100409436](https://gitee.com/hsby/img/raw/master/202202181115548.png)
+![image-20220312105415361](https://raw.githubusercontent.com/hsbyhub/ximg/main/202203121055068.png)
 
 ## Directory
 
@@ -61,9 +61,9 @@ chmod a+x install.sh
 ./install.sh
 ```
 - Create, resume and yield a coroutine  
-![image-20220218102720523](https://gitee.com/hsby/img/raw/master/202202181115734.png)
+![image-20220312105541763](https://raw.githubusercontent.com/hsbyhub/ximg/main/202203121055805.png)
 - Use the coroutine shceduler  
-![image-20220218110441629](https://gitee.com/hsby/img/raw/master/202202181104671.png)
+![image-20220312105555931](https://raw.githubusercontent.com/hsbyhub/ximg/main/202203121055967.png)
 
 See the test examples to learn more usage
 

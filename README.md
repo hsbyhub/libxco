@@ -12,10 +12,10 @@ libxco是一个轻量级高性能协程网络库，用户使用libxco可以轻�
 
 ## 压测效果
 在VirtualBox虚拟机下的Centos7(四核)进行单机压测  
-![image-20220218095832880](https://gitee.com/hsby/img/raw/master/202202180958352.png)
+![image-20220312105339382](https://raw.githubusercontent.com/hsbyhub/ximg/main/202203121055924.png)
 
 服务器开4个进程  
-![image-20220218100409436](https://gitee.com/hsby/img/raw/master/202202181004507.png)
+![image-20220312105415361](https://raw.githubusercontent.com/hsbyhub/ximg/main/202203121055068.png)
 
 ## 目录
 ```
@@ -57,10 +57,16 @@ chmod a+x install.sh
 ./install.sh
 ```
 - 创建、唤起、挂起协程  
-![image-20220218102720523](https://gitee.com/hsby/img/raw/master/202202181027571.png)
+![image-20220312105541763](https://raw.githubusercontent.com/hsbyhub/ximg/main/202203121055805.png)
+
 - 使用协程调度器  
-![image-20220218110441629](https://gitee.com/hsby/img/raw/master/202202181104671.png)  
-更多使用方法可以参考test下的用例
+![image-20220312105555931](https://raw.githubusercontent.com/hsbyhub/ximg/main/202203121055967.png)
+
+  
+
+  更多使用方法可以参考test下的用例
+
+  
 
 ## Hook的系统调用(协程调度环境下)
 sleep  
