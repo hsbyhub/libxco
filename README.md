@@ -24,7 +24,7 @@ libxco是一个轻量级高性能协程网络库，用户使用libxco可以轻�
 ┠─── test                       测试用例
 ┠─── src                        库实现
 ┃    ┠─── common.cpp            公共工具
-┃    ┠─── sys_context_swap.S    协程上下文切换(参考腾讯的libco)
+┃    ┠─── sys_context_swap.S    协程上下文切换
 ┃    ┠─── coroutine.cpp         协程
 ┃    ┠─── scheduler.cpp         协程调度
 ┃    ┠─── timer.cpp             计时器事件
