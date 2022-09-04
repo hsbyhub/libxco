@@ -2,9 +2,9 @@
 
 ---
 
-Author：hsby(xsx hsbymail@163.com)
+Author：hsby(xsx) hsbymail@163.com
 
-[点击查看中文README](./README.md)
+[中文README](./README.md)
 
 ## Introduction
 
@@ -24,9 +24,10 @@ Process status
 
 ```
 ┃
-┠─── CMakeLists.txt             CMake configuration file
-┠─── test                       Test examples
-┠─── src                        Implementation
+┠─── install.sh     Install shell script
+┠─── test           Test examples
+┠─── src            Implementation
+┃    ┠─── CMakeLists.txt        CMake configuration file
 ┃    ┠─── common.cpp            Common tools
 ┃    ┠─── sys_context_swap.S    Coroutine context swap
 ┃    ┠─── coroutine.cpp         Coroutine
@@ -40,18 +41,10 @@ Process status
 ┃    ┠─── bytearray.cpp         Serialization
 ┃    ┠─── socket_stream.cpp     Socket stream
 ┃    ┠─── tcp_server.cpp        TCP server
-┃    ┗─── http                  About HTTP
-┃
+┃    ┠─── http                  About HTTP
+┃    ┗─── util                  Util
 ┃
 ```
-
-## Develpment Environment
-- OS：Centos7
-- Development Tool: Neovim5.0 & Clion
-- Compiler: GCC4.8
-- Build Tool: CMake2.8
-- Version Control: Git
-- Debug Tool: GDB
 
 ## Installation & Usage
 ```
@@ -68,7 +61,6 @@ chmod a+x install.sh
 See the test examples to learn more usage
 
 ## Hook system calls under coroutine environment
-
 sleep  
 usleep  
 nanosleep  
