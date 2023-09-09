@@ -4,7 +4,7 @@ set(LIBXCO_VERSION 0.1)
 
 # Set config.
 set(CMAKE_CXX_STANDARD 11)
-set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/../build/bin)
+set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/build/bin)
 set(LIBRARY_OUTPUT_PATH /tmp/libxco_lib)
 set(CMAKE_CXX_FLAGS "$ENV{CXXFLAAGS} -O3 -g -std=c++11 -Wno-deprecated -Werror -Wno-unused-function -Wno-builtin-macro-redefined")
 
@@ -14,9 +14,9 @@ enable_language(C ASM)
 # Add static and shared library target.
 set(libs dl)
 file(GLOB libxco_srcs
-        ${PROJECT_SOURCE_DIR}/*.cpp
-        ${PROJECT_SOURCE_DIR}/http/*.cpp
-        ${PROJECT_SOURCE_DIR}/*.S)
+        ${PROJECT_SOURCE_DIR}/src/*.cpp
+        ${PROJECT_SOURCE_DIR}/src/http/*.cpp
+        ${PROJECT_SOURCE_DIR}/src/*.S)
 add_library(xco_static STATIC ${libxco_srcs})
 add_library(xco_shared SHARED ${libxco_srcs})
 target_link_libraries(xco_static ${libs})
@@ -31,9 +31,9 @@ install(DIRECTORY . ./http DESTINATION "include/xco" FILES_MATCHING PATTERN "*.h
 install(DIRECTORY ./util DESTINATION "include/xco" FILES_MATCHING PATTERN "*.hpp")
 
 # Add test target.
-include_directories(${PROJECT_SOURCE_DIR})
+include_directories(${PROJECT_SOURCE_DIR}/src)
 set(libs dl xco_static)
-file(GLOB src_files ${PROJECT_SOURCE_DIR}/../test/*.cpp)
+file(GLOB src_files ${PROJECT_SOURCE_DIR}/test/*.cpp)
 foreach(src_file ${src_files})
     STRING(REGEX REPLACE ".+/(.+)\\..*" "\\1" target ${src_file})
     add_executable(${target} ${src_file})
