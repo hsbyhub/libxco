@@ -1,7 +1,7 @@
 # libxco
 
 ---
-作者：hsby(xsx) hsbymail@163.com
+作者：xiesenxin(hsbymail@163.com)
 
 [English README](./README_en.md)
 

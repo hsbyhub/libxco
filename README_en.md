@@ -2,7 +2,7 @@
 
 ---
 
-Author：hsby(xsx) hsbymail@163.com
+Author：xiesenxin(hsbymail@163.com)
 
 [中文README](./README.md)
 
